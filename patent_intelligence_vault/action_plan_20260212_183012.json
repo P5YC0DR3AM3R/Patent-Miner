@@ -1,0 +1,62 @@
+{
+  "execution_date": "2026-02-12T18:30:12.518845",
+  "top_opportunities": [
+    {
+      "rank": 1,
+      "title": "Wearable Body Temperature and Vital Signs Monitor",
+      "patent": "US6825456",
+      "score": 15,
+      "recommended_brands": [
+        "VitalTrack",
+        "PulseSync",
+        "BodyBeat"
+      ],
+      "gtm": "B2B partnerships with healthcare institutions. Target clinics and fitness centers first. Direct consumer acquisition through health-tech aggregators.",
+      "tm_risk": 6,
+      "next_action": "Launch FTO search & competitor analysis"
+    },
+    {
+      "rank": 2,
+      "title": "Portable Gas Detection and Analysis Apparatus",
+      "patent": "US6834567",
+      "score": 15,
+      "recommended_brands": [
+        "GasGuard",
+        "AirScan",
+        "SafeAir"
+      ],
+      "gtm": "Industrial sales through safety equipment distributors. Target OSHA-regulated facilities. Partnerships with facility managers and safety consultants.",
+      "tm_risk": 7,
+      "next_action": "Launch FTO search & competitor analysis"
+    },
+    {
+      "rank": 3,
+      "title": "Wireless Soil Moisture and pH Sensor Network",
+      "patent": "US6843678",
+      "score": 15,
+      "recommended_brands": [
+        "SoilStudio",
+        "GroundSync",
+        "PrecisionGrow"
+      ],
+      "gtm": "B2C through clean-air focused retailers. B2B through facility management companies targeting corporate wellness programs.",
+      "tm_risk": 7,
+      "next_action": "Launch FTO search & competitor analysis"
+    }
+  ],
+  "investment_estimate": {
+    "fto_search": "$5,000-10,000 (patent attorney)",
+    "market_research": "$3,000-8,000 (customer surveys)",
+    "manufacturing_quotes": "$0 (supplier quotes)",
+    "trademark_filing": "$500-1,500 per brand (USPTO)",
+    "prototype_development": "$15,000-50,000",
+    "total_phase_one": "$26,500-80,000"
+  },
+  "timeline": {
+    "weeks_1_2": "FTO search & trademark clearance",
+    "weeks_3_4": "Competitor analysis & market validation",
+    "weeks_5_8": "Get manufacturing quotes & preliminary design",
+    "weeks_9_12": "Prototype development & customer testing",
+    "months_4_6": "Business plan & funding preparation"
+  }
+}

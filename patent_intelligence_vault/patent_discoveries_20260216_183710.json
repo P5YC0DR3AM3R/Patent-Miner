@@ -1,0 +1,211 @@
+[
+  {
+    "patent_number": "4516213",
+    "title": "Multiple rate metering system",
+    "abstract": "A multiple rate metering system suitable for use with an existing single rate, electromechanical electricity meter employing an Eddy current disc mounted in a casing, comprises a first unit mountable inside the casing of the electricity meter, and a second unit, which is portable so that it can be brought into close proximity with said first unit by a meter reader. The first unit comprises a sensor for generating pulses in response to rotation of the Eddy current disc, a first microprocessor, a first read-only-memory for storing a program to control the operation of said first microprocessor, a random-access-memory, the first microprocessor being programmed to store data in said random-access memory related to the pulse count in different predetermined periods during which different electricity rates apply, and a first coupling device for establishing communication through the casing with said second unit when said second unit is brought into proximity with said first unit. The second unit comprises a second coupling device co-operating with the first coupling device to transmit and receive data to and from the first unit, a second microprocessor, a second read-only-memory for storing a program controlling the operation of said second microprocessor, a storage medium for storing data from said second microprocessor, a display unit, a first actuator operable by the reader to transmit a signal through the first and second coupling devices to instruct the first microprocessor to transfer data relating to the pulse count in the different predetermined periods to the second unit. The second microprocessor is arranged to display the data in the display unit, and the operator can accept or reject the data and instruct the second microprocessor to store the data in the storage medium with appropriate customer identification for subsequent retrieval at a central location.",
+    "link": "https://patents.google.com/patent/4516213",
+    "patent_date": "1985-05-07",
+    "filing_date": "1982-02-01",
+    "assignee_type": "5",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "4817628",
+    "title": "System and method for evaluating neurological function controlling muscular movements",
+    "abstract": "A system for evaluating nervous system function of a subject including generally an accelerometer sensor, a stimulus electrode assembly, and a portable device to which the sensor and electrode assembly are connected. The sensor measures the magnitude of the (stimulus evoked) movement of a body part of the subject along at least one axis of three dimensional space. The device contains electrical circuits for processing data from the sensor, generating stimuli to the electrode assembly, and timing both the extraction of sensor information and the delivery of stimuli. The sensor has a suction chamber for attaching the sensor to the desired body part site by static suction. To evaluate the nervous system function the magnitude of the monitored sensed (acceleration) movement is compared with a control value. When the nervous system being evaluated is the peripheral nerve of one side of the face, the control value can be determined by evoking and measuring movement on the opposite side of the face. For this embodiment, two pairs of electrodes are attached to a headband which holds them simultaneously against opposite sides of the face and a switch communicates the desired pair with the portable device.",
+    "link": "https://patents.google.com/patent/4817628",
+    "patent_date": "1989-04-04",
+    "filing_date": "1985-10-18",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "4950997",
+    "title": "Diagnostic testing device for seed tube sensors",
+    "abstract": "A portable testing device for seed tube and combine sensors is provided for checking the operability of the sensor in situ at the time a problem arises in the agricultural implement. The testing device includes a housing in which is mounted a printed circuit board and a battery for providing an electrical current to the components on the circuit board. The circuit board includes an on/off switch and an LED. An electrical coupler allows the device to be quickly and easily attached to the coupler of the planter harness so as to check the operability of a seed tube sensor. In operation, the LED blinks on and off when the sensor is properly operating, and remains lit when the sensor is malfunctioning.",
+    "link": "https://patents.google.com/patent/4950997",
+    "patent_date": "1990-08-21",
+    "filing_date": "1989-07-28",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "5012411",
+    "title": "Apparatus for monitoring, storing and transmitting detected physiological information",
+    "abstract": "A portable, self-contained, microprocessor controlled apparatus for monitoring, storing and transmitting detected physiological information, including an input section for sequentially receiving analog signals corresponding to heart activity for as many as twelve different cardiac sensors. An input section is provided for receiving analog electrical signals corresponding to blood pressure from at least one sensor. An analog to digital converter is provided for converting the received analog signals to a series of digital pulses at a predetermined sampling rate and for receiving and storing the digital pulses in predetermined memory locations. A control section is provided for recalling the stored digital pulses from the memory and for receiving the recalled digital pulses and for transmitting them to a remote location over a communications system. In the preferred embodiment, the input section is for receiving analog signals corresponding to cardiac conductivity, brainwave activity, blood pressure, blood flow and other ultrasonic cardiovascular and intracranial data. The latter signals are also converted to digital form for storage and later recall and transmission to a remote location.",
+    "link": "https://patents.google.com/patent/5012411",
+    "patent_date": "1991-04-30",
+    "filing_date": "1985-07-23",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "5059287",
+    "title": "Portable water distiller",
+    "abstract": "A water distiller for vaporizing and condensing water. The distiller is provided with a container for holding the water to be distilled and a water level regulator for maintaining the water in the container at a desired level. A heating element is provided that is positioned just below the desired water level and spaced from the sides of the container. A cover is positioned atop the container for sealing the container and for suspending the heating element into the water. A condenser on top of the cover condenses vapor produced by the heating element. The distiller may be equipped with a sensor for sensing the temperature of the air above water level in the container and a shut off switch for removing power from the heating element responsive to a high temperature reading in the sensor.",
+    "link": "https://patents.google.com/patent/5059287",
+    "patent_date": "1991-10-22",
+    "filing_date": "1989-06-16",
+    "assignee_type": "2",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "5092607",
+    "title": "Ballistic impact indicator",
+    "abstract": "A ballistic impact indicator, for alerting a marksman that a bullet has struck a target, includes a vibration sensor mounted to an adjustable clamp for removably securing the vibration sensor to target board. The vibration sensor is electrically coupled by a connector cable to a controller circuit for operating a xenon flash tube strobe light. In response to a detection of an impact by the vibration sensor, the controller circuit generates a delayed trigger signal, the delay of which can be selected by the user between approximately 2 and 6 seconds, for triggering the strobe light. The controller circuit also causes the strobe light to flash repeatedly if either the vibration sensor or connector cable are hit by a bullet. The sensitivity of the vibration sensor is adjustable in accordance with the energy of the bullet and wind conditions. The strobe light and controller circuit are powered by a rechargeable storage battery to provide a portable unit.",
+    "link": "https://patents.google.com/patent/5092607",
+    "patent_date": "1992-03-03",
+    "filing_date": "1990-05-22",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "5398019",
+    "title": "Portable sensor for detecting bends of the back of a person past a predetermined lumbosacral angle",
+    "abstract": "A torso attitude sensor for attachment to a human A torso at the waist. It senses when a human torso bends past a predetermined lumbosacral angle and sounds an alarm. The sensor may be worn on the left or right side of the waist because it includes two attitude responsive switches which are inclined in directions opposite to each other. The device further includes a counter for determining the number of times the electrical circuit is connected thereby providing the person, or his or her manager, with an indication of the number of times improper bending occurs. A timer is included with which actuation of an attitude responsive switch must persist for a minimum time interval before an alarm signal or excessive bending signal is generated.",
+    "link": "https://patents.google.com/patent/5398019",
+    "patent_date": "1995-03-14",
+    "filing_date": "1993-12-22",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "5865762",
+    "title": "Module for recording the instantaneous heart rate and portable module for working same",
+    "abstract": "The invention relates to a portable module for recording the cardiac activity of a person with the aid of a device delivering an ECG signal. The device includes a main energy source connected to a second energy source supplying a temperature sensor by a controlled circuit, a unit that picks up and processes an ECG signal, having an ECG signal filter stage, connected to two integrators with different time constants. The integrator outputs are connected to a comparator delivering a signal (E.sub.3) representing cardiac cycles. The device also includes a mechanism for placing the ECG signal pickup and processing unit in operation and a processor.",
+    "link": "https://patents.google.com/patent/5865762",
+    "patent_date": "1999-02-02",
+    "filing_date": "1997-07-17",
+    "assignee_type": "5",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6083156",
+    "title": "Portable integrated physiological monitoring system",
+    "abstract": "A portable, integrated physiological monitoring system is described for use in clinical outpatient environments. This systems consists of a plethora of sensors and auxiliary devices, an electronics unit (100) that interfaces to the sensors and devices, and a portable personal computer (102). Electrodes (106) are provided to acquisition electrocardiographic, electroencephalographic, and neuromuscular signals. Electrodes (108) are provided to stimulate neural and muscular tissue. A finger pulse oximeter (110), an M-mode ultrasonic transducer (112), an airflow sensor (114), a temperature probe (120), a patient event switch (116), and an electronic stethoscope (118) are provided. A portable personal computer (102) interfaces to the electronics unit (100) via a standard parallel printer port interface (258) to allow communication of commands and information to/from the electronics unit (100). Control and display of the information gathered from the electronics unit (100) is accomplished via an application program executing on the portable personal computer (102). Sharing of common data acquisition hardware along with preliminary processing of information gathered is accomplished within the electronics unit (100). The entire system is battery operated and portable. This system, because of its architecture, offers significant cost advantages as well as unique modes of operation that cannot be achieved from the individual physiological parameter measurement devices alone. The system allows for the integration of acquisitioned information from the sensors into a patient's database stored on the portable personal computer.",
+    "link": "https://patents.google.com/patent/6083156",
+    "patent_date": "2000-07-04",
+    "filing_date": "1998-11-16",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6195921",
+    "title": "Virtual intelligence shoe with a podiatric analysis system",
+    "abstract": "The virtual intelligence shoe with a podiatric analysis system provided with a portable pair of shoe-like body types thereof, into two of which a miniature electronic module and an enclosed sensor mat are permanently embedded in the shoe-like with a mechanical air package enclosing the electronic module to serve as a shock absorption. A miniature electronic module comprises a transmitting circuit with pressure resistance, shoe temperature and warning buzzer for full memory capacity, which receives the variable pressure and temperature voltage signals, convert them into resistance (ohm) and Celsius, respectively. The electrical signals can be emitted in an infrared light signal. An enclosed sensor mat constitutes a thin, flexible, planar, resilient, and dielectric material that arrays seventy-four positions at strategic geometrical pattern to produce the precision of collecting data exerted by a foot or feet continuously and instantaneously in static and dynamic event during the full weight bearing in various activities. The conjunction of a pair of shoe-like body types, a digital foot scanner, a portable infrared light-receiving unit and a central integrator (servers) form a podiatric analysis system for enabling accurate information. An obtained information of each individual can be stored and analyzed for diagnostic means with respect to the foot or feet maladies. The virtual intelligence shoe with a podiatric analysis system is an unconventional, which can ultimately be used by anyone and capable to produce consistent foot or feet information to implement the changes in the foot or feet biomechanics by altering the shoes, orthoses or other modes. In a preferred form, a pair of shoe-like body types is virtually applied to any type of foot or feet maladies and worn daily as if they were conventional shoes under various terrain conditions.",
+    "link": "https://patents.google.com/patent/6195921",
+    "patent_date": "2001-03-06",
+    "filing_date": "1999-09-28",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6307956",
+    "title": "Writing implement for identity verification system",
+    "abstract": "The identity verification system employs biometric technology for identity verification. Positioned at the center of the system is a stylus with any of a number of biometric properties or their combination or with one or more metric sensors, while the customer uses the stylus to sign his/her name, or even for writing anything. The identity verification system is used at point-of-sale terminals, in various closed environments, to access a computer network, in applications involving pen-based computers and smart-pens, and for e-commerce. When fingerprint sensors are used, the sensors are positioned in the stylus grip, one sensor for the index finger, and a second sensor for the thumb. In one variation, one-to-one biometric matching is used. Each participant carries on his/her person a device that includes an encrypted biometric for reference purposes to gain access into the system. Processing is simplified since the system need only make a \"MATCH\" or \"NO MATCH\" decision. In a second variation that is particularly useful in closed environments, one-to-many biometric matching is used. During each event access request, the community of reference prints is searched for a match with the applicant. Each member of the community need carry nothing on his/her person to participate in the system. In either variation, the stylus is either attached to each site or is portable, one such stylus being carried by each participant.",
+    "link": "https://patents.google.com/patent/6307956",
+    "patent_date": "2001-10-23",
+    "filing_date": "2000-01-24",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6816266",
+    "title": "Fiber optic interferometric vital sign monitor for use in magnetic resonance imaging, confined care facilities and in-hospital",
+    "abstract": "A fiber optic monitor that utilizes optical phase interferometry to monitor a patient's vital signs such as respiration, cardiac activity, blood pressure and body's physical movement. The monitor, which is non-invasive, comprises an optical fiber interferometer that includes an optical fiber proximately situated to the patient so that time varying acousto-mechanical signals from the patient are coupled into the optical fiber. Responsive thereto, the interferometer generates a time-varying optical intensity resulting from the interference of optical signals, which are detected at a photo-detector. A signal processor coupled to the optical detector provides one or more processed output signals indicative of the vital functions. The monitor system has broad applicability, from routine monitoring of infants at home to detection of apnea, arrhythmia, blood pressure and trauma. The system can be implemented in embodiments ranging from a low cost in-home monitor for infants to a high end product for in hospital use. The monitor can be integrated with other sensors such as an EKG, a video or still camera, an oxygen sensor, a carbon dioxide sensor, temperature sensor or a microphone to get additional required information depending on the application. When integrated and combined with EKG information, the monitor provides ballisto-mechanical information of the heart for early diagnosis of cardiac conditions or prediction of events or for correcting corrupted EKG signals due to time varying magnetic and electric fields. In some embodiments of the monitor, the system can be made portable so that the patient can walk around while still being continuously monitored for vital signs. Another suitable design measures blood pressure continuously and non-invasively by containing the fiber optic sensor in a cuff that wraps around an arterial wall of the patient. The fiber optic monitor may be designed for use in a variety of settings including an operating room, a recovery room, an intensive care unit, a magnetic resonance imaging laboratory, a computerized tomography scan laboratory and an elderly care facility.",
+    "link": "https://patents.google.com/patent/6816266",
+    "patent_date": "2004-11-09",
+    "filing_date": "2002-11-19",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6836744",
+    "title": "Portable system for analyzing human gait",
+    "abstract": "The invention is a portable gait analyzer comprising of at least one independent rear foot motion collection unit, at least one independent lower shank motion collection unit, plantar pressure collection unit, at least one processing and display unit, and a soft casing unit. A plurality of accelerometers, rate sensors, force sensor resistors, and pressure sensors provide for the acquisition of acceleration signals, angular velocity signals, foot force signals, and foot pressure signals to be processed. At least one central processing unit, a plurality of memory components, input/output components and ports, telemetry components, calibration components, liquid crystal displays components for the processing and outputting of three dimensional acceleration, angular velocity, tilt, and position. The rearfoot motion collection unit and lower shank motion collection unit interact with the processing and display unit to calculate rear foot kinematic data crucial to identify the motions of pronation and supination. The plantar pressure collection unit interacts with the processing and display unit to calculate plantar pressure data crucial to identify the center of pressure line and excessive and abnormal loads on the sole of the foot. These factors of rear-foot kinematics and plantar pressure lead to gait style identification.",
+    "link": "https://patents.google.com/patent/6836744",
+    "patent_date": "2004-12-28",
+    "filing_date": "2001-08-17",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6969324",
+    "title": "Portable automatic golf ball teeing apparatus",
+    "abstract": "A storage means holds a quantity of golf balls for automatic placement upon a tee. An gating mechanism releases a single ball to roll by gravity power to a ball holder. Upon activation by the user an extendable arm causes the ball holder to be positioned over the tee, then the extendable arm rotates downwardly, leaving the ball upon the tee. A sensor signals a controller to reverse a motor, retracting the extendable arm fully. Upon full retraction a next golf ball is released to the ball holder. The user activates a new cycle by placing a golf club head in the vicinity of the invention. The invention may be battery powered and is small enough to be used anywhere.",
+    "link": "https://patents.google.com/patent/6969324",
+    "patent_date": "2005-11-29",
+    "filing_date": "2004-06-17",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "6993795",
+    "title": "Portable liquid dispensers",
+    "abstract": "A battery operated self-contained submersible liquid dispenser for dispensing discrete quantities of a liquid from a remote liquid reservoir is provided. The dispenser comprises a hermetically sealed walled housing containing a peristaltic pump driven either directly or via a speed reduction gear train by an electric motor in response to motor activation signals received from an electric control circuit within the housing. The pump includes a flexible liquid dispensing tube connected to respective liquid inlet and liquid outlet ports extending through the wall of the housing, a pump actuator for forcing liquid received via the liquid inlet port through the tube to the outlet port, and a sensor on or in the wall of the housing connected to the circuit. The sensor is adapted to sense a changed condition from a required parameter external to the housing, e.g., such as the presence or absence of water, the circuit thereafter activating the motor and hence the pump to dispense a discrete quantity of the liquid",
+    "link": "https://patents.google.com/patent/6993795",
+    "patent_date": "2006-02-07",
+    "filing_date": "2004-01-09",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "7273979",
+    "title": "Wearable sensor matrix system for machine control",
+    "abstract": "A real-time controller of devices such as computers, synthesizers, and processors. It consists of a portable ergonomic body housing a configurable pressure sensitive array of sensors. Ideally suited as a MIDI controller, it may be used to control musical sounds, lighting systems, media viewers, or video games in a real-time or performance environment.",
+    "link": "https://patents.google.com/patent/7273979",
+    "patent_date": "2007-09-25",
+    "filing_date": "2004-12-15",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "7632397",
+    "title": "Integrated portable water purifier",
+    "abstract": "The present invention relates to an integrated portable water purifier for purifying water, by filtration through adsorption media to remove harmful chemicals followed by ultraviolet treatment to disinfect the water. The water purifier effectively removes the contaminants found in drinking water. The integrated portable water purifier includes a water chamber (1) for receiving water to be purified and a treated water chamber (2) for receiving treated water through a filter cartridge (20). The water purifier is provided with a microprocessor based controller (6) for controlling the operation of the purification system. A UV lamp (8) is provided in the treated water chamber (2) for microbiological treatment of the filtered water in the treated water chamber (2) and a sensor (7) for sensing the conductivity of the treated water and the level of the water in the treated water chamber (2). A power source (18) is provided for supplying power to the system.",
+    "link": "https://patents.google.com/patent/7632397",
+    "patent_date": "2009-12-15",
+    "filing_date": "2004-10-21",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "7756617",
+    "title": "Vehicular monitoring system",
+    "abstract": "A portable electronic device is disclosed. The electronic device can be used inside a motor vehicle to collect and store information regarding operation of the motor vehicle. The electronic device can include a processor and a digital memory. The processor can determine miles traveled by the motor vehicle during a trip and store data representing the miles in the digital memory with a trip identifier identifying the trip. The miles traveled can be determined using data from a location sensor, such as a global positioning satellite device, that determines locations of the motor vehicle during the trip. The electronic device can also include an audio mechanism into which a user can speak information about the trip. Such audio data can be stored in the digital memory and associated with the trip identifier. Other data representing information about the trip can also be stored in the digital memory. The electronic device can also include a mechanism for transferring data stored in the digital memory in association with the trip identifier to a computing device.",
+    "link": "https://patents.google.com/patent/7756617",
+    "patent_date": "2010-07-13",
+    "filing_date": "2005-01-14",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  },
+  {
+    "patent_number": "7918993",
+    "title": "Portable dialysis machine",
+    "abstract": "The portable dialysis machine may include an enclosure having a removable base. There may be a front panel having associated therewith multiple external connectors, smart function keys, a touch panel element and a voice activated sensor. The front panel may be in communication with an electronic circuit element having a controller in communication therewith. There may be a blood flow element and a hydraulic flow element. A water reservoir and power supply may be included. It is emphasized that this abstract is provided to comply with the rules requiring an abstract that will allow a searcher or other reader to quickly ascertain the subject matter of the technical disclosure. It is submitted with the understanding that it will not be used to interpret or limit the scope or meaning of the claims.",
+    "link": "https://patents.google.com/patent/7918993",
+    "patent_date": "2011-04-05",
+    "filing_date": "2002-01-24",
+    "assignee_type": "4",
+    "source_provider": "patentsview_patentsearch",
+    "patent_type": "utility"
+  }
+]

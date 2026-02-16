@@ -1,0 +1,21 @@
+{
+  "provider": "patentsview_patentsearch",
+  "status": "ok",
+  "http_status": 200,
+  "raw_count": 12,
+  "filtered_count": 12,
+  "query_summary": {
+    "keywords": [
+      "portable",
+      "sensor"
+    ],
+    "filing_date_start": "1995-01-01",
+    "filing_date_end": "2005-12-31",
+    "assignee_type": "individual",
+    "num_results": 500,
+    "require_likely_expired": true
+  },
+  "errors": [],
+  "next_actions": [],
+  "warnings": []
+}

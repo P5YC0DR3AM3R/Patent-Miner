@@ -1,0 +1,127 @@
+[
+  {
+    "rank": 1,
+    "patent_number": "US6825456",
+    "title": "Wearable Body Temperature and Vital Signs Monitor",
+    "category": "Sensors",
+    "opportunity_score": 15,
+    "viability": 8,
+    "complexity": 3,
+    "suggested_brands": [
+      "VitalTrack",
+      "PulseSync",
+      "BodyBeat"
+    ],
+    "competitors": [
+      "Oura Ring",
+      "Samsung Galaxy Watch",
+      "Garmin"
+    ],
+    "tm_risk": 6,
+    "gtm_strategy": "B2B partnerships with healthcare institutions. Target clinics and fitness centers first. Direct consumer acquisition through health-tech aggregators.",
+    "market_notes": "Growing sensors market with increasing regulatory focus. Moderate competition from established brands. Premium positioning possible with superior accuracy/connectivity.",
+    "link": "https://patents.google.com/patent/US6825456",
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors"
+  },
+  {
+    "rank": 2,
+    "patent_number": "US6834567",
+    "title": "Portable Gas Detection and Analysis Apparatus",
+    "category": "Industrial",
+    "opportunity_score": 15,
+    "viability": 8,
+    "complexity": 3,
+    "suggested_brands": [
+      "GasGuard",
+      "AirScan",
+      "SafeAir"
+    ],
+    "competitors": [
+      "RKI Instruments",
+      "Blackline",
+      "MSA"
+    ],
+    "tm_risk": 7,
+    "gtm_strategy": "Industrial sales through safety equipment distributors. Target OSHA-regulated facilities. Partnerships with facility managers and safety consultants.",
+    "market_notes": "Growing industrial market with increasing regulatory focus. Moderate competition from established brands. Premium positioning possible with superior accuracy/connectivity.",
+    "link": "https://patents.google.com/patent/US6834567",
+    "market_summary": "Market opportunity in Industrial segment with moderate commercial viability.",
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors"
+  },
+  {
+    "rank": 3,
+    "patent_number": "US6843678",
+    "title": "Wireless Soil Moisture and pH Sensor Network",
+    "category": "Sensors",
+    "opportunity_score": 15,
+    "viability": 8,
+    "complexity": 3,
+    "suggested_brands": [
+      "SoilStudio",
+      "GroundSync",
+      "PrecisionGrow"
+    ],
+    "competitors": [
+      "Purple Air",
+      "AirThings",
+      "Foobot"
+    ],
+    "tm_risk": 7,
+    "gtm_strategy": "B2C through clean-air focused retailers. B2B through facility management companies targeting corporate wellness programs.",
+    "market_notes": "Growing sensors market with increasing regulatory focus. Moderate competition from established brands. Premium positioning possible with superior accuracy/connectivity.",
+    "link": "https://patents.google.com/patent/US6843678",
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors"
+  },
+  {
+    "rank": 4,
+    "patent_number": "US6812346",
+    "title": "Portable Wireless Environmental Sensor System",
+    "category": "Sensors",
+    "opportunity_score": 13,
+    "viability": 8,
+    "complexity": 5,
+    "suggested_brands": [
+      "EnviroTrack",
+      "WeatherSense",
+      "ClimatePulse"
+    ],
+    "competitors": [
+      "AirThings",
+      "ThirdEye",
+      "Purple Air"
+    ],
+    "tm_risk": 6,
+    "gtm_strategy": "B2C through clean-air focused retailers. B2B through facility management companies targeting corporate wellness programs.",
+    "market_notes": "Growing sensors market with increasing regulatory focus. Moderate competition from established brands. Premium positioning possible with superior accuracy/connectivity.",
+    "link": "https://patents.google.com/patent/US6812346",
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors"
+  },
+  {
+    "rank": 5,
+    "patent_number": "US6852789",
+    "title": "Portable Water Quality Testing Kit",
+    "category": "Sensors",
+    "opportunity_score": 13,
+    "viability": 8,
+    "complexity": 5,
+    "suggested_brands": [
+      "AquaPure",
+      "WaterWise",
+      "QualityFlow"
+    ],
+    "competitors": [
+      "Awair",
+      "Purple Air",
+      "AirThings"
+    ],
+    "tm_risk": 5,
+    "gtm_strategy": "B2C through clean-air focused retailers. B2B through facility management companies targeting corporate wellness programs.",
+    "market_notes": "Growing sensors market with increasing regulatory focus. Moderate competition from established brands. Premium positioning possible with superior accuracy/connectivity.",
+    "link": "https://patents.google.com/patent/US6852789",
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "provider": "patentsview_patentsearch",
+  "status": "failed",
+  "http_status": null,
+  "raw_count": 0,
+  "filtered_count": 0,
+  "query_summary": {
+    "keywords": [
+      "portable",
+      "sensor"
+    ],
+    "filing_date_start": "1995-01-01",
+    "filing_date_end": "2005-12-31",
+    "assignee_type": "individual",
+    "num_results": 500,
+    "require_likely_expired": true
+  },
+  "errors": [
+    "Missing API key in environment variable: PATENTSVIEW_API_KEY"
+  ],
+  "next_actions": [
+    "Set `PATENTSVIEW_API_KEY` before running discovery."
+  ],
+  "warnings": []
+}

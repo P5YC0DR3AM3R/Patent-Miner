@@ -1,0 +1,25 @@
+{
+  "provider": "patentsview_patentsearch",
+  "status": "failed",
+  "http_status": 403,
+  "raw_count": 0,
+  "filtered_count": 0,
+  "query_summary": {
+    "keywords": [
+      "portable",
+      "sensor"
+    ],
+    "filing_date_start": "1975-01-01",
+    "filing_date_end": "2005-12-31",
+    "assignee_type": "individual",
+    "num_results": 500,
+    "require_likely_expired": true
+  },
+  "errors": [
+    "Authentication/authorization failed with HTTP 403."
+  ],
+  "next_actions": [
+    "Verify `X-Api-Key` value and API key activation status."
+  ],
+  "warnings": []
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "patent_number": "US6812346",
+    "title": "Portable Wireless Environmental Sensor System",
+    "abstract": "A portable sensor system for real-time environmental monitoring with wireless data transmission capabilities. The system includes temperature, humidity, and air quality sensors in a compact, battery-powered design suitable for personal and professional use.",
+    "link": "https://patents.google.com/patent/US6812346",
+    "category": "Sensors",
+    "category_raw": "Sensors",
+    "viability": 8,
+    "complexity": 5,
+    "opportunity_score": 13,
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "key_features": [
+      "Wireless connectivity capability",
+      "Portable/compact design",
+      "Real-time data processing"
+    ],
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors",
+    "analysis_success": true
+  },
+  {
+    "patent_number": "US6825456",
+    "title": "Wearable Body Temperature and Vital Signs Monitor",
+    "abstract": "A wearable sensor device configured to monitor body temperature, heart rate, and blood pressure. Data is wirelessly transmitted to a mobile device for real-time analysis and storage.",
+    "link": "https://patents.google.com/patent/US6825456",
+    "category": "Sensors",
+    "category_raw": "Sensors",
+    "viability": 8,
+    "complexity": 3,
+    "opportunity_score": 15,
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "key_features": [
+      "Wireless connectivity capability",
+      "Portable/compact design",
+      "Real-time data processing"
+    ],
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors",
+    "analysis_success": true
+  },
+  {
+    "patent_number": "US6834567",
+    "title": "Portable Gas Detection and Analysis Apparatus",
+    "abstract": "A miniaturized sensor apparatus for detecting and analyzing harmful gases in confined spaces. Features include real-time alerts and data logging capabilities for industrial safety applications.",
+    "link": "https://patents.google.com/patent/US6834567",
+    "category": "Industrial",
+    "category_raw": "Industrial",
+    "viability": 8,
+    "complexity": 3,
+    "opportunity_score": 15,
+    "market_summary": "Market opportunity in Industrial segment with moderate commercial viability.",
+    "key_features": [
+      "Wireless connectivity capability",
+      "Portable/compact design",
+      "Real-time data processing"
+    ],
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors",
+    "analysis_success": true
+  },
+  {
+    "patent_number": "US6843678",
+    "title": "Wireless Soil Moisture and pH Sensor Network",
+    "abstract": "A distributed sensor network for agricultural monitoring. Multiple wireless sensors measure soil conditions and transmit data to a central collection device for crop optimization.",
+    "link": "https://patents.google.com/patent/US6843678",
+    "category": "Sensors",
+    "category_raw": "Sensors",
+    "viability": 8,
+    "complexity": 3,
+    "opportunity_score": 15,
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "key_features": [
+      "Wireless connectivity capability",
+      "Portable/compact design",
+      "Real-time data processing"
+    ],
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors",
+    "analysis_success": true
+  },
+  {
+    "patent_number": "US6852789",
+    "title": "Portable Water Quality Testing Kit",
+    "abstract": "A handheld device for field testing of water quality parameters including pH, dissolved oxygen, and bacterial contamination levels. Portable design with wireless data transfer capability.",
+    "link": "https://patents.google.com/patent/US6852789",
+    "category": "Sensors",
+    "category_raw": "Sensors",
+    "viability": 8,
+    "complexity": 5,
+    "opportunity_score": 13,
+    "market_summary": "Market opportunity in Sensors segment with moderate commercial viability.",
+    "key_features": [
+      "Wireless connectivity capability",
+      "Portable/compact design",
+      "Real-time data processing"
+    ],
+    "target_customers": "Professionals and enterprises in industrial/commercial sectors",
+    "analysis_success": true
+  }
+]
