@@ -1,34 +1,33 @@
 stages:
-  - build
-  - push
+  - build_and_push
   - deploy
 
 variables:
   IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   LATEST: "$CI_REGISTRY_IMAGE:latest"
+  DOCKER_TLS_CERTDIR: ""
 
-before_script:
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-
-build:
-  stage: build
+# Build and push in a single job to avoid cross-job Docker daemon issues
+build_and_push:
+  stage: build_and_push
   image: docker:24.0.5
   services:
-    - docker:24.0.5-dind
+    - name: docker:24.0.5-dind
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+  before_script:
+    - echo "Logging in to registry"
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker info
   script:
     - docker build -t "$IMAGE" .
     - docker tag "$IMAGE" "$LATEST"
-  only:
-    - main
-
-push:
-  stage: push
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-  script:
     - docker push "$IMAGE"
     - docker push "$LATEST"
+  tags: [docker]
+  # some shared runners require privileged for dind
+  privileged: true
   only:
     - main
 
