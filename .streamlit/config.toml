@@ -1,0 +1,10 @@
+[theme]
+# Use the dark theme as the base
+base = "dark"
+
+# You can further customize the dark theme colors if needed:
+primaryColor = "#ff6b9d"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#262730"
+textColor = "#fafafa"
+font = "sans serif"
