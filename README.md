@@ -323,6 +323,11 @@ COPY . .
 CMD ["streamlit", "run", "streamlit_app.py"]
 ```
 
+### Render Deployment
+
+For deploying to Render, see [DEPLOY.md](DEPLOY.md) for detailed instructions. This repository also includes a `render.yaml` service manifest you can use to auto-deploy from GitLab or another connected Git provider: [render.yaml](render.yaml).
+
+
 ---
 
 ## 📝 License & Attribution
