@@ -507,23 +507,33 @@ class PatentAnalyzer:
             return False
 
         try:
+            # ALWAYS check if the latest file is small, and look for a bigger one
             latest_file = discovery_files[0]
             with latest_file.open("r", encoding="utf-8") as handle:
                 data = json.load(handle)
             
-            # Verify we're loading 167 patents, not 19
-            if len(data) < 50:
-                st.warning(f"⚠️ Loaded only {len(data)} patents. Expected 167+. Loading newest data on startup...")
-                # Try to find the 167-patent file specifically
+            latest_count = len(data)
+            
+            # If current file is suspiciously small, search all files for the largest one
+            if latest_count < 100:
+                largest_file = None
+                largest_count = 0
                 for f in discovery_files:
                     with f.open("r") as handle:
                         test_data = json.load(handle)
-                    if len(test_data) >= 150:  # 167 patents dataset
-                        self.patents = test_data
-                        self.loaded_filename = f.name
-                        self._enriched_cache = []
-                        st.success(f"✅ Loaded {len(test_data)} patents from {f.name}")
-                        return True
+                    if len(test_data) > largest_count:
+                        largest_file = f
+                        largest_count = len(test_data)
+                
+                # If we found a significantly larger file, use it
+                if largest_count > latest_count + 50:
+                    with largest_file.open("r") as handle:
+                        data = json.load(handle)
+                    self.patents = data
+                    self.loaded_filename = largest_file.name
+                    self._enriched_cache = []
+                    st.warning(f"⚠️ Upgraded dataset: Loading {largest_count} patents from {largest_file.name} (instead of {latest_count})")
+                    return True
             
             self.patents = data
             self.loaded_filename = latest_file.name
@@ -789,7 +799,22 @@ def render_executive_view(analyzer: PatentAnalyzer, show_advanced: bool) -> None
     with col4:
         st.metric("Market Domains", len(stats["domains"]))
 
-    st.markdown(f"<div class='pm-card'><strong>Filing Range:</strong> {stats['date_range']}</div>", unsafe_allow_html=True)
+    # Show which dataset was loaded
+    loaded_file_info = analyzer.loaded_filename or "Unknown"
+    patent_count = stats.get('total_patents', 0)
+    
+    # Warn if dataset looks wrong
+    warning_badge = ""
+    if patent_count < 50:
+        warning_badge = " ⚠️ <span style='color: #ff6b9d;'>Small dataset!</span>"
+    elif patent_count >= 150:
+        warning_badge = " ✅ <span style='color: #00d4aa;'>Full dataset</span>"
+
+    st.markdown(
+        f"<div class='pm-card'><strong>Filing Range:</strong> {stats['date_range']} | "
+        f"<strong>Dataset:</strong> {loaded_file_info}{warning_badge}</div>", 
+        unsafe_allow_html=True
+    )
 
     left, right = st.columns(2)
     with left:
