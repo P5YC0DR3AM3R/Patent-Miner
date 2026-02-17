@@ -11,7 +11,4 @@ services:
       - key: PATENTSVIEW_API_KEY
         sync: false
     autoDeploy: true
-    disk:
-      name: patent-miner-data
-      mountPath: /app/patent_intelligence_vault
-      sizeGB: 1
+    
