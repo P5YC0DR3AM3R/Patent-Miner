@@ -116,8 +116,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
 
         /* Except for specific elements that should stay light/white */
         .stButton > button,
-        .stDownloadButton > button,
-        .stTabs [aria-selected="true"] {{
+        .stDownloadButton > button {{
             color: white !important;
         }}
 
@@ -170,11 +169,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             box-shadow: var(--pm-shadow);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             backdrop-filter: blur(10px);
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         .pm-card * {{
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         .pm-card:hover {{
@@ -197,11 +196,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 1.8rem !important;
             box-shadow: var(--pm-shadow) !important;
             transition: all 0.3s ease !important;
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         [data-testid="metric-container"] * {{
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         [data-testid="metric-container"]:hover {{
@@ -288,7 +287,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 0.9rem 1.8rem;
             font-weight: 700;
             font-size: calc(var(--pm-font-size) * 0.95);
-            color: var(--pm-muted);
+            color: #1a1a1a !important;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             cursor: pointer;
@@ -296,17 +295,25 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
 
         .stTabs [role="tab"]:hover {{
             background: linear-gradient(135deg, #f0f5ff 0%, #e6f2ff 100%);
-            color: var(--pm-accent);
+            color: #1a1a1a !important;
             box-shadow: 0 6px 16px rgba(0, 102, 255, 0.1);
             transform: translateY(-2px);
         }}
 
         .stTabs [aria-selected="true"] {{
-            background: linear-gradient(135deg, var(--pm-accent) 0%, #0052cc 100%);
-            color: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%);
+            color: #1a1a1a !important;
             border-color: var(--pm-accent);
             border-bottom-color: var(--pm-accent);
             box-shadow: 0 8px 20px rgba(0, 102, 255, 0.3);
+        }}
+
+        .stTabs [role="tab"] * {{
+            color: #1a1a1a !important;
+        }}
+
+        .stTabs [aria-selected="true"] * {{
+            color: #1a1a1a !important;
         }}
 
         /* Data Frames & Tables */
@@ -316,11 +323,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 0.5rem;
             box-shadow: var(--pm-shadow);
             overflow: hidden;
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         .stDataFrame * , .stTable * {{
-            color: var(--pm-text) !important;
+            color: #1a1a1a !important;
         }}
 
         /* Inputs */
@@ -333,7 +340,12 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             border: 2px solid var(--pm-border) !important;
             padding: 0.9rem 1.2rem !important;
             background: white !important;
+            color: #1a1a1a !important;
             transition: all 0.3s ease !important;
+        }}
+
+        .stSelectbox > div > div *, .stTextInput > div > div * {{
+            color: #1a1a1a !important;
         }}
 
         .stSelectbox > div > div:hover, .stTextInput > div > div:hover {{
@@ -354,6 +366,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 1.2rem 1.6rem !important;
             box-shadow: var(--pm-shadow) !important;
             font-size: calc(var(--pm-font-size) * 0.95) !important;
+            color: #1a1a1a !important;
+        }}
+
+        .stInfo * {{
+            color: #1a1a1a !important;
         }}
 
         .stSuccess {{
@@ -363,6 +380,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 1.2rem 1.6rem !important;
             box-shadow: var(--pm-shadow) !important;
             font-size: calc(var(--pm-font-size) * 0.95) !important;
+            color: #1a1a1a !important;
+        }}
+
+        .stSuccess * {{
+            color: #1a1a1a !important;
         }}
 
         .stWarning {{
@@ -372,6 +394,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 1.2rem 1.6rem !important;
             box-shadow: var(--pm-shadow) !important;
             font-size: calc(var(--pm-font-size) * 0.95) !important;
+            color: #1a1a1a !important;
+        }}
+
+        .stWarning * {{
+            color: #1a1a1a !important;
         }}
 
         .stError {{
@@ -381,6 +408,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             padding: 1.2rem 1.6rem !important;
             box-shadow: var(--pm-shadow) !important;
             font-size: calc(var(--pm-font-size) * 0.95) !important;
+            color: #1a1a1a !important;
+        }}
+
+        .stError * {{
+            color: #1a1a1a !important;
         }}
 
         /* Divider */
@@ -398,7 +430,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
         }}
 
         .css-1d391kg * {{
-            color: #a0a0a0 !important;
+            color: #1a1a1a !important;
         }}
 
         /* Headers in sidebar */
@@ -413,7 +445,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
         .css-1d391kg label,
         .css-1d391kg h3,
         .css-1d391kg .stMarkdown {{
-            color: #808080 !important;
+            color: #1a1a1a !important;
         }}
 
         /* Expander - hide headers completely in BI sections */
@@ -427,6 +459,11 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             border-radius: 12px !important;
             padding: 0.5rem !important;
             background: white !important;
+            color: #1a1a1a !important;
+        }}
+
+        [data-testid="stExpander"] details * {{
+            color: #1a1a1a !important;
         }}
         
         [data-testid="stExpander"] summary {{
