@@ -46,6 +46,8 @@ def make_config(**overrides):
             "max_retries": 2,
             "timeout_seconds": 2,
             "retry_backoff_seconds": 0.01,
+            "enable_v2_pipeline": False,
+            "retrieval_v2": {"enabled": False},
         },
         "output_dir": "./patent_intelligence_vault/",
     }
@@ -301,6 +303,8 @@ class PatentDiscoveryTests(unittest.TestCase):
                     "num_results": 2,
                     "per_page": 100,
                     "require_likely_expired": False,
+                    "enable_v2_pipeline": False,
+                    "retrieval_v2": {"enabled": False},
                 },
             }
 

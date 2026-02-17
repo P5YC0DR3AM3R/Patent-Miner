@@ -18,25 +18,76 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
+from scoring_utils import clamp, term_coverage, tfidf_cosine_similarity, tokenize_text
+from viability_scoring import (
+    SCORING_VERSION,
+    compute_opportunity_score_v2,
+    compute_viability_scorecard,
+    expiration_confidence_score,
+)
+
 # Load environment variables from .env file
 load_dotenv()
 
+RANKING_VERSION = "v2.0.0"
+
+DEFAULT_RETRIEVAL_SCORE_WEIGHTS: Dict[str, float] = {
+    "title_exact_match": 0.24,
+    "query_coverage": 0.20,
+    "semantic_similarity": 0.30,
+    "expiration_confidence": 0.16,
+    "pass_diversity": 0.10,
+}
+
+# Deterministic keyword expansion map used by retrieval v2.
+KEYWORD_EXPANSION_MAP: Dict[str, List[str]] = {
+    "portable": ["mobile", "handheld", "wearable", "compact"],
+    "sensor": ["detector", "monitor", "transducer", "probe"],
+    "wireless": ["rf", "radio", "remote", "bluetooth"],
+    "vital": ["physiological", "biometric", "health"],
+    "water": ["aqueous", "h2o", "liquid"],
+    "gas": ["vapor", "fume", "air"],
+    "soil": ["agriculture", "crop", "field"],
+    "temperature": ["thermal", "heat"],
+    "monitor": ["tracking", "diagnostic", "measurement"],
+    "device": ["apparatus", "instrument", "system"],
+}
 
 DEFAULT_PATENT_SEARCH_CONFIG: Dict[str, Any] = {
     "provider": "patentsview_patentsearch",
     "api_url": "https://search.patentsview.org/api/v1/patent/",
     "api_key_env": "PATENTSVIEW_API_KEY",
     "keywords": ["portable", "sensor"],
-    "filing_date_start": "1995-01-01",
-    "filing_date_end": "2005-12-31",
+    # Broaden filing date range to include older patents (more likely expired)
+    "filing_date_start": "1970-01-01",
+    "filing_date_end": "2006-12-31",
     "assignee_type": "individual",
-    "num_results": 500,
+    # Increase default result window to surface more candidates
+    "num_results": 2000,
     "require_likely_expired": True,
+    # Years prior to today to consider a patent "likely expired" (default: 20 years)
+    "expired_cutoff_years": 20,
     "allow_legacy_scrape_fallback": False,
     "timeout_seconds": 20,
     "max_retries": 3,
     "retry_backoff_seconds": 1.5,
-    "per_page": 100,
+    "per_page": 200,
+    "enable_v2_pipeline": True,
+    "retrieval_v2": {
+        "enabled": True,
+        "max_expanded_keywords": 24,
+        "fallback_relax_assignee": True,
+        "score_weights": dict(DEFAULT_RETRIEVAL_SCORE_WEIGHTS),
+    },
+    "viability_v2": {
+        "enabled": True,
+        "weights": {},
+    },
+    "scoring_weights": {
+        "retrieval": 0.35,
+        "viability": 0.45,
+        "expiration": 0.20,
+    },
 }
 
 
@@ -65,6 +116,16 @@ def _iso_date(value: Optional[str]) -> Optional[date]:
         return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return None
+
+
+def _deep_merge_dict(base: Dict[str, Any], updates: Dict[str, Any]) -> Dict[str, Any]:
+    merged = copy.deepcopy(base)
+    for key, value in updates.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _deep_merge_dict(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
 
 
 def parse_legacy_search_query(search_query: str) -> Tuple[Dict[str, Any], List[str]]:
@@ -141,7 +202,7 @@ def _resolve_patent_search_config(config: Dict[str, Any]) -> Tuple[Dict[str, Any
 
     structured = config.get("patent_search")
     if isinstance(structured, dict):
-        resolved.update(structured)
+        resolved = _deep_merge_dict(resolved, structured)
 
     legacy_query = config.get("search_query")
     if isinstance(legacy_query, str) and legacy_query.strip():
@@ -169,7 +230,7 @@ def _resolve_patent_search_config(config: Dict[str, Any]) -> Tuple[Dict[str, Any
             if not resolved.get("assignee_type") and parsed.get("assignee_type"):
                 resolved["assignee_type"] = parsed["assignee_type"]
 
-    resolved["num_results"] = int(resolved.get("num_results") or 100)
+    resolved["num_results"] = max(1, int(resolved.get("num_results") or 100))
     resolved["timeout_seconds"] = int(resolved.get("timeout_seconds") or 20)
     resolved["max_retries"] = int(resolved.get("max_retries") or 3)
     resolved["retry_backoff_seconds"] = float(resolved.get("retry_backoff_seconds") or 1.5)
@@ -183,6 +244,25 @@ def _resolve_patent_search_config(config: Dict[str, Any]) -> Tuple[Dict[str, Any
     else:
         resolved["keywords"] = []
 
+    retrieval_v2 = resolved.get("retrieval_v2")
+    if not isinstance(retrieval_v2, dict):
+        retrieval_v2 = {}
+    resolved["retrieval_v2"] = _deep_merge_dict(DEFAULT_PATENT_SEARCH_CONFIG["retrieval_v2"], retrieval_v2)
+
+    viability_v2 = resolved.get("viability_v2")
+    if not isinstance(viability_v2, dict):
+        viability_v2 = {}
+    resolved["viability_v2"] = _deep_merge_dict(DEFAULT_PATENT_SEARCH_CONFIG["viability_v2"], viability_v2)
+
+    scoring_weights = resolved.get("scoring_weights")
+    if not isinstance(scoring_weights, dict):
+        scoring_weights = {}
+    resolved["scoring_weights"] = _deep_merge_dict(DEFAULT_PATENT_SEARCH_CONFIG["scoring_weights"], scoring_weights)
+
+    resolved["enable_v2_pipeline"] = bool(
+        resolved.get("enable_v2_pipeline", True) and resolved["retrieval_v2"].get("enabled", True)
+    )
+
     return resolved, warnings_list
 
 
@@ -193,6 +273,10 @@ def _base_diagnostics(search_config: Dict[str, Any], warnings_list: Optional[Lis
         "http_status": None,
         "raw_count": 0,
         "filtered_count": 0,
+        "pass_counts": {},
+        "deduped_count": 0,
+        "ranking_version": RANKING_VERSION,
+        "scoring_version": SCORING_VERSION,
         "query_summary": {
             "keywords": search_config.get("keywords", []),
             "filing_date_start": search_config.get("filing_date_start"),
@@ -200,6 +284,7 @@ def _base_diagnostics(search_config: Dict[str, Any], warnings_list: Optional[Lis
             "assignee_type": search_config.get("assignee_type"),
             "num_results": search_config.get("num_results"),
             "require_likely_expired": bool(search_config.get("require_likely_expired", True)),
+            "enable_v2_pipeline": bool(search_config.get("enable_v2_pipeline", True)),
         },
         "errors": [],
         "next_actions": [],
@@ -207,20 +292,126 @@ def _base_diagnostics(search_config: Dict[str, Any], warnings_list: Optional[Lis
     }
 
 
+def expand_keywords_for_v2(keywords: List[str], max_expanded_keywords: int = 24) -> List[str]:
+    """Expand keyword list with deterministic synonyms for broader recall."""
+
+    expanded: List[str] = []
+    seen: set[str] = set()
+
+    def _add(term: str) -> None:
+        clean = term.strip().lower()
+        if not clean or clean in seen:
+            return
+        seen.add(clean)
+        expanded.append(clean)
+
+    for keyword in keywords:
+        base = (keyword or "").strip().lower()
+        if not base:
+            continue
+
+        _add(base)
+
+        for token in tokenize_text(base):
+            _add(token)
+            for synonym in KEYWORD_EXPANSION_MAP.get(token, []):
+                _add(synonym)
+
+        if len(expanded) >= max_expanded_keywords:
+            break
+
+    return expanded[:max_expanded_keywords]
+
+
+def build_retrieval_passes(search_config: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Build retrieval pass definitions for the hybrid semantic+rules strategy."""
+
+    requested = int(search_config.get("num_results") or 100)
+    retrieval_cfg = search_config.get("retrieval_v2") or {}
+    max_expanded_keywords = int(retrieval_cfg.get("max_expanded_keywords") or 24)
+
+    base_keywords = list(search_config.get("keywords") or [])
+    expanded_keywords = expand_keywords_for_v2(base_keywords, max_expanded_keywords=max_expanded_keywords)
+    if not expanded_keywords:
+        expanded_keywords = ["sensor"]
+
+    strict_cfg = copy.deepcopy(search_config)
+    strict_cfg.update(
+        {
+            "keywords": base_keywords,
+            "keyword_fields": ["patent_title", "patent_abstract"],
+            "keyword_join": "and",
+            "num_results": requested,
+        }
+    )
+
+    expanded_cfg = copy.deepcopy(search_config)
+    expanded_cfg.update(
+        {
+            "keywords": expanded_keywords,
+            "keyword_fields": ["patent_title", "patent_abstract"],
+            "keyword_join": "or",
+            "num_results": requested,
+        }
+    )
+
+    title_cfg = copy.deepcopy(search_config)
+    title_cfg.update(
+        {
+            "keywords": expanded_keywords,
+            "keyword_fields": ["patent_title"],
+            "keyword_join": "or",
+            "num_results": max(1, requested // 2),
+        }
+    )
+
+    fallback_cfg = copy.deepcopy(search_config)
+    fallback_cfg.update(
+        {
+            "keywords": expanded_keywords,
+            "keyword_fields": ["patent_title", "patent_abstract"],
+            "keyword_join": "or",
+            "num_results": requested,
+        }
+    )
+
+    if retrieval_cfg.get("fallback_relax_assignee", True):
+        fallback_cfg["assignee_type"] = ""
+
+    return [
+        {"name": "strict_intent", "config": strict_cfg},
+        {"name": "expanded_synonyms", "config": expanded_cfg},
+        {"name": "title_priority", "config": title_cfg},
+        {"name": "broad_fallback", "config": fallback_cfg},
+    ]
+
+
 def build_patentsearch_payload(config: Dict[str, Any]) -> Dict[str, Any]:
     """Compile structured config into PatentSearch API request payload."""
 
     filters: List[Dict[str, Any]] = []
 
+    keyword_fields = config.get("keyword_fields") or ["patent_title", "patent_abstract"]
+    if isinstance(keyword_fields, str):
+        keyword_fields = [keyword_fields]
+    keyword_fields = [field for field in keyword_fields if isinstance(field, str) and field.strip()]
+    if not keyword_fields:
+        keyword_fields = ["patent_title", "patent_abstract"]
+
+    keyword_filters: List[Dict[str, Any]] = []
     for keyword in config.get("keywords", []):
-        filters.append(
-            {
-                "_or": [
-                    {"_text_all": {"patent_title": keyword}},
-                    {"_text_all": {"patent_abstract": keyword}},
-                ]
-            }
-        )
+        per_field = [{"_text_all": {field: keyword}} for field in keyword_fields]
+        if len(per_field) == 1:
+            keyword_filters.append(per_field[0])
+        else:
+            keyword_filters.append({"_or": per_field})
+
+    keyword_join = str(config.get("keyword_join") or "and").lower()
+    if keyword_filters:
+        if keyword_join == "or":
+            filters.append({"_or": keyword_filters})
+        else:
+            filters.extend(keyword_filters)
 
     filing_start = config.get("filing_date_start")
     filing_end = config.get("filing_date_end")
@@ -228,6 +419,20 @@ def build_patentsearch_payload(config: Dict[str, Any]) -> Dict[str, Any]:
         filters.append({"_gte": {"application.filing_date": filing_start}})
     if filing_end:
         filters.append({"_lte": {"application.filing_date": filing_end}})
+
+    # If caller wants to prioritize likely-expired patents, add a patent_date cutoff
+    # (e.g., patents issued more than `expired_cutoff_years` ago).
+    if bool(config.get("require_likely_expired", False)):
+        try:
+            cutoff_years = int(config.get("expired_cutoff_years", 20))
+        except Exception:
+            cutoff_years = 20
+        try:
+            cutoff_year = datetime.now().year - cutoff_years
+            cutoff_date = f"{cutoff_year}-01-01"
+            filters.append({"_lte": {"patent_date": cutoff_date}})
+        except Exception:
+            pass
 
     assignee_type = (config.get("assignee_type") or "").strip().lower()
     if assignee_type in ASSIGNEE_TYPE_CODE_MAP:
@@ -435,29 +640,29 @@ def normalize_patent_record(raw: Dict[str, Any]) -> Dict[str, Any]:
     """Normalize PatentsView record into internal shape."""
 
     patent_number = raw.get("patent_id") or raw.get("patent_number") or ""
-    title = raw.get("patent_title") or ""
-    abstract = raw.get("patent_abstract") or ""
+    title = raw.get("patent_title") or raw.get("title") or ""
+    abstract = raw.get("patent_abstract") or raw.get("abstract") or ""
     patent_date = raw.get("patent_date") or None
 
-    filing_date: Optional[str] = None
+    filing_date: Optional[str] = raw.get("filing_date")
     application = raw.get("application")
-    if isinstance(application, list) and application:
+    if not filing_date and isinstance(application, list) and application:
         first = application[0]
         if isinstance(first, dict):
             filing_date = first.get("filing_date")
-    elif isinstance(application, dict):
+    elif not filing_date and isinstance(application, dict):
         filing_date = application.get("filing_date")
 
-    assignee_type: Optional[str] = None
+    assignee_type: Optional[str] = raw.get("assignee_type")
     assignees = raw.get("assignees")
-    if isinstance(assignees, list) and assignees:
+    if not assignee_type and isinstance(assignees, list) and assignees:
         first_assignee = assignees[0]
         if isinstance(first_assignee, dict):
             assignee_type = first_assignee.get("assignee_type")
 
-    link = f"https://patents.google.com/patent/{patent_number}" if patent_number else ""
+    link = raw.get("link") or (f"https://patents.google.com/patent/{patent_number}" if patent_number else "")
 
-    return {
+    normalized = {
         "patent_number": patent_number,
         "title": title,
         "abstract": abstract,
@@ -465,9 +670,14 @@ def normalize_patent_record(raw: Dict[str, Any]) -> Dict[str, Any]:
         "patent_date": patent_date,
         "filing_date": filing_date,
         "assignee_type": assignee_type,
-        "source_provider": "patentsview_patentsearch",
+        "source_provider": raw.get("source_provider") or "patentsview_patentsearch",
         "patent_type": raw.get("patent_type"),
     }
+
+    if "_retrieval_pass_hits" in raw:
+        normalized["_retrieval_pass_hits"] = raw.get("_retrieval_pass_hits", [])
+
+    return normalized
 
 
 def is_likely_expired(record: Dict[str, Any], as_of_date: date) -> bool:
@@ -488,6 +698,195 @@ def is_likely_expired(record: Dict[str, Any], as_of_date: date) -> bool:
         return (as_of_date - grant).days >= 20 * 365
 
     return False
+
+
+def _dedupe_and_normalize_records(pass_records: List[Tuple[str, Dict[str, Any]]]) -> List[Dict[str, Any]]:
+    deduped: Dict[str, Dict[str, Any]] = {}
+
+    for pass_name, raw in pass_records:
+        normalized = normalize_patent_record(raw)
+        dedupe_key = normalized.get("patent_number") or f"{normalized.get('title','')}|{normalized.get('filing_date','')}"
+        if dedupe_key not in deduped:
+            normalized["_retrieval_pass_hits"] = [pass_name]
+            deduped[dedupe_key] = normalized
+            continue
+
+        existing = deduped[dedupe_key]
+        existing_hits = existing.setdefault("_retrieval_pass_hits", [])
+        if pass_name not in existing_hits:
+            existing_hits.append(pass_name)
+
+        if not existing.get("abstract") and normalized.get("abstract"):
+            existing["abstract"] = normalized["abstract"]
+        if not existing.get("filing_date") and normalized.get("filing_date"):
+            existing["filing_date"] = normalized["filing_date"]
+
+    for record in deduped.values():
+        record["_retrieval_pass_hits"] = sorted(set(record.get("_retrieval_pass_hits", [])))
+
+    return list(deduped.values())
+
+
+def rerank_patent_candidates_v2(
+    candidates: List[Dict[str, Any]],
+    search_config: Dict[str, Any],
+    as_of_date: Optional[date] = None,
+) -> List[Dict[str, Any]]:
+    """Rerank candidates with deterministic retrieval scorecards."""
+
+    if not candidates:
+        return []
+
+    now = as_of_date or date.today()
+
+    base_keywords = [str(k).lower().strip() for k in search_config.get("keywords", []) if str(k).strip()]
+    expanded_keywords = expand_keywords_for_v2(
+        base_keywords,
+        max_expanded_keywords=int((search_config.get("retrieval_v2") or {}).get("max_expanded_keywords") or 24),
+    )
+    query_text = " ".join(expanded_keywords)
+
+    corpus_docs = [f"{pat.get('title', '')} {pat.get('abstract', '')}" for pat in candidates]
+
+    weights = dict(DEFAULT_RETRIEVAL_SCORE_WEIGHTS)
+    retrieval_cfg = search_config.get("retrieval_v2") or {}
+    if isinstance(retrieval_cfg.get("score_weights"), dict):
+        weights.update({k: float(v) for k, v in retrieval_cfg["score_weights"].items() if k in weights})
+
+    query_terms = tokenize_text(" ".join(base_keywords))
+    pass_names = {"strict_intent", "expanded_synonyms", "title_priority", "broad_fallback", "single_pass"}
+
+    ranked: List[Dict[str, Any]] = []
+    for patent in candidates:
+        title = str(patent.get("title") or "")
+        abstract = str(patent.get("abstract") or "")
+        title_lower = title.lower()
+        doc_text = f"{title} {abstract}"
+        doc_tokens = tokenize_text(doc_text)
+
+        exact_hits = sum(1 for keyword in base_keywords if keyword and keyword in title_lower)
+        title_exact_match = clamp((exact_hits / max(1, len(base_keywords))) * 10.0)
+
+        coverage = clamp(term_coverage(query_terms, doc_tokens) * 10.0)
+        semantic_similarity = clamp(tfidf_cosine_similarity(query_text, doc_text, corpus_docs) * 10.0)
+        expiration_conf = expiration_confidence_score(patent, as_of_date=now)
+
+        pass_hits = [hit for hit in patent.get("_retrieval_pass_hits", []) if hit in pass_names]
+        pass_diversity = clamp((len(pass_hits) / 4.0) * 10.0)
+
+        total = (
+            title_exact_match * weights["title_exact_match"]
+            + coverage * weights["query_coverage"]
+            + semantic_similarity * weights["semantic_similarity"]
+            + expiration_conf * weights["expiration_confidence"]
+            + pass_diversity * weights["pass_diversity"]
+        )
+
+        scored = patent.copy()
+        scored["retrieval_scorecard"] = {
+            "title_exact_match": round(title_exact_match, 3),
+            "query_coverage": round(coverage, 3),
+            "semantic_similarity": round(semantic_similarity, 3),
+            "expiration_confidence": round(expiration_conf, 3),
+            "pass_diversity": round(pass_diversity, 3),
+            "weights": weights,
+            "total": round(clamp(total), 3),
+        }
+        scored["_retrieval_pass_hits"] = pass_hits
+        ranked.append(scored)
+
+    ranked.sort(
+        key=lambda item: (
+            item.get("retrieval_scorecard", {}).get("total", 0.0),
+            item.get("patent_date") or "",
+            item.get("patent_number") or "",
+        ),
+        reverse=True,
+    )
+    return ranked
+
+
+def _apply_viability_scoring(
+    patents: List[Dict[str, Any]],
+    search_config: Dict[str, Any],
+    as_of_date: Optional[date] = None,
+) -> List[Dict[str, Any]]:
+    if not patents:
+        return []
+
+    viability_cfg = search_config.get("viability_v2") or {}
+    viability_weights = viability_cfg.get("weights") if isinstance(viability_cfg, dict) else None
+
+    enriched: List[Dict[str, Any]] = []
+    for patent in patents:
+        viability = compute_viability_scorecard(patent, weights=viability_weights, as_of_date=as_of_date)
+        retrieval_score = patent.get("retrieval_scorecard", {}).get("total", 0.0)
+        expiration_score = expiration_confidence_score(patent, as_of_date=as_of_date)
+        opportunity = compute_opportunity_score_v2(
+            retrieval_total=float(retrieval_score),
+            viability_total=float(viability["components"]["total"]),
+            expiration_confidence=float(expiration_score),
+            scoring_weights=search_config.get("scoring_weights") or {},
+        )
+
+        patent_copy = patent.copy()
+        patent_copy["viability_scorecard"] = viability["components"]
+        patent_copy["market_domain"] = viability["market_domain"]
+        patent_copy["opportunity_score_v2"] = opportunity
+        patent_copy["opportunity_score"] = opportunity
+
+        patent_copy["explanations"] = {
+            "retrieval": (
+                "Retrieval based on title match, keyword coverage, semantic similarity, "
+                f"and multi-pass agreement ({', '.join(patent.get('_retrieval_pass_hits', [])) or 'single pass'})."
+            ),
+            "viability": viability["summary"],
+            "opportunity": (
+                f"Blended score from retrieval={retrieval_score:.2f}, "
+                f"viability={viability['components']['total']:.2f}, "
+                f"expiration={expiration_score:.2f}."
+            ),
+        }
+        patent_copy["score_components"] = viability["components"]
+        enriched.append(patent_copy)
+
+    enriched.sort(key=lambda row: row.get("opportunity_score_v2", 0.0), reverse=True)
+    return enriched
+
+
+def _discover_raw_records_v2(
+    search_config: Dict[str, Any],
+    warnings_list: List[str],
+) -> Tuple[List[Tuple[str, Dict[str, Any]]], Dict[str, Any]]:
+    diagnostics = _base_diagnostics(search_config, warnings_list)
+
+    pass_records: List[Tuple[str, Dict[str, Any]]] = []
+    pass_counts: Dict[str, int] = {}
+
+    for idx, pass_spec in enumerate(build_retrieval_passes(search_config)):
+        pass_name = pass_spec["name"]
+        pass_config = copy.deepcopy(pass_spec["config"])
+        pass_wrapper = {"patent_search": pass_config}
+
+        try:
+            records, pass_diag = fetch_patents_patentsview(pass_wrapper)
+        except PatentDiscoveryError as exc:
+            if idx == 0 or exc.code in {"missing_api_key", "auth_failed"}:
+                raise
+            diagnostics["warnings"].append(
+                f"Retrieval pass '{pass_name}' failed with {exc.code}; continuing with available passes."
+            )
+            pass_counts[pass_name] = 0
+            continue
+
+        diagnostics["http_status"] = pass_diag.get("http_status")
+        pass_counts[pass_name] = len(records)
+        pass_records.extend((pass_name, record) for record in records)
+
+    diagnostics["pass_counts"] = pass_counts
+    diagnostics["raw_count"] = len(pass_records)
+    diagnostics["status"] = "ok"
+    return pass_records, diagnostics
 
 
 def _legacy_scrape_google(query: str, num_results: int) -> List[Dict[str, Any]]:
@@ -550,7 +949,18 @@ def discover_patents(config: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Dict
     search_config, warnings_list = _resolve_patent_search_config(config)
 
     try:
-        raw_records, diagnostics = fetch_patents_patentsview(config)
+        if search_config.get("enable_v2_pipeline", True):
+            pass_records, diagnostics = _discover_raw_records_v2(search_config, warnings_list)
+            normalized = _dedupe_and_normalize_records(pass_records)
+            diagnostics["deduped_count"] = len(normalized)
+        else:
+            raw_records, diagnostics = fetch_patents_patentsview(config)
+            normalized = [normalize_patent_record(item) for item in raw_records]
+            for record in normalized:
+                record["_retrieval_pass_hits"] = ["single_pass"]
+            diagnostics["pass_counts"] = {"single_pass": len(raw_records)}
+            diagnostics["deduped_count"] = len(normalized)
+
     except PatentDiscoveryError as exc:
         diagnostics = exc.diagnostics or _base_diagnostics(search_config, warnings_list)
 
@@ -577,6 +987,7 @@ def discover_patents(config: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Dict
                 diagnostics["status"] = "fallback"
                 diagnostics["raw_count"] = len(fallback)
                 diagnostics["filtered_count"] = len(fallback)
+                diagnostics["deduped_count"] = len(fallback)
                 diagnostics["next_actions"].append(
                     "Switch fallback off after troubleshooting and use PatentsView API as primary source."
                 )
@@ -584,15 +995,15 @@ def discover_patents(config: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Dict
 
         raise exc
 
-    normalized = [normalize_patent_record(item) for item in raw_records]
+    today = date.today()
+
+    diagnostics["raw_count"] = len(normalized)
 
     if search_config.get("require_likely_expired", True):
-        today = date.today()
         filtered = [r for r in normalized if is_likely_expired(r, today)]
     else:
         filtered = normalized
 
-    diagnostics["raw_count"] = len(normalized)
     diagnostics["filtered_count"] = len(filtered)
 
     if not filtered:
@@ -607,8 +1018,16 @@ def discover_patents(config: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Dict
             diagnostics=diagnostics,
         )
 
+    ranked = rerank_patent_candidates_v2(filtered, search_config, as_of_date=today)
+    scored = _apply_viability_scoring(ranked, search_config, as_of_date=today)
+
+    requested = int(search_config.get("num_results") or len(scored))
+    limited = scored[:requested]
+
+    diagnostics["filtered_count"] = len(limited)
     diagnostics["status"] = diagnostics.get("status") or "ok"
-    return filtered, diagnostics
+
+    return limited, diagnostics
 
 
 def save_discovery_diagnostics(output_dir: str, diagnostics: Dict[str, Any], timestamp: str) -> Path:

@@ -8,6 +8,7 @@ import os
 from typing import Any, Dict, Optional
 
 from dotenv import load_dotenv
+
 from patent_discovery import DEFAULT_PATENT_SEARCH_CONFIG
 
 # Load environment variables from .env file
@@ -18,13 +19,28 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "patent_search": {
         **DEFAULT_PATENT_SEARCH_CONFIG,
         "api_key_env": os.getenv("PATENT_SEARCH_API_KEY_ENV", "PATENTSVIEW_API_KEY"),
-        "keywords": ["portable", "sensor"],
-        "filing_date_start": "1975-01-01",
-        "filing_date_end": "2005-12-31",
-        "assignee_type": "individual",
+        "keywords": ["portable", "sensor", "wireless", "remote", "mobile", "handheld", "wearable"],
+        "filing_date_start": "1970-01-01",
+        "filing_date_end": "2010-12-31",
+        "assignee_type": None,
         "num_results": 500,
         "require_likely_expired": True,
         "allow_legacy_scrape_fallback": False,
+        "enable_v2_pipeline": True,
+        "retrieval_v2": {
+            "enabled": True,
+            "max_expanded_keywords": 24,
+            "fallback_relax_assignee": True,
+        },
+        "viability_v2": {
+            "enabled": True,
+            "weights": {},
+        },
+        "scoring_weights": {
+            "retrieval": 0.35,
+            "viability": 0.45,
+            "expiration": 0.20,
+        },
     },
     "output_dir": "./patent_intelligence_vault/",
 }
@@ -39,7 +55,11 @@ def build_config(overrides: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
 
     for key, value in overrides.items():
         if key == "patent_search" and isinstance(value, dict):
-            cfg["patent_search"].update(value)
+            for nested_key, nested_value in value.items():
+                if isinstance(nested_value, dict) and isinstance(cfg["patent_search"].get(nested_key), dict):
+                    cfg["patent_search"][nested_key].update(nested_value)
+                else:
+                    cfg["patent_search"][nested_key] = nested_value
         else:
             cfg[key] = value
     return cfg

@@ -1,0 +1,105 @@
+{
+  "query_keywords": ["portable", "sensor"],
+  "candidates": [
+    {
+      "patent_id": "US100",
+      "patent_title": "Portable bucket carrier",
+      "patent_abstract": "A simple holder for transporting containers.",
+      "patent_date": "2001-01-15",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1999-06-01"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 0
+    },
+    {
+      "patent_id": "US101",
+      "patent_title": "Wireless household alert device",
+      "patent_abstract": "A remote notification appliance for home use.",
+      "patent_date": "2000-07-20",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1998-04-01"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 1
+    },
+    {
+      "patent_id": "US102",
+      "patent_title": "Portable environmental sensor system",
+      "patent_abstract": "A compact sensor apparatus for air and water quality monitoring.",
+      "patent_date": "1999-03-11",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1997-03-01"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 3
+    },
+    {
+      "patent_id": "US103",
+      "patent_title": "Mobile gas detector for industrial safety",
+      "patent_abstract": "Portable monitor for toxic gas exposure and compliance reporting.",
+      "patent_date": "1998-02-10",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1996-02-01"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 2
+    },
+    {
+      "patent_id": "US104",
+      "patent_title": "Wearable vital signs monitor",
+      "patent_abstract": "Physiological sensing platform for temperature and heart-rate tracking.",
+      "patent_date": "1998-01-05",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1995-01-10"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 3
+    },
+    {
+      "patent_id": "US105",
+      "patent_title": "Soil moisture and pH sensor network",
+      "patent_abstract": "Agricultural field monitoring through distributed wireless probes.",
+      "patent_date": "2002-05-16",
+      "patent_type": "utility",
+      "application": [{"filing_date": "2000-04-15"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 2
+    },
+    {
+      "patent_id": "US106",
+      "patent_title": "Portable water quality testing kit",
+      "patent_abstract": "Field-ready apparatus for contamination and pH readings.",
+      "patent_date": "1997-08-20",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1995-07-12"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 3
+    },
+    {
+      "patent_id": "US107",
+      "patent_title": "Sensor calibration method for remote telemetry",
+      "patent_abstract": "Method for improved reliability of distributed detection modules.",
+      "patent_date": "2001-12-01",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1999-02-01"}],
+      "assignees": [{"assignee_type": "2"}],
+      "relevance": 1
+    },
+    {
+      "patent_id": "US108",
+      "patent_title": "Industrial facility compliance monitor",
+      "patent_abstract": "System for hazard and emissions status reporting in factories.",
+      "patent_date": "2000-11-05",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1998-10-04"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 1
+    },
+    {
+      "patent_id": "US109",
+      "patent_title": "Portable diagnostic transducer module",
+      "patent_abstract": "Compact measurement transducer for mobile sensing instrumentation.",
+      "patent_date": "1996-10-28",
+      "patent_type": "utility",
+      "application": [{"filing_date": "1994-11-20"}],
+      "assignees": [{"assignee_type": "4"}],
+      "relevance": 2
+    }
+  ]
+}
