@@ -31,6 +31,24 @@ build_and_push:
   only:
     - main
 
+# Kaniko alternative for non-privileged runners (will run if `USE_KANIKO` variable is set)
+build_with_kaniko:
+  stage: build_and_push
+  image:
+    name: gcr.io/kaniko-project/executor:latest
+    entrypoint: [""]
+  variables:
+    # destination is the registry path; Kaniko needs Docker config or env creds
+    DOCKER_CONFIG: /kaniko/.docker/
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo '{"auths": {"'$CI_REGISTRY'": {"auth": "'$(echo -n $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD | base64)'"}}}' > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $IMAGE --destination $LATEST
+  rules:
+    - if: '$USE_KANIKO == "true"'
+  only:
+    - main
+
 deploy:
   stage: deploy
   image: alpine:latest
