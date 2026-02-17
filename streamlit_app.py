@@ -1164,6 +1164,11 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 display_df = rankings_df[rankings_df["Recommendation_Tier"] == 3]
 
             if not display_df.empty:
+                # Clean Patent_Number column
+                display_df = display_df.copy()
+                if 'Patent_Number' in display_df.columns:
+                    display_df['Patent_Number'] = display_df['Patent_Number'].astype(str).str.strip()
+                
                 # Format display columns
                 display_cols = ["Rank", "Patent_Number", "Title", "Integrated_Score", "Confidence", 
                                "Technology_Theme", "Recommendation_Tier"]
@@ -1227,7 +1232,10 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             st.subheader("🏅 Top Financial Performers (NPV Base)")
             top_financial = rankings_df.nlargest(10, "NPV_Base")[
                 ["Rank", "Patent_Number", "Title", "NPV_Base", "Recommendation_Tier"]
-            ]
+            ].copy()
+            # Clean Patent_Number column
+            if 'Patent_Number' in top_financial.columns:
+                top_financial['Patent_Number'] = top_financial['Patent_Number'].astype(str).str.strip()
             st.dataframe(top_financial, use_container_width=True, hide_index=True)
 
     with bi_subtabs[2]:  # Themes & Risk
@@ -1285,9 +1293,13 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 st.metric("Patents with Red Flags", f"{len(flagged)}/{len(rankings_df)}")
                 
                 if not flagged.empty:
+                    st.markdown("")
                     st.write("**Patents Requiring Further Investigation:**")
+                    st.markdown("")
                     for idx, row in flagged.iterrows():
-                        with st.expander(f"⚠️ {row['Patent_Number']}: {row['Title'][:60]}..."):
+                        # Ensure patent number is clean string
+                        patent_num = str(row['Patent_Number']).strip()
+                        with st.expander(f"⚠️ {patent_num}: {row['Title'][:60]}..."):
                             st.write(f"**Rank:** {row['Rank']}")
                             st.write(f"**Score:** {row['Integrated_Score']:.2f}/10")
                             st.write(f"**Red Flags:** {row['Red_Flags']}")
@@ -1303,15 +1315,19 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
 
             # Tier 1 Recommendations
             if not tier_1_df.empty:
+                st.markdown("")
                 st.markdown("### 🎯 **Tier 1: Immediate Implementation**")
                 st.markdown(
                     "These patents are ready for pilot projects or phased implementation. "
                     "High technical merit, strong financial case, and manageable risk."
                 )
+                st.markdown("")
                 
                 for idx, patent in tier_1_df.head(5).iterrows():
+                    # Ensure patent number is clean string
+                    patent_num = str(patent['Patent_Number']).strip()
                     with st.expander(
-                        f"✅ {patent['Patent_Number']}: {patent['Title'][:70]}... (Score: {patent['Integrated_Score']:.2f})"
+                        f"✅ {patent_num}: {patent['Title'][:70]}... (Score: {patent['Integrated_Score']:.2f})"
                     ):
                         col1, col2, col3 = st.columns(3)
                         with col1:
@@ -1329,12 +1345,19 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
 
             # Tier 2 Recommendations
             if not tier_2_df.empty:
+                st.markdown("")
+                st.divider()
+                st.markdown("")
                 st.markdown("### 🔍 **Tier 2: Further Investigation Required**")
                 st.markdown(
                     "These patents show promise but require additional R&D, FTO analysis, or validation."
                 )
+                st.markdown("")
                 
-                tier_2_summary = tier_2_df[["Patent_Number", "Title", "Integrated_Score", "Technology_Theme"]].head(10)
+                # Create clean copy of dataframe for display
+                tier_2_summary = tier_2_df[["Patent_Number", "Title", "Integrated_Score", "Technology_Theme"]].head(10).copy()
+                # Ensure Patent_Number is clean string
+                tier_2_summary['Patent_Number'] = tier_2_summary['Patent_Number'].astype(str).str.strip()
                 st.dataframe(tier_2_summary, use_container_width=True, hide_index=True)
                 
                 st.markdown("**Common Investigation Areas:**")
@@ -1345,6 +1368,9 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
 
             # Tier 3 Overview
             if not tier_3_df.empty:
+                st.markdown("")
+                st.divider()
+                st.markdown("")
                 st.markdown("### 📋 **Tier 3: Monitor or Defer**")
                 st.metric("Patents in Tier 3", len(tier_3_df))
                 st.markdown("These patents have technical or financial concerns. Review if circumstances change or market evolves.")
