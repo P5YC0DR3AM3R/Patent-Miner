@@ -33,6 +33,19 @@ VIEW_TABS = [
     "Export",
 ]
 
+REQUIRED_VIABILITY_KEYS = {
+    "market_demand",
+    "build_feasibility",
+    "competition_headroom",
+    "differentiation_potential",
+    "commercial_readiness",
+    "marketability",
+    "viral_potential",
+    "ease_of_use",
+    "real_world_impact",
+    "total",
+}
+
 TEXT_SIZE_OPTIONS = {
     "Standard": 16,
     "Large": 18,
@@ -531,13 +544,13 @@ class PatentAnalyzer:
                         data = json.load(handle)
                     self.patents = data
                     self.loaded_filename = largest_file.name
-                    self._enriched_cache = []
+                    self._enriched_cache = []  # CLEAR CACHE
                     st.warning(f"⚠️ Upgraded dataset: Loading {largest_count} patents from {largest_file.name} (instead of {latest_count})")
                     return True
             
             self.patents = data
             self.loaded_filename = latest_file.name
-            self._enriched_cache = []
+            self._enriched_cache = []  # CLEAR CACHE
             return True
         except Exception as exc:
             st.error(f"Error loading discoveries: {exc}")
@@ -564,6 +577,7 @@ class PatentAnalyzer:
                 viability = compute_viability_scorecard(patent_copy)
                 patent_copy["viability_scorecard"] = viability["components"]
                 patent_copy["market_domain"] = viability["market_domain"]
+                patent_copy["scoring_version"] = SCORING_VERSION
                 patent_copy.setdefault("explanations", {})
                 patent_copy["explanations"].setdefault("viability", viability["summary"])
 
@@ -602,7 +616,8 @@ class PatentAnalyzer:
     def get_enriched_patents(self) -> List[Dict[str, Any]]:
         """Return patents with v2 retrieval/viability scorecards available."""
 
-        if self._enriched_cache:
+        # Don't use cache if patents were just reloaded
+        if self._enriched_cache and len(self._enriched_cache) == len(self.patents):
             return self._enriched_cache
 
         if not self.patents:
@@ -616,9 +631,35 @@ class PatentAnalyzer:
         if has_v2_scores:
             enriched = [dict(patent) for patent in self.patents]
             for patent in enriched:
-                patent.setdefault("opportunity_score_v2", patent.get("opportunity_score", 0.0))
-                patent.setdefault("opportunity_score", patent.get("opportunity_score_v2", 0.0))
-                patent.setdefault("score_components", patent.get("viability_scorecard", {}))
+                viability = patent.get("viability_scorecard", {})
+                needs_refresh = (
+                    not REQUIRED_VIABILITY_KEYS.issubset(set(viability))
+                    or patent.get("scoring_version") != SCORING_VERSION
+                )
+
+                if needs_refresh:
+                    refreshed = compute_viability_scorecard(patent)
+                    viability = refreshed["components"]
+                    patent["viability_scorecard"] = viability
+                    patent["market_domain"] = refreshed["market_domain"]
+                    patent["scoring_version"] = SCORING_VERSION
+                    patent.setdefault("explanations", {})
+                    patent["explanations"]["viability"] = refreshed["summary"]
+
+                retrieval_total = patent.get("retrieval_scorecard", {}).get("total", 0.0)
+                viability_total = viability.get("total", 0.0)
+                expiration_total = expiration_confidence_score(patent)
+
+                if "opportunity_score_v2" not in patent or needs_refresh:
+                    patent["opportunity_score_v2"] = compute_opportunity_score_v2(
+                        retrieval_total=float(retrieval_total),
+                        viability_total=float(viability_total),
+                        expiration_confidence=float(expiration_total),
+                    )
+
+                patent["opportunity_score"] = float(patent.get("opportunity_score_v2", 0.0))
+                patent["score_components"] = viability
+
             enriched.sort(key=lambda row: row.get("opportunity_score_v2", 0.0), reverse=True)
             self._enriched_cache = enriched
             return enriched
@@ -745,31 +786,7 @@ def render_header(analyzer: PatentAnalyzer) -> None:
             st.cache_resource.clear()
             st.rerun()
 
-    # Debug: Check available data files
-    vault_dir = Path(__file__).parent / "patent_intelligence_vault"
-    discovery_files = sorted(
-        vault_dir.glob("patent_discoveries_*.json"),
-        key=lambda x: x.stat().st_mtime,
-        reverse=True,
-    )
     
-    info_msg = f"Loaded file: <strong>{analyzer.loaded_filename or 'N/A'}</strong> | Scoring version: <strong>{SCORING_VERSION}</strong>"
-    
-    if discovery_files:
-        try:
-            with discovery_files[0].open("r") as f:
-                latest_count = len(json.load(f))
-            current_count = len(analyzer.patents) if analyzer.patents else 0
-            
-            if current_count < 50 and latest_count >= 150:
-                info_msg += f" ⚠️ <span style='color: #ff6b9d;'><strong>Mismatch:</strong> Showing {current_count} patents but {latest_count} available!</span>"
-        except:
-            pass
-
-    st.markdown(
-        f"<div class='pm-card'><span class='pm-muted'>{info_msg}</span></div>",
-        unsafe_allow_html=True,
-    )
 
 
 def render_sidebar_controls() -> Dict[str, Any]:
@@ -799,57 +816,21 @@ def render_executive_view(analyzer: PatentAnalyzer, show_advanced: bool) -> None
     with col4:
         st.metric("Market Domains", len(stats["domains"]))
 
-    # Show which dataset was loaded
-    loaded_file_info = analyzer.loaded_filename or "Unknown"
-    patent_count = stats.get('total_patents', 0)
-    
-    # Warn if dataset looks wrong
-    warning_badge = ""
-    if patent_count < 50:
-        warning_badge = " ⚠️ <span style='color: #ff6b9d;'>Small dataset!</span>"
-    elif patent_count >= 150:
-        warning_badge = " ✅ <span style='color: #00d4aa;'>Full dataset</span>"
-
-    st.markdown(
-        f"<div class='pm-card'><strong>Filing Range:</strong> {stats['date_range']} | "
-        f"<strong>Dataset:</strong> {loaded_file_info}{warning_badge}</div>", 
-        unsafe_allow_html=True
-    )
-
-    left, right = st.columns(2)
-    with left:
-        by_year = analyzer.get_patents_by_year()
-        if not by_year.empty:
-            fig = px.line(
-                by_year,
-                x="year",
-                y="count",
-                title="Patents by Filing Year",
-                markers=True,
-                line_shape="spline"
-            )
-            fig.update_traces(line=dict(color="#0066ff", width=3), marker=dict(size=8))
-            fig.update_layout(height=360, hovermode="x unified")
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("No filing date distribution available.")
-
-    with right:
-        domain_dist = analyzer.get_domain_distribution()
-        if not domain_dist.empty:
-            fig = px.line(
-                domain_dist.sort_values('count', ascending=False),
-                x="market_domain",
-                y="count",
-                title="Domain Distribution",
-                markers=True,
-                line_shape="linear"
-            )
-            fig.update_traces(line=dict(color="#00d4aa", width=3), marker=dict(size=8))
-            fig.update_layout(height=360, hovermode="x unified")
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("No market domain distribution available.")
+    domain_dist = analyzer.get_domain_distribution()
+    if not domain_dist.empty:
+        fig = px.line(
+            domain_dist.sort_values('count', ascending=False),
+            x="market_domain",
+            y="count",
+            title="Domain Distribution",
+            markers=True,
+            line_shape="linear"
+        )
+        fig.update_traces(line=dict(color="#00d4aa", width=3), marker=dict(size=8))
+        fig.update_layout(height=360, hovermode="x unified")
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No market domain distribution available.")
 
     if show_advanced:
         st.subheader("Domain Counts")
@@ -939,100 +920,94 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         if link:
             st.markdown(f"[View on Google Patents]({link})")
 
+    viability = patent.get("viability_scorecard", {})
+    st.subheader("🚀 Marketability Snapshot")
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        st.metric("Marketability", f"{viability.get('marketability', 0.0):.1f}/10")
+        st.caption("How easy this is to sell")
+    with m2:
+        st.metric("Viral Impact", f"{viability.get('viral_potential', 0.0):.1f}/10")
+        st.caption("Built-in sharing/network effects")
+    with m3:
+        st.metric("Ease of Use", f"{viability.get('ease_of_use', 0.0):.1f}/10")
+        st.caption("Simple for everyday users")
+    with m4:
+        st.metric("Real-World Need", f"{viability.get('real_world_impact', 0.0):.1f}/10")
+        st.caption("Solves a meaningful problem")
+
     if show_advanced:
         st.subheader("Scoring Rationale")
-        
-        # Extract and visualize scores from explanations
         explanations = patent.get("explanations", {})
-        
-        # Try to extract numeric scores from explanation text
-        import re
-        scores = {}
-        details = {}
-        
-        # Extract retrieval score and details
-        if "retrieval" in explanations:
-            retrieval_text = explanations["retrieval"]
-            details["Retrieval"] = retrieval_text
-            if "retrieval=" in retrieval_text:
-                match = re.search(r'retrieval=(\d+\.?\d*)', retrieval_text)
-                if match:
-                    scores["Retrieval"] = float(match.group(1))
-        
-        # Extract viability score and details
-        if "viability" in explanations:
-            viability_text = explanations["viability"]
-            details["Viability"] = viability_text
-            feasibility_match = re.search(r'feasibility=(\d+\.?\d*)', viability_text)
-            if feasibility_match:
-                scores["Viability"] = float(feasibility_match.group(1))
-        
-        # Extract expiration score and details
-        if "opportunity" in explanations:
-            opportunity_text = explanations["opportunity"]
-            details["Opportunity"] = opportunity_text
-            exp_match = re.search(r'expiration=(\d+\.?\d*)', opportunity_text)
-            if exp_match:
-                scores["Expiration"] = float(exp_match.group(1))
-        
-        # Display chart if we have scores
-        if scores:
-            st.markdown("**Score Breakdown**")
-            chart_data = pd.DataFrame({
-                "Component": list(scores.keys()),
-                "Score": list(scores.values())
-            })
-            fig = px.line(
-                chart_data,
-                x="Component",
-                y="Score",
-                title="",
-                markers=True,
-                line_shape="spline"
-            )
-            fig.update_traces(line=dict(color="#0066ff", width=4), marker=dict(size=12))
-            fig.update_yaxes(range=[0, 10])
-            fig.update_layout(
-                showlegend=False,
-                hovermode="x unified",
-                margin=dict(l=40, r=40, t=20, b=40),
-                font=dict(size=14),
-                height=300
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        
-        # Show detailed explanations in formatted cards with proper text color
+        retrieval = patent.get("retrieval_scorecard", {})
+
+        scores = {
+            "Retrieval": float(retrieval.get("total", 0.0)),
+            "Viability": float(viability.get("total", 0.0)),
+            "Expiration": float(retrieval.get("expiration_confidence", 0.0)),
+            "Opportunity": float(patent.get("opportunity_score_v2", 0.0)),
+        }
+
+        st.markdown("**Score Breakdown**")
+        chart_data = pd.DataFrame({
+            "Component": list(scores.keys()),
+            "Score": list(scores.values())
+        })
+        fig = px.line(
+            chart_data,
+            x="Component",
+            y="Score",
+            title="",
+            markers=True,
+            line_shape="spline"
+        )
+        fig.update_traces(line=dict(color="#0066ff", width=4), marker=dict(size=12))
+        fig.update_yaxes(range=[0, 10])
+        fig.update_layout(
+            showlegend=False,
+            hovermode="x unified",
+            margin=dict(l=40, r=40, t=20, b=40),
+            font=dict(size=14),
+            height=300
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
         st.markdown("**Detailed Analysis**")
-        
         col1, col2, col3 = st.columns(3)
-        
+
         with col1:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
                 <strong style='font-size: 1.2em; color: #0066ff;'>🔍 Retrieval</strong>
                 <br><br>
-                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>{details.get('Retrieval', 'No data')}</span>
-                </div>""", 
+                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
+                {explanations.get('retrieval', 'No data')}
+                </span>
+                </div>""",
                 unsafe_allow_html=True
             )
-        
+
         with col2:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
                 <strong style='font-size: 1.2em; color: #00d4aa;'>✅ Viability</strong>
                 <br><br>
-                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>{details.get('Viability', 'No data')}</span>
-                </div>""", 
+                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
+                {explanations.get('viability', 'No data')}
+                </span>
+                </div>""",
                 unsafe_allow_html=True
             )
-        
+
         with col3:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
                 <strong style='font-size: 1.2em; color: #ff6b9d;'>⭐ Opportunity</strong>
                 <br><br>
-                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>{details.get('Opportunity', 'No data')}</span>
-                </div>""", 
+                <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
+                {explanations.get('opportunity', 'No data')}
+                </span>
+                </div>""",
                 unsafe_allow_html=True
             )
 

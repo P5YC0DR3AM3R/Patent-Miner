@@ -8,14 +8,18 @@ from typing import Any, Dict, Tuple
 
 from scoring_utils import clamp, tokenize_text
 
-SCORING_VERSION = "v2.0.0"
+SCORING_VERSION = "v2.1.0"
 
 DEFAULT_VIABILITY_COMPONENT_WEIGHTS: Dict[str, float] = {
-    "market_demand": 0.28,
-    "build_feasibility": 0.22,
-    "competition_headroom": 0.18,
-    "differentiation_potential": 0.18,
-    "commercial_readiness": 0.14,
+    "market_demand": 0.20,
+    "build_feasibility": 0.18,
+    "competition_headroom": 0.12,
+    "differentiation_potential": 0.12,
+    "commercial_readiness": 0.10,
+    "marketability": 0.10,
+    "viral_potential": 0.08,
+    "ease_of_use": 0.05,
+    "real_world_impact": 0.05,
 }
 
 DEFAULT_OPPORTUNITY_WEIGHTS: Dict[str, float] = {
@@ -132,6 +136,54 @@ READINESS_TERMS = {
     "apparatus",
 }
 
+MARKETABILITY_TERMS = {
+    "consumer",
+    "portable",
+    "wearable",
+    "smart",
+    "mobile",
+    "app",
+    "device",
+    "product",
+    "service",
+}
+
+VIRAL_TERMS = {
+    "network",
+    "connected",
+    "social",
+    "community",
+    "share",
+    "peer",
+    "user",
+    "platform",
+}
+
+EASE_OF_USE_TERMS = {
+    "simple",
+    "easy",
+    "automatic",
+    "compact",
+    "portable",
+    "hands",
+    "free",
+    "one",
+    "button",
+}
+
+REAL_WORLD_IMPACT_TERMS = {
+    "safety",
+    "health",
+    "monitoring",
+    "compliance",
+    "efficiency",
+    "energy",
+    "water",
+    "environment",
+    "pollution",
+    "cost",
+}
+
 
 def _iso_date(value: str | None) -> date | None:
     if not value or not isinstance(value, str):
@@ -223,12 +275,21 @@ def compute_viability_scorecard(
     expiration_signal = expiration_confidence_score(patent, as_of_date=as_of_date)
     commercial_readiness = clamp((readiness_signal * 0.6) + (expiration_signal * 0.4))
 
+    marketability = _component_score(tokens, MARKETABILITY_TERMS, baseline=5.0, scale=0.6)
+    viral_potential = _component_score(tokens, VIRAL_TERMS, baseline=4.4, scale=0.5)
+    ease_of_use = _component_score(tokens, EASE_OF_USE_TERMS, baseline=5.2, scale=0.5)
+    real_world_impact = _component_score(tokens, REAL_WORLD_IMPACT_TERMS, baseline=5.0, scale=0.6)
+
     components = {
         "market_demand": round(market_demand, 3),
         "build_feasibility": round(build_feasibility, 3),
         "competition_headroom": round(competition_headroom, 3),
         "differentiation_potential": round(differentiation_potential, 3),
         "commercial_readiness": round(commercial_readiness, 3),
+        "marketability": round(marketability, 3),
+        "viral_potential": round(viral_potential, 3),
+        "ease_of_use": round(ease_of_use, 3),
+        "real_world_impact": round(real_world_impact, 3),
     }
 
     total = sum(components[name] * used_weights[name] for name in used_weights)
@@ -240,9 +301,10 @@ def compute_viability_scorecard(
         "weights": used_weights,
         "components": components,
         "summary": (
-            f"Domain={market_domain}; demand={components['market_demand']:.1f}, "
-            f"feasibility={components['build_feasibility']:.1f}, "
-            f"headroom={components['competition_headroom']:.1f}."
+            f"Market demand {components['market_demand']:.1f}/10, "
+            f"easy to build {components['build_feasibility']:.1f}/10, "
+            f"marketability {components['marketability']:.1f}/10, "
+            f"real-world impact {components['real_world_impact']:.1f}/10."
         ),
     }
 

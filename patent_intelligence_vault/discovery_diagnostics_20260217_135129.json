@@ -1,0 +1,36 @@
+{
+  "provider": "patentsview_patentsearch",
+  "status": "ok",
+  "http_status": 200,
+  "raw_count": 167,
+  "filtered_count": 167,
+  "pass_counts": {
+    "strict_intent": 0,
+    "expanded_synonyms": 500,
+    "title_priority": 250,
+    "broad_fallback": 500
+  },
+  "deduped_count": 167,
+  "ranking_version": "v2.0.0",
+  "scoring_version": "v2.0.0",
+  "query_summary": {
+    "keywords": [
+      "portable",
+      "sensor",
+      "wireless",
+      "remote",
+      "mobile",
+      "handheld",
+      "wearable"
+    ],
+    "filing_date_start": "1970-01-01",
+    "filing_date_end": "2010-12-31",
+    "assignee_type": null,
+    "num_results": 500,
+    "require_likely_expired": true,
+    "enable_v2_pipeline": true
+  },
+  "errors": [],
+  "next_actions": [],
+  "warnings": []
+}

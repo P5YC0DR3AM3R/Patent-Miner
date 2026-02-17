@@ -834,6 +834,7 @@ def _apply_viability_scoring(
         patent_copy["market_domain"] = viability["market_domain"]
         patent_copy["opportunity_score_v2"] = opportunity
         patent_copy["opportunity_score"] = opportunity
+        patent_copy["scoring_version"] = SCORING_VERSION
 
         patent_copy["explanations"] = {
             "retrieval": (

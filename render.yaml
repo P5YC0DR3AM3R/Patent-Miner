@@ -2,7 +2,7 @@ services:
   - type: web
     name: Patent Miner
     env: docker
-    repo: https://bitbucket.org/micahread/patent-miner.git
+    repo: https://github.com/P5YC0DR3AM3R/Patent-Miner.git
     branch: main
     plan: free
     buildCommand: ""

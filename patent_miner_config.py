@@ -19,9 +19,9 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "patent_search": {
         **DEFAULT_PATENT_SEARCH_CONFIG,
         "api_key_env": os.getenv("PATENT_SEARCH_API_KEY_ENV", "PATENTSVIEW_API_KEY"),
-        "keywords": ["portable", "sensor", "wireless", "remote", "mobile", "handheld", "wearable"],
+        "keywords": ["portable", "sensor", "wireless", "remote", "mobile", "handheld", "wearable", "IoT", "smart", "connected", "intelligent", "cloud", "network"],
         "filing_date_start": "1970-01-01",
-        "filing_date_end": "2010-12-31",
+        "filing_date_end": "2012-12-31",
         "assignee_type": None,
         "num_results": 500,
         "require_likely_expired": True,
