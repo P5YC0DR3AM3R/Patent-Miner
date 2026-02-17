@@ -416,23 +416,43 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             color: #808080 !important;
         }}
 
-        /* Expander */
-        .streamlit-expanderHeader {{
-            background: transparent !important;
+        /* Expander - hide headers completely in BI sections */
+        [data-testid="stExpander"] {{
             border: none !important;
-            border-radius: 14px !important;
-            box-shadow: none !important;
-            transition: all 0.3s ease !important;
-            font-weight: 600 !important;
-            font-size: calc(var(--pm-font-size) * 0.9) !important;
-            padding: 0.5rem 0.2rem !important;
-            margin-bottom: 0.3rem !important;
-            color: var(--pm-accent) !important;
+            margin-bottom: 0.5rem !important;
+        }}
+        
+        [data-testid="stExpander"] details {{
+            border: 1px solid var(--pm-border) !important;
+            border-radius: 12px !important;
+            padding: 0.5rem !important;
+            background: white !important;
+        }}
+        
+        [data-testid="stExpander"] summary {{
+            display: none !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
+        }}
+        
+        .streamlit-expanderHeader {{
+            display: none !important;
+            height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden !important;
+            visibility: hidden !important;
         }}
 
         .streamlit-expanderHeader:hover {{
-            opacity: 0.8 !important;
-            background: transparent !important;
+            display: none !important;
+        }}
+        
+        [data-testid="stExpander"] [data-testid="stExpanderDetails"] {{
+            padding: 0.5rem !important;
         }}
 
         /* Plotly Charts */
@@ -1301,10 +1321,20 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     for idx, row in flagged.iterrows():
                         # Ensure patent number is clean string
                         patent_num = str(row['Patent_Number']).strip()
-                        with st.expander(f"⚠️ {patent_num}: {row['Title'][:60]}..."):
+                        
+                        st.markdown(f"""<div style='background: #fff5e6; border: 2px solid #ff9500; border-radius: 12px; 
+                                    padding: 1rem; margin-bottom: 0.8rem;'>
+                                    <strong style='color: #ff9500;'>⚠️ {patent_num}</strong><br>
+                                    <span style='color: #606060;'>{row['Title'][:80]}...</span>
+                                    </div>""", unsafe_allow_html=True)
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
                             st.write(f"**Rank:** {row['Rank']}")
+                        with col2:
                             st.write(f"**Score:** {row['Integrated_Score']:.2f}/10")
-                            st.write(f"**Red Flags:** {row['Red_Flags']}")
+                        st.write(f"**Red Flags:** {row['Red_Flags']}")
+                        st.markdown("---")
 
     with bi_subtabs[3]:  # Recommendations
         st.subheader("✅ Actionable Recommendations")
@@ -1328,22 +1358,29 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 for idx, patent in tier_1_df.head(5).iterrows():
                     # Ensure patent number is clean string
                     patent_num = str(patent['Patent_Number']).strip()
-                    with st.expander(
-                        f"✅ {patent_num}: {patent['Title'][:70]}... (Score: {patent['Integrated_Score']:.2f})"
-                    ):
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.metric("Integrated Score", f"{patent['Integrated_Score']:.2f}/10")
-                        with col2:
-                            st.metric("Manufacturing Feasibility", f"{patent['Manufacturing_Feasibility']:.1f}/10" if "Manufacturing_Feasibility" in patent else "N/A")
-                        with col3:
-                            st.metric("NPV (Base)", f"${patent['NPV_Base']:,.0f}" if "NPV_Base" in patent else "N/A")
-                        
-                        st.markdown("**Recommended Next Steps:**")
-                        st.markdown("1. Conduct detailed FTO analysis")
-                        st.markdown("2. Perform lab validation trials")
-                        st.markdown("3. Benchmark against current production")
-                        st.markdown("4. Plan pilot project scope & budget")
+                    
+                    # Create a bordered container for each patent
+                    st.markdown(f"""<div style='background: white; border: 2px solid #e0e8f5; border-radius: 12px; 
+                                padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
+                                <strong style='color: #0066ff; font-size: 1.1em;'>✅ {patent_num}</strong><br>
+                                <span style='color: #606060;'>{patent['Title'][:100]}...</span><br>
+                                <span style='color: #00d4aa; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span>
+                                </div>""", unsafe_allow_html=True)
+                    
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Integrated Score", f"{patent['Integrated_Score']:.2f}/10")
+                    with col2:
+                        st.metric("Manufacturing Feasibility", f"{patent['Manufacturing_Feasibility']:.1f}/10" if "Manufacturing_Feasibility" in patent else "N/A")
+                    with col3:
+                        st.metric("NPV (Base)", f"${patent['NPV_Base']:,.0f}" if "NPV_Base" in patent else "N/A")
+                    
+                    st.markdown("**Recommended Next Steps:**")
+                    st.markdown("1. Conduct detailed FTO analysis")
+                    st.markdown("2. Perform lab validation trials")
+                    st.markdown("3. Benchmark against current production")
+                    st.markdown("4. Plan pilot project scope & budget")
+                    st.markdown("---")
 
             # Tier 2 Recommendations
             if not tier_2_df.empty:
