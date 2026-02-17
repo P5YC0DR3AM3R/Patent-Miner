@@ -1,0 +1,46 @@
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+  LATEST: "$CI_REGISTRY_IMAGE:latest"
+
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker build -t "$IMAGE" .
+    - docker tag "$IMAGE" "$LATEST"
+  only:
+    - main
+
+push:
+  stage: push
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker push "$IMAGE"
+    - docker push "$LATEST"
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no "$DEPLOY_USER@$DEPLOY_HOST" "docker pull $LATEST && docker stop patent-miner || true && docker rm patent-miner || true && docker run -d --name patent-miner -p 8501:8501 --restart always $LATEST"
+  only:
+    - main

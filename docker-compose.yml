@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  patent-miner:
+    image: registry.gitlab.com/${CI_PROJECT_PATH}:latest
+    restart: always
+    ports:
+      - "8501:8501"
+    environment:
+      - PORT=8501
+    volumes:
+      - ./patent_intelligence_vault:/app/patent_intelligence_vault
