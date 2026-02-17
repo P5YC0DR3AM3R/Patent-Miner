@@ -1540,11 +1540,47 @@ def render_footer() -> None:
         st.caption("Data: PatentsView")
 
 
+def render_banner() -> None:
+    """Render top advertising banner with contact links."""
+    
+    st.markdown("""
+        <div style='background: linear-gradient(135deg, #0066ff 0%, #00d4aa 100%); 
+                    padding: 1rem 2rem; 
+                    border-radius: 12px; 
+                    margin-bottom: 1.5rem;
+                    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+                    text-align: center;'>
+            <h3 style='color: white !important; margin: 0; padding: 0; font-size: 1.8em; font-weight: 800;'>
+                🆓 FREE Patent Miner from Micah Read MGMT
+            </h3>
+            <div style='margin-top: 0.8rem;'>
+                <a href='https://www.linkedin.com/in/micahread/' target='_blank' 
+                   style='color: white !important; text-decoration: none; margin: 0 1rem; font-weight: 600; font-size: 1.1em;'>
+                    💼 LinkedIn
+                </a>
+                <span style='color: white; opacity: 0.5;'>|</span>
+                <a href='https://github.com/p5yc0dr3am3r/' target='_blank' 
+                   style='color: white !important; text-decoration: none; margin: 0 1rem; font-weight: 600; font-size: 1.1em;'>
+                    🔧 GitHub
+                </a>
+                <span style='color: white; opacity: 0.5;'>|</span>
+                <a href='mailto:micahreadmgmt@gmail.com' 
+                   style='color: white !important; text-decoration: none; margin: 0 1rem; font-weight: 600; font-size: 1.1em;'>
+                    📧 Email
+                </a>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+
 def main() -> None:
     """Main Streamlit app entrypoint."""
 
     controls = render_sidebar_controls()
     _inject_ui_css(controls["text_size"], controls["density"])
+
+    # Render advertising banner at the top
+    render_banner()
 
     analyzer = get_analyzer()
     render_header(analyzer)
