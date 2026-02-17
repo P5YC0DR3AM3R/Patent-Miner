@@ -209,3 +209,27 @@ If you want, I can:
 - add a `docker-compose.prod.yml` and sample nginx config into the repo,
 - or walk you through adding the CI variables in GitLab.
 
+## 11. Deploying to Render (recommended for managed hosting)
+
+Render can build and deploy directly from your GitLab repository. Below are exact steps to connect and configure the service.
+
+1. Sign in to Render (https://render.com) and select "New" → "Web Service".
+2. Connect your GitLab account and authorize access to `micahreadmgmt-group/micahreadmgmt-Patent_Miner`.
+3. Configure the service:
+  - **Name:** Patent Miner
+  - **Environment:** `Docker`
+  - **Branch:** `main`
+  - **Auto Deploy:** enabled (recommended)
+  - **Disk:** enable persistent disk and mount to `/app/patent_intelligence_vault` if you want discovery artifacts persisted (the repo includes `render.yaml` which can preconfigure this)
+4. Add environment variables in Render dashboard (Settings → Environment):
+  - `PATENTSVIEW_API_KEY` (secret) — your API key
+  - Any other runtime config such as `PATENT_SEARCH_API_KEY_ENV` if needed
+5. Save and create the service. Render will build the Docker image using the `Dockerfile` in the repo and run the container, with `$PORT` injected into the container. The `Dockerfile` has been updated to honor `$PORT`.
+
+Notes and best-practices:
+- You do not need the GitLab `deploy` job if Render will handle deployment. I recommend disabling or removing the `deploy` job from `.gitlab-ci.yml` to avoid duplicate deploys.
+- Keep secret values in Render's environment settings, not in your repo or `.env` committed files.
+- Confirm persistent disk is enabled if you want `patent_intelligence_vault/` to survive restarts. Otherwise, use external storage or S3 for long-term artifact storage.
+
+If you'd like, I will remove the `deploy` job from `.gitlab-ci.yml` so GitLab only builds (or runs tests) and Render handles deployments — say "Yes, remove GitLab deploy" and I will commit that change.
+

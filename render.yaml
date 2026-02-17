@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: Patent Miner
+    env: docker
+    repo: https://gitlab.com/micahreadmgmt-group/micahreadmgmt-Patent_Miner
+    branch: main
+    plan: free
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: PATENTSVIEW_API_KEY
+        sync: false
+    autoDeploy: true
+    disk:
+      name: patent-miner-data
+      mountPath: /app/patent_intelligence_vault
+      sizeGB: 1
