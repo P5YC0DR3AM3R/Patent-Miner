@@ -418,19 +418,21 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
 
         /* Expander */
         .streamlit-expanderHeader {{
-            background: linear-gradient(135deg, #f8fbff 0%, #f0f5ff 100%) !important;
+            background: transparent !important;
+            border: none !important;
             border-radius: 14px !important;
-            border: 2px solid var(--pm-border) !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            box-shadow: none !important;
             transition: all 0.3s ease !important;
-            font-weight: 700 !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
-            padding: 1rem !important;
+            font-weight: 600 !important;
+            font-size: calc(var(--pm-font-size) * 0.9) !important;
+            padding: 0.5rem 0.2rem !important;
+            margin-bottom: 0.3rem !important;
+            color: var(--pm-accent) !important;
         }}
 
         .streamlit-expanderHeader:hover {{
-            box-shadow: 0 6px 16px rgba(0, 102, 255, 0.1) !important;
-            border-color: var(--pm-accent) !important;
+            opacity: 0.8 !important;
+            background: transparent !important;
         }}
 
         /* Plotly Charts */
@@ -545,7 +547,7 @@ class PatentAnalyzer:
                     self.patents = data
                     self.loaded_filename = largest_file.name
                     self._enriched_cache = []  # CLEAR CACHE
-                    st.warning(f"⚠️ Upgraded dataset: Loading {largest_count} patents from {largest_file.name} (instead of {latest_count})")
+                    # Silently use larger dataset without warning banner
                     return True
             
             self.patents = data
