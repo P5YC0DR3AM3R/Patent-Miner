@@ -464,7 +464,7 @@ docker run -p 8501:8501 patent-miner
 
 ## 📄 License
 
-MIT License - See LICENSE file for details
+NCA
 
 ---
 
