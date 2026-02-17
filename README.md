@@ -479,7 +479,3 @@ NCA
 ---
 
 **Built with ❤️ by Micah Read** | *Transforming AI concepts into production reality*
-
----
-
-**Built with ❤️ by Micah Read** | *Transforming AI concepts into production reality*
