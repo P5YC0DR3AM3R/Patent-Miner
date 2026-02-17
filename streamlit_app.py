@@ -529,7 +529,7 @@ class PatentAnalyzer:
         self.load_latest_discoveries()
 
     def load_latest_discoveries(self) -> bool:
-        """Load the most recent patent discoveries file."""
+        """Load the patent discoveries file with the MOST patents."""
 
         discovery_files = sorted(
             self.vault_dir.glob("patent_discoveries_*.json"),
@@ -542,37 +542,29 @@ class PatentAnalyzer:
             return False
 
         try:
-            # ALWAYS check if the latest file is small, and look for a bigger one
-            latest_file = discovery_files[0]
-            with latest_file.open("r", encoding="utf-8") as handle:
+            # ALWAYS find and load the file with the most patents
+            largest_file = None
+            largest_count = 0
+            
+            for f in discovery_files:
+                with f.open("r") as handle:
+                    test_data = json.load(handle)
+                if len(test_data) > largest_count:
+                    largest_file = f
+                    largest_count = len(test_data)
+            
+            # Load the largest dataset
+            with largest_file.open("r") as handle:
                 data = json.load(handle)
             
-            latest_count = len(data)
-            
-            # If current file is suspiciously small, search all files for the largest one
-            if latest_count < 100:
-                largest_file = None
-                largest_count = 0
-                for f in discovery_files:
-                    with f.open("r") as handle:
-                        test_data = json.load(handle)
-                    if len(test_data) > largest_count:
-                        largest_file = f
-                        largest_count = len(test_data)
-                
-                # If we found a significantly larger file, use it
-                if largest_count > latest_count + 50:
-                    with largest_file.open("r") as handle:
-                        data = json.load(handle)
-                    self.patents = data
-                    self.loaded_filename = largest_file.name
-                    self._enriched_cache = []  # CLEAR CACHE
-                    # Silently use larger dataset without warning banner
-                    return True
-            
             self.patents = data
-            self.loaded_filename = latest_file.name
+            self.loaded_filename = largest_file.name
             self._enriched_cache = []  # CLEAR CACHE
+            
+            # Show info about loaded dataset
+            timestamp = largest_file.stem.split('_')[-2:]
+            st.info(f"📊 Loaded {len(self.patents)} patents from {largest_file.name}")
+            
             return True
         except Exception as exc:
             st.error(f"Error loading discoveries: {exc}")
