@@ -507,9 +507,26 @@ class PatentAnalyzer:
             return False
 
         try:
-            with discovery_files[0].open("r", encoding="utf-8") as handle:
-                self.patents = json.load(handle)
-            self.loaded_filename = discovery_files[0].name
+            latest_file = discovery_files[0]
+            with latest_file.open("r", encoding="utf-8") as handle:
+                data = json.load(handle)
+            
+            # Verify we're loading 167 patents, not 19
+            if len(data) < 50:
+                st.warning(f"⚠️ Loaded only {len(data)} patents. Expected 167+. Loading newest data on startup...")
+                # Try to find the 167-patent file specifically
+                for f in discovery_files:
+                    with f.open("r") as handle:
+                        test_data = json.load(handle)
+                    if len(test_data) >= 150:  # 167 patents dataset
+                        self.patents = test_data
+                        self.loaded_filename = f.name
+                        self._enriched_cache = []
+                        st.success(f"✅ Loaded {len(test_data)} patents from {f.name}")
+                        return True
+            
+            self.patents = data
+            self.loaded_filename = latest_file.name
             self._enriched_cache = []
             return True
         except Exception as exc:
@@ -718,9 +735,29 @@ def render_header(analyzer: PatentAnalyzer) -> None:
             st.cache_resource.clear()
             st.rerun()
 
+    # Debug: Check available data files
+    vault_dir = Path(__file__).parent / "patent_intelligence_vault"
+    discovery_files = sorted(
+        vault_dir.glob("patent_discoveries_*.json"),
+        key=lambda x: x.stat().st_mtime,
+        reverse=True,
+    )
+    
+    info_msg = f"Loaded file: <strong>{analyzer.loaded_filename or 'N/A'}</strong> | Scoring version: <strong>{SCORING_VERSION}</strong>"
+    
+    if discovery_files:
+        try:
+            with discovery_files[0].open("r") as f:
+                latest_count = len(json.load(f))
+            current_count = len(analyzer.patents) if analyzer.patents else 0
+            
+            if current_count < 50 and latest_count >= 150:
+                info_msg += f" ⚠️ <span style='color: #ff6b9d;'><strong>Mismatch:</strong> Showing {current_count} patents but {latest_count} available!</span>"
+        except:
+            pass
+
     st.markdown(
-        f"<div class='pm-card'><span class='pm-muted'>Loaded file:</span> <strong>{analyzer.loaded_filename or 'N/A'}</strong>"
-        f" &nbsp;|&nbsp; <span class='pm-muted'>Scoring version:</span> <strong>{SCORING_VERSION}</strong></div>",
+        f"<div class='pm-card'><span class='pm-muted'>{info_msg}</span></div>",
         unsafe_allow_html=True,
     )
 
