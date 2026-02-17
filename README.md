@@ -453,10 +453,10 @@ docker run -p 8501:8501 patent-miner
 
 ## 📞 Contact
 
-**Developer:** Micah Read  
-**Portfolio:** [Your Portfolio URL]  
-**LinkedIn:** [Your LinkedIn]  
-**Email:** [Your Email]
+**Developer:** Micah Read   
+**LinkedIn:** https://www.linkedin.com/in/micahread/  
+**GitHub:** https://github.com/p5yc0dr3am3r/  
+**Email:** micahreadmgmt@gmail.com
 
 *This project represents the first fully deployed AI application in my portfolio, demonstrating end-to-end capability from problem discovery to production deployment.*
 
