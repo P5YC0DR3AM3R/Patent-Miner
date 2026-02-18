@@ -20,6 +20,7 @@ from viability_scoring import (
     compute_viability_scorecard,
     expiration_confidence_score,
 )
+from patent_summarizer import summarize_patent
 
 # Load environment variables
 load_dotenv()
@@ -1101,6 +1102,35 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("**Detailed Analysis**")
+
+        # ── AI Plain-English Summary ──────────────────────────────────────────
+        summary_key = f"summary_{patent.get('patent_number', 'unknown')}"
+        if summary_key not in st.session_state:
+            st.session_state[summary_key] = None
+
+        if st.session_state[summary_key] is None:
+            if st.button("🤖 Generate Plain-English Summary", key=f"btn_{summary_key}"):
+                with st.spinner("Generating summary with local Mistral model…"):
+                    st.session_state[summary_key] = summarize_patent(patent)
+                st.rerun()
+        else:
+            st.markdown(
+                f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
+                <div style='font-size:0.85em;font-weight:700;color:#0066ff;
+                            text-transform:uppercase;letter-spacing:0.05em;
+                            margin-bottom:0.6rem;'>
+                    🤖 AI Use-Case Summary
+                </div>
+                <div style='color:#1a1a2e;font-size:1em;line-height:1.7;'>
+                    {st.session_state[summary_key]}
+                </div>
+                </div>""",
+                unsafe_allow_html=True,
+            )
+            if st.button("↺ Regenerate", key=f"regen_{summary_key}"):
+                st.session_state[summary_key] = None
+                st.rerun()
+
         col1, col2, col3 = st.columns(3)
 
         with col1:
