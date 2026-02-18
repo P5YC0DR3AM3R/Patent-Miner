@@ -1,0 +1,103 @@
+# File Inventory
+
+Total files reviewed: 97
+
+- `.env`: Local environment file containing runtime secrets (not for source control).
+- `.env.example`: Template environment variables file with placeholder values.
+- `.gitignore`: Git ignore rules for secrets, artifacts, and temporary files.
+- `.playwright-mcp/menu_fixed.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.playwright-mcp/page-2026-02-18T01-37-27-983Z.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.playwright-mcp/page-2026-02-18T01-38-02-763Z.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.playwright-mcp/page-2026-02-18T02-10-06-448Z.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.playwright-mcp/page-2026-02-18T02-10-14-824Z.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.playwright-mcp/page-2026-02-18T02-10-18-475Z.png`: Playwright UI screenshot artifact used for visual debugging.
+- `.streamlit/config.toml`: Streamlit theme configuration file.
+- `.vscode/settings.json`: Workspace-specific VS Code settings.
+- `ANALYSIS_REPORT.md`: Narrative commercialization report from an earlier analysis run.
+- `CODE_AUDIT.md`: Code quality findings and post-refactor resolution log.
+- `DEPLOY.md`: Deployment instructions for Docker/Nginx/Render environments.
+- `DISCOVERY_SETUP.md`: Setup instructions for discovery API configuration.
+- `Dockerfile`: Container build recipe for running the Streamlit app.
+- `EXPIRED_PATENT_ANALYSIS_GUIDE.md`: Documentation for expired-patent BI framework and usage.
+- `EXPIRED_PATENT_BI_IMPLEMENTATION.md`: Implementation summary for the BI modules and outputs.
+- `FILE_INVENTORY.md`: Complete repository inventory with one-line purpose per file.
+- `FINANCIAL_AUDIT.md`: Financial assumptions audit with replacement values and rationale.
+- `PROJECT_COMPLETE.md`: Project completion summary and walkthrough document.
+- `Patent_Miner.ipynb`: Notebook runner for the discovery pipeline.
+- `QUICKSTART.md`: Quick-start commands for install, discovery, and dashboard launch.
+- `README.md`: Primary project overview, architecture, and usage documentation.
+- `SECURITY_AUDIT.md`: Security findings with mitigation status and evidence snippets.
+- `STREAMLIT_BI_TAB_GUIDE.md`: Guide describing BI tab layout and usage in the dashboard.
+- `TAB_STRUCTURE.md`: Implemented old-to-new tab hierarchy map and rationale.
+- `brand_intelligence.py`: Legacy script to generate brand and GTM suggestions from checkpoint data.
+- `display_results.py`: Legacy script to print checkpoint analysis results and summary stats.
+- `docker-compose.yml`: Production Compose definition for the containerized app.
+- `docs/plans/2026-02-18-patent-detail-summary.md`: Implementation plan document for patent detail summary enhancements.
+- `execute_crew_analysis.py`: Standalone script wrapper for running comprehensive analysis with crew mode.
+- `expired_patent_analysis_crew.py`: Crew-based multi-agent analysis orchestration module.
+- `firebase-debug.log`: Firebase CLI debug log output from local deployment activity.
+- `generate_summaries.py`: Batch script to pre-generate patent summaries using local model.
+- `patent_analysis_framework.py`: Deterministic technical/financial/strategic patent analysis framework.
+- `patent_discovery.py`: Core discovery, retrieval, normalization, and ranking pipeline logic.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_115708.md`: Generated business intelligence markdown report snapshot.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_120809.md`: Generated business intelligence markdown report snapshot.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_122738.md`: Generated business intelligence markdown report snapshot.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_140025.md`: Generated business intelligence markdown report snapshot.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_141210.md`: Generated business intelligence markdown report snapshot.
+- `patent_intelligence_vault/EXPIRED_PATENT_REPORT_20260217_221146.md`: Generated business intelligence markdown report snapshot from refactored model run.
+- `patent_intelligence_vault/action_plan_20260212_183012.json`: Generated commercialization action plan snapshot.
+- `patent_intelligence_vault/brand_intelligence_20260212_183012.json`: Generated brand-intelligence output snapshot.
+- `patent_intelligence_vault/checkpoint_analysis_20260212_180547_final.json`: Legacy checkpoint analysis snapshot.
+- `patent_intelligence_vault/checkpoint_analysis_20260212_182702_final.json`: Legacy checkpoint analysis snapshot.
+- `patent_intelligence_vault/checkpoint_analysis_20260212_183422_final.json`: Legacy checkpoint analysis snapshot.
+- `patent_intelligence_vault/discovery_diagnostics_20260212_202144.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_182054.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_182149.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_183523.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_183603.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_183638.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260216_183710.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260217_111715.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260217_135129.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/discovery_diagnostics_20260217_135844.json`: Generated discovery diagnostics snapshot for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_115653.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_115708.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_120809.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_122738.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_140025.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_141210.json`: Generated full analysis results export (JSON) for a run.
+- `patent_intelligence_vault/patent_analysis_results_20260217_221146.json`: Generated full analysis results export (JSON) from refactored model run.
+- `patent_intelligence_vault/patent_discoveries_20260216_182054.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_discoveries_20260216_182149.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_discoveries_20260216_183710.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_discoveries_20260217_111715.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_discoveries_20260217_135129.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_discoveries_20260217_135844.json`: Generated discovered-patents dataset snapshot (JSON).
+- `patent_intelligence_vault/patent_rankings_20260217_115653.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_115708.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_120809.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_122738.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_140025.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_141210.csv`: Generated patent ranking export (CSV) for a run.
+- `patent_intelligence_vault/patent_rankings_20260217_221146.csv`: Generated patent ranking export (CSV) from refactored model run.
+- `patent_intelligence_vault/patent_summaries.json`: Cached plain-English patent summaries used by the UI.
+- `patent_intelligence_vault/summary_20260212_182930.json`: Generated high-level summary snapshot from legacy run.
+- `patent_miner_config.py`: Central runtime configuration assembly for discovery pipeline.
+- `patent_summarizer.py`: Streamlit-integrated local summarization helper and cache loader.
+- `render.yaml`: Render deployment service definition.
+- `requirements.txt`: Python dependency specification for the project.
+- `requirements-optional.txt`: Optional crew/model dependency set for advanced workflows.
+- `run_crew_analysis.py`: Convenience script to trigger comprehensive analysis with crew mode.
+- `run_dashboard.sh`: Shell launcher script for the Streamlit dashboard.
+- `run_expired_patent_analysis.py`: Main BI pipeline runner and markdown report generator.
+- `scoring_utils.py`: Shared deterministic text/scoring utility functions.
+- `streamlit_app.py`: Primary Streamlit dashboard application and UI logic.
+- `summarization_config.py`: Shared summarization prompt and model-location configuration.
+- `temp_patent_miner.py`: Lean Python discovery runner equivalent to notebook flow.
+- `tests/fixtures/patent_candidates_fixture.json`: Test fixture dataset for retrieval and scoring validations.
+- `tests/test_patent_discovery.py`: Unit tests for discovery config parsing, API behavior, and parity checks.
+- `tests/test_retrieval_v2.py`: Unit tests for multi-pass retrieval quality and ranking behavior.
+- `tests/test_schema_compat.py`: Compatibility tests for legacy/v2 schema behavior in analyzer flow.
+- `tests/test_streamlit_data_flow.py`: Tests for Streamlit analyzer enrichment and tab-label expectations.
+- `tests/test_viability_scoring.py`: Unit tests for viability scoring determinism and bounds.
+- `viability_scoring.py`: Deterministic viability/domain scoring and opportunity blending logic.

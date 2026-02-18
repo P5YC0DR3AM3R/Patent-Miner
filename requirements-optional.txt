@@ -1,0 +1,13 @@
+# Optional dependencies for advanced workflows.
+# Install only if you need these features:
+#   pip install -r requirements.txt -r requirements-optional.txt
+
+# Crew-based multi-agent analysis
+crewai~=1.9.0
+crewai-tools~=1.9.0
+langchain~=1.2.0
+langchain-community~=0.4.0
+openai~=1.83.0
+
+# Local summarization model runtime
+gpt4all~=2.8.0

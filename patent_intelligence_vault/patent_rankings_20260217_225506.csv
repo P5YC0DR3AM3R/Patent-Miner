@@ -1,0 +1,187 @@
+Rank,Patent_Number,Title,Integrated_Score,Confidence,Technology_Theme,Scientific_Robustness,Manufacturing_Feasibility,Modernization_Potential,Strategic_Fit,NPV_Base,NPV_P10,NPV_P90,Product_Value_Estimate,Serviceable_Market_Size,Benchmark_Industry,Recommendation_Tier,Red_Flags
+1,3930752,Oil well pumpoff control system utilizing integration timer,6.6,0.45,sensors,6.5,7.0,7.5,7.2,-7757.0,-22431.0,9584.0,301801.0,450000.0,Electronics (General),1,Negative NPV in base scenario
+2,3932795,Servo control positioning apparatus including a standing wave detector,6.6,0.47,sensors,6.5,7.0,7.5,7.2,-12196.0,-23762.0,4318.0,234734.0,350000.0,Electronics (General),1,Negative NPV in base scenario
+3,3935542,Contactless oscillator-type proximity sensor with constant-voltage impedance,6.52,0.76,sensors,6.5,6.5,7.0,6.8,132742.0,91220.0,178510.0,1681035.0,975000.0,Software  (System & Application),2,
+4,3932246,Gas sensor and method of manufacture,6.51,0.78,sensors,7.0,7.5,6.0,6.8,150289.0,109071.0,192904.0,598743.0,975000.0,Electronics (General),2,
+5,3930684,Automatic wafer feeding and pre-alignment apparatus and method,6.5,0.77,sensors,6.5,6.5,7.5,7.0,137765.0,95945.0,177936.0,548848.0,825000.0,Electronics (General),2,
+6,3934205,"Frequency lock loop employing a gated frequency difference detector having positive, zero and negative threshold detectors",6.47,0.73,sensors,6.5,6.5,7.5,7.0,61726.0,36625.0,88552.0,335334.0,500000.0,Electronics (General),2,
+7,3933612,Glass electrode structure for radio capsule,6.44,0.56,sensors,7.0,6.5,6.0,6.2,-24635.0,-45474.0,-1557.0,368868.0,550000.0,Electronics (General),2,Negative NPV in base scenario
+8,3933028,Air/fuel ratio sensor for air/fuel ratios in excess of stoichiometry,6.43,0.77,sensors,6.5,7.5,6.0,6.8,158796.0,111082.0,207824.0,632634.0,1075000.0,Electronics (General),2,
+9,3930281,Floor cleaning machine,6.43,0.78,apparatus,6.5,5.5,7.5,6.5,-46903.0,-59978.0,-34351.0,94973.0,350000.0,Farming/Agriculture,2,Negative NPV in base scenario
+10,3935381,Electronic solid state sensor image size control,6.39,0.59,sensors,5.0,7.0,7.5,7.2,46432.0,8010.0,83411.0,653902.0,975000.0,Electronics (General),1,
+11,3932803,Electronic monitoring system including contactless motion detector,6.38,0.45,sensors,5.0,7.0,7.5,7.2,3908.0,-18281.0,26746.0,402401.0,600000.0,Electronics (General),1,
+12,3932872,Core design for flexible H-sensor for ELF,6.31,0.57,sensors,7.0,6.5,6.0,6.2,37262.0,4767.0,69178.0,522712.0,825000.0,Electronics (General),2,
+13,3934685,Wheel speed sensor assembly,6.31,0.5,sensors,7.0,7.0,6.0,6.5,26754.0,4765.0,61132.0,486235.0,725000.0,Electronics (General),2,
+14,3933029,Gas detector with automatically operable fan switch,6.3,0.47,sensors,5.5,6.5,7.5,7.0,-10947.0,-22488.0,2487.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+15,3932756,X-ray detector for a panoramic X-ray device,6.28,0.77,sensors,5.0,7.0,6.0,6.5,-45391.0,-58937.0,-30941.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+16,3930494,Method and apparatus for the indirect measurement of blood pressure,6.23,0.45,sensors,5.0,6.5,7.5,7.0,342.0,-22324.0,19288.0,94973.0,350000.0,Farming/Agriculture,2,
+17,3930726,System for measuring volumetric ratios of liquid suspended solids,6.22,0.45,sensors,5.5,6.5,6.0,6.2,-10947.0,-25956.0,1549.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+18,3930729,Interferometer apparatus incorporating a spherical element of index of refraction of two,6.22,0.67,sensors,6.5,7.0,6.0,6.5,-19423.0,-30956.0,-8416.0,201201.0,300000.0,Electronics (General),2,Negative NPV in base scenario
+19,3934678,Flow monitor for circulating lubrication systems,6.22,0.72,sensors,6.5,7.0,6.0,6.5,-22068.0,-32152.0,-12618.0,167667.0,250000.0,Electronics (General),2,Negative NPV in base scenario
+20,3935079,Method and apparatus for displaying active oxygen and sensor temperature,6.19,0.77,sensors,7.0,6.5,6.0,6.2,118963.0,76983.0,147101.0,486235.0,725000.0,Electronics (General),2,
+21,3933438,Combustible gas sensor for closed loop fuel control,6.17,0.61,sensors,7.0,6.5,6.0,6.2,43622.0,11023.0,76377.0,611923.0,1025000.0,Electronics (General),2,
+22,3930730,Interferometric device for measurement of variations in length of a sample under the influence of temperature,6.16,0.56,sensors,7.0,6.5,6.0,6.2,31577.0,4254.0,60075.0,486235.0,725000.0,Electronics (General),2,
+23,3930734,Process and apparatus for sensing magnitude and direction of lateral displacement,6.16,0.69,sensors,7.0,6.5,6.0,6.2,31240.0,15483.0,47781.0,234734.0,350000.0,Electronics (General),2,
+24,3931521,Dual spectrum infrared fire detector,6.16,0.65,sensors,5.0,6.5,6.0,6.2,31240.0,13270.0,53298.0,234734.0,350000.0,Electronics (General),2,
+25,3934143,Detector for ionizing radiation,6.15,0.45,sensors,7.0,6.5,6.0,6.2,-90.0,-17424.0,19487.0,301801.0,450000.0,Electronics (General),2,Negative NPV in base scenario
+26,3930397,Combustion testing apparatus,6.13,0.78,materials,6.5,5.5,7.5,6.5,-38441.0,-50690.0,-30191.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+27,3930545,Tiltable coupling,6.09,0.61,sensors,6.5,6.5,6.0,6.2,33988.0,10824.0,61939.0,486235.0,725000.0,Electronics (General),2,
+28,3932738,Transition monitor for a unit transition counter,6.08,0.48,sensors,6.5,6.5,6.0,6.2,22926.0,-2042.0,48954.0,301801.0,450000.0,Electronics (General),2,
+29,3933248,Bird-swing detector,6.08,0.45,sensors,6.5,6.5,6.0,6.2,20456.0,-6728.0,47008.0,469468.0,700000.0,Electronics (General),2,
+30,3934193,Electrolytic conductivity detector,6.08,0.45,sensors,6.5,6.5,6.0,6.2,4090.0,-15500.0,23204.0,335334.0,500000.0,Electronics (General),2,
+31,3931571,Eddy current metal surface flaw detector,6.08,0.45,sensors,5.5,7.0,6.0,6.5,3908.0,-15965.0,27082.0,402401.0,600000.0,Electronics (General),2,
+32,3930406,Cigarette ends firmness detector,6.07,0.56,sensors,5.5,7.0,6.0,6.5,-15770.0,-29502.0,-1759.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+33,3930324,Mechanical excavating machines including rotary cutter and suction tube,6.07,0.54,sensors,5.5,7.0,6.0,6.5,-15770.0,-28640.0,965.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+34,3935464,Multiple cathode gas proportional detector,6.07,0.56,sensors,5.5,7.0,6.0,6.5,-15770.0,-31101.0,-2639.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+35,3931559,Malfunction detector circuit for the use with a pump-off control circuit,6.07,0.45,sensors,6.5,6.5,6.0,6.2,-17512.0,-40489.0,6438.0,402401.0,600000.0,Electronics (General),2,Negative NPV in base scenario
+36,3930630,Vacuum cleaner support apparatus,6.06,0.76,apparatus,6.5,5.5,6.0,5.8,-29302.0,-38222.0,-19394.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+37,3930405,Method and means for measuring acoustic emissions,6.01,0.67,sensors,5.0,6.5,6.0,6.2,27484.0,12264.0,44938.0,217437.0,250000.0,Environmental  & Waste Services,2,
+38,3930360,Alarm clock timer,6.01,0.62,control_systems,6.5,5.0,7.5,6.2,21706.0,9027.0,40771.0,627149.0,250000.0,Software  (System & Application),2,
+39,3935468,Light responsive detector,6.0,0.45,sensors,5.0,7.0,6.0,6.5,3908.0,-14276.0,32444.0,402401.0,600000.0,Electronics (General),2,
+40,3931538,Signal detector for a semiconductor memory device,6.0,0.45,sensors,5.0,7.0,6.0,6.5,-7757.0,-25567.0,10075.0,301801.0,450000.0,Electronics (General),2,Negative NPV in base scenario
+41,3932763,Detector for tubular transparent article,6.0,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-21810.0,4012.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+42,3931573,Radiation detector,5.99,0.54,sensors,5.0,7.0,6.0,6.5,-15770.0,-30833.0,-677.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+43,3931619,Overtemperature monitor and integrator apparatus,5.99,0.72,sensors,5.0,7.0,6.0,6.5,-22068.0,-31966.0,-12037.0,167667.0,250000.0,Electronics (General),2,Negative NPV in base scenario
+44,3932108,Apparatus for making probe covers for electronic thermometers,5.99,0.62,apparatus,5.5,5.5,7.5,6.5,-22477.0,-39236.0,-6561.0,399157.0,450000.0,Electrical Equipment,2,Negative NPV in base scenario
+45,3930622,Energy storing safety belt retractor,5.99,0.76,materials,7.0,5.0,6.0,5.5,-34629.0,-46114.0,-23917.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+46,3930412,Electrically scanned pressure transducer configurations,5.98,0.81,sensors,5.0,7.0,6.0,6.5,-49017.0,-59465.0,-39167.0,167667.0,250000.0,Electronics (General),2,Negative NPV in base scenario
+47,3934099,"Bias, feedback and network arrangements for hybrid circuits",5.98,0.75,control_systems,7.0,5.0,7.0,6.0,69547.0,45735.0,95725.0,1128869.0,450000.0,Software  (System & Application),2,
+48,3935394,Network routing and control arrangement,5.96,0.63,control_systems,7.0,5.0,7.0,6.0,35452.0,11729.0,61046.0,1128869.0,450000.0,Software  (System & Application),2,
+49,3930409,Horsepower computing network for chassis dynamometers,5.96,0.65,energy,5.0,6.0,7.0,6.5,21706.0,9318.0,37523.0,627149.0,250000.0,Software  (System & Application),2,
+50,3931549,Control circuit for electromagnetic transducer,5.95,0.75,control_systems,5.0,5.0,7.5,6.2,72634.0,45512.0,99668.0,1128869.0,450000.0,Software  (System & Application),2,
+51,3935089,Oxygen sensor coated with catalytic material,5.94,0.58,sensors,5.5,6.5,6.0,6.2,41544.0,6536.0,75210.0,582784.0,1025000.0,Electronics (General),2,
+52,3931736,Improved fluid flow sensor configuration,5.93,0.45,sensors,5.5,6.5,6.0,6.2,4531.0,-24044.0,32138.0,486235.0,725000.0,Electronics (General),2,
+53,3932718,Intrusion detector,5.92,0.45,sensors,5.5,6.5,6.0,6.2,-10947.0,-24290.0,1595.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+54,3935466,Smoke detector adapted to a smoke sensing apparatus,5.92,0.45,sensors,5.5,6.5,6.0,6.2,-10947.0,-26326.0,56.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+55,3935433,Electromagnetically operated remote meter or register having counter wheel locking means,5.91,0.77,apparatus,5.0,5.5,7.5,6.5,-29302.0,-38817.0,-20822.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+56,3930669,Steerable trailer suspension system,5.91,0.77,materials,6.5,5.0,6.0,5.5,-34629.0,-47069.0,-25991.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+57,3930404,"Inside diameter, outside diameter and wall tube gage",5.91,0.78,materials,5.0,5.5,7.5,6.5,-40873.0,-52154.0,-28746.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+58,3930422,Power transmission apparatus,5.91,0.76,apparatus,5.0,5.5,7.5,6.5,-50589.0,-66776.0,-33167.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+59,3934132,Shift network for dual width operands,5.9,0.74,control_systems,6.5,5.0,7.0,6.0,72634.0,48651.0,103999.0,1128869.0,450000.0,Software  (System & Application),2,
+60,3931610,Capacitive keyswitch sensor and method,5.89,0.74,sensors,5.0,6.5,6.0,6.2,118963.0,81299.0,171748.0,486235.0,725000.0,Electronics (General),2,
+61,3935384,Network for generating a CRT control signal for enhancing the edges of television images,5.88,0.63,control_systems,6.5,5.0,7.0,6.0,21706.0,7999.0,38484.0,627149.0,250000.0,Software  (System & Application),2,
+62,3932813,Eddy current sensor,5.86,0.61,sensors,5.0,6.5,6.0,6.2,33988.0,10824.0,61939.0,486235.0,725000.0,Electronics (General),2,
+63,3930755,Air-pressure actuated slurry pump,5.86,0.58,sensors,5.0,6.5,6.0,6.2,33988.0,5435.0,61483.0,486235.0,725000.0,Electronics (General),2,
+64,3930629,Overheated journal bearing derailment prevention system,5.86,0.58,sensors,5.0,6.5,6.0,6.2,33988.0,5435.0,61483.0,486235.0,725000.0,Electronics (General),2,
+65,3934475,Capacitance type material level detector for hoppers,5.86,0.57,sensors,5.0,6.5,6.0,6.2,33988.0,6449.0,64635.0,486235.0,725000.0,Electronics (General),2,
+66,3930783,Primary control means for furnaces,5.85,0.45,sensors,5.0,6.5,6.0,6.2,12273.0,-9706.0,34183.0,402401.0,600000.0,Electronics (General),2,
+67,3931523,Activation neutron detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,12273.0,-9353.0,33281.0,402401.0,600000.0,Electronics (General),2,
+68,3933039,Pulse flow detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,12273.0,-12360.0,33460.0,402401.0,600000.0,Electronics (General),2,
+69,3935416,Inductor-workpiece position detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,12273.0,-14551.0,37920.0,402401.0,600000.0,Electronics (General),2,
+70,3934145,Ionization smoke detector and alarm system,5.85,0.45,sensors,5.0,6.5,6.0,6.2,12273.0,-7364.0,35432.0,402401.0,600000.0,Electronics (General),2,
+71,3935493,Radiation detector using double amplification,5.85,0.45,sensors,5.0,6.5,6.0,6.2,4090.0,-17435.0,19289.0,335334.0,500000.0,Electronics (General),2,
+72,3930789,Device for preheating waste gases of an exhaust conduit,5.85,0.45,apparatus,7.0,5.0,6.0,5.5,-4481.0,-16316.0,8277.0,217437.0,250000.0,Environmental  & Waste Services,2,Negative NPV in base scenario
+73,3932821,Out of lock detector for phase lock loop synthesizer,5.85,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-21522.0,4433.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+74,3931739,Negative pressure detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-21940.0,5808.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+75,3931607,Array transducer angular tracking system,5.85,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-20014.0,4924.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+76,3935492,Ionization smoke detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-21940.0,5808.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+77,3932851,Aerosol detector,5.85,0.45,sensors,5.0,6.5,6.0,6.2,-8536.0,-23629.0,6690.0,234734.0,350000.0,Electronics (General),2,Negative NPV in base scenario
+78,3930652,Portable lawn playing checker apparatus,5.84,0.71,apparatus,7.0,5.5,6.0,5.8,-26701.0,-38603.0,-14113.0,310456.0,350000.0,Electrical Equipment,2,Negative NPV in base scenario
+79,3930817,Extraction apparatus,5.84,0.76,apparatus,5.0,5.5,6.0,5.8,-29302.0,-39578.0,-19535.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+80,3930289,Coupling device,5.84,0.76,apparatus,7.0,5.5,6.0,5.8,-29302.0,-39991.0,-21091.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+81,3931576,Automatic gain control circuit for radio receiver,5.8,0.75,control_systems,5.0,5.0,7.5,6.2,72634.0,45512.0,99668.0,1128869.0,450000.0,Software  (System & Application),2,
+82,3933081,Fluid control circuit for a radio controlled vehicle,5.8,0.74,control_systems,6.5,5.5,6.0,5.8,63375.0,37892.0,88423.0,1128869.0,450000.0,Software  (System & Application),2,
+83,3930317,Electronic azimuth transfer method and system,5.8,0.74,process,5.0,5.0,7.5,6.2,61267.0,39211.0,85562.0,314898.0,450000.0,Machinery,2,
+84,3930533,Continuous casting apparatus with flexible starting bar which is gear-rack supported in storage position,5.78,0.46,control_systems,6.5,5.5,6.0,5.8,13765.0,-1622.0,30724.0,627149.0,250000.0,Software  (System & Application),2,
+85,3934302,"Portable, multi-purpose, rechargeable cigarette lighter",5.77,0.53,enabling_technology,5.5,5.0,6.0,5.5,-10287.0,-19006.0,1206.0,174943.0,250000.0,Machinery,2,Negative NPV in base scenario
+86,3930433,Automatic firearms with bolt assisted by an additional mass,5.77,0.65,enabling_technology,5.0,5.0,7.5,6.2,-15386.0,-25333.0,-5402.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+87,3930574,Apparatus for orienting and accumulating containers,5.76,0.76,apparatus,6.5,5.5,6.0,5.8,-29302.0,-39578.0,-19535.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+88,3931676,Portable power saw apparatus,5.76,0.78,apparatus,6.5,5.5,6.0,5.8,-50589.0,-64250.0,-35871.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+89,3934372,Portable upblast cleaning head,5.72,0.7,process,5.0,5.0,6.0,5.5,39200.0,19980.0,60245.0,244920.0,350000.0,Machinery,2,
+90,3930873,Radio-photoluminescence dosimeter glass of low energy dependence and method of manufacturing same,5.71,0.7,process,5.0,5.0,6.0,5.5,28473.0,13128.0,42305.0,209932.0,300000.0,Machinery,2,
+91,3932834,Seismic transducer assembly for marshy terrains,5.71,0.68,materials,5.0,5.0,6.0,5.5,27484.0,13415.0,44635.0,217437.0,250000.0,Environmental  & Waste Services,2,
+92,3930547,Snow vehicle suspension system,5.71,0.61,control_systems,7.0,5.0,6.0,5.5,21706.0,5811.0,37967.0,627149.0,250000.0,Software  (System & Application),2,
+93,3930754,Portable water sampling apparatus,5.7,0.45,apparatus,7.0,5.0,6.0,5.5,1986.0,-13580.0,17095.0,260924.0,300000.0,Environmental  & Waste Services,2,
+94,3930430,Photo-electric organ with chiff,5.7,0.45,enabling_technology,7.0,5.0,6.0,5.5,-572.0,-18148.0,16091.0,318391.0,450000.0,Total  Market (without financials),2,Negative NPV in base scenario
+95,3930761,Portable and manually operable peristaltic pump,5.69,0.67,enabling_technology,7.0,5.0,6.0,5.5,-15386.0,-23762.0,-5731.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+96,3935398,Transducer with improved armature and yoke construction,5.69,0.66,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25225.0,-6595.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+97,3930728,Monochromator with concave grating,5.69,0.65,enabling_technology,7.0,5.0,6.0,5.5,-15386.0,-25482.0,-5691.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+98,3935484,Replaceable acoustic transducer assembly,5.69,0.66,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-26285.0,-7357.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+99,3931577,Radio receiver protection arrangement,5.69,0.66,wireless,5.0,5.0,6.0,5.5,-17468.0,-28680.0,-6896.0,196996.0,450000.0,Telecom  (Wireless),2,Negative NPV in base scenario
+100,3930764,Air tool overspeed shutoff device,5.69,0.74,apparatus,7.0,5.0,6.0,5.5,-25151.0,-35276.0,-16334.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+101,3930486,Convertible baseball and tennis practice machine,5.68,0.77,control_systems,7.0,5.0,6.0,5.5,-42652.0,-57042.0,-30810.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+102,3930495,Invalid exercising device,5.68,0.78,apparatus,7.0,5.0,6.0,5.5,-45298.0,-59673.0,-33556.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+103,3931469,Crossover network for a multi-element electrostatic loudspeaker system,5.68,0.74,enabling_technology,5.0,5.0,7.0,6.0,72634.0,48615.0,103188.0,1128869.0,450000.0,Software  (System & Application),2,
+104,3930610,Method and apparatus for obtaining accurately the angle of attack of an aircraft,5.67,0.75,process,5.0,5.0,7.0,6.0,49650.0,33450.0,69624.0,627149.0,250000.0,Software  (System & Application),2,
+105,3933329,Support apparatus for a portable shower head,5.63,0.48,control_systems,5.5,5.5,6.0,5.8,13765.0,998.0,31266.0,627149.0,250000.0,Software  (System & Application),2,
+106,3934152,Enclosure for confining radio-active products or waste,5.63,0.45,materials,5.5,5.0,6.0,5.5,4640.0,-10126.0,19395.0,260924.0,300000.0,Environmental  & Waste Services,2,
+107,3930321,Question and answer game,5.63,0.45,enabling_technology,6.5,5.0,6.0,5.5,156.0,-15807.0,19417.0,332480.0,500000.0,Total  Market (without financials),2,
+108,3930274,Assembly for use in recreational activities,5.62,0.45,enabling_technology,6.5,5.0,6.0,5.5,-1976.0,-13576.0,10488.0,217437.0,250000.0,Environmental  & Waste Services,2,Negative NPV in base scenario
+109,3930653,Lid latch mechanism for a disc record player,5.62,0.45,enabling_technology,6.5,5.0,6.0,5.5,-8706.0,-20098.0,4687.0,247638.0,350000.0,Total  Market (without financials),2,Negative NPV in base scenario
+110,3930424,Multi-shell limited slip differential,5.62,0.45,enabling_technology,6.5,5.0,6.0,5.5,-8706.0,-22291.0,5189.0,247638.0,350000.0,Total  Market (without financials),2,Negative NPV in base scenario
+111,3930670,Oscillation damping and stabilizing trailer hitch dolly,5.62,0.67,wireless,6.5,5.0,6.0,5.5,-14981.0,-24080.0,-6410.0,168950.0,250000.0,Telecom  (Wireless),2,Negative NPV in base scenario
+112,3931725,Mobile machine for producing metal siding,5.62,0.66,enabling_technology,6.5,5.0,6.0,5.5,-15386.0,-25707.0,-6647.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+113,3930680,Modular structures for enclosing a vehicle load or passenger receiving space,5.62,0.67,enabling_technology,6.5,5.0,6.0,5.5,-15386.0,-23762.0,-5731.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+114,3930364,Bracelet primarily for a watch,5.62,0.67,enabling_technology,6.5,5.0,6.0,5.5,-15386.0,-24497.0,-6148.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+115,3930576,Combined packaging and display box,5.62,0.67,enabling_technology,6.5,5.0,6.0,5.5,-15386.0,-24792.0,-6511.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+116,3930413,Quick release gauge fitting,5.62,0.63,enabling_technology,6.5,5.0,6.0,5.5,-15386.0,-24842.0,-3335.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+117,3930485,Apparatus for mixing fuel and air for an internal combustion,5.61,0.7,apparatus,5.5,5.5,6.0,5.8,-26701.0,-40893.0,-14556.0,310456.0,350000.0,Electrical Equipment,2,Negative NPV in base scenario
+118,3930313,Drawing apparatus,5.61,0.7,apparatus,5.5,5.5,6.0,5.8,-26701.0,-39483.0,-13485.0,310456.0,350000.0,Electrical Equipment,2,Negative NPV in base scenario
+119,3933146,Portable single burner campstove,5.61,0.76,energy,6.5,5.0,6.0,5.5,-33728.0,-44623.0,-21635.0,432582.0,250000.0,Green  & Renewable Energy,2,Negative NPV in base scenario
+120,3930667,Inflatable garment for crash protection,5.61,0.76,energy,6.5,5.0,6.0,5.5,-36594.0,-50894.0,-27032.0,432582.0,250000.0,Green  & Renewable Energy,2,Negative NPV in base scenario
+121,3930310,Stable power ring tool,5.61,0.77,energy,6.5,5.0,6.0,5.5,-42652.0,-56096.0,-29078.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+122,3930800,Fluidized bed desubliming apparatus for recovery of aluminum chloride,5.56,0.59,control_systems,5.0,5.5,6.0,5.8,25041.0,7006.0,47169.0,752579.0,300000.0,Software  (System & Application),2,
+123,3930475,Engine exhaust gas recirculating control,5.56,0.45,control_systems,5.0,5.5,6.0,5.8,13765.0,-2640.0,30431.0,627149.0,250000.0,Software  (System & Application),2,
+124,3931743,Compact speed reduction mechanism for a uhf indicator dial,5.54,0.66,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25707.0,-6647.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+125,3930439,Device for wrapping sheets around food,5.54,0.69,apparatus,5.0,5.5,6.0,5.8,-26701.0,-40993.0,-13049.0,310456.0,350000.0,Electrical Equipment,2,Significant regulatory hurdles; Negative NPV in base scenario
+126,3930614,Device for spraying a traveling paper web or the like,5.54,0.71,apparatus,5.0,5.5,6.0,5.8,-26701.0,-39226.0,-14032.0,310456.0,350000.0,Electrical Equipment,2,Negative NPV in base scenario
+127,3932856,"Portable, gravity-actuated alarm for use with a window or door",5.54,0.77,apparatus,5.0,5.5,6.0,5.8,-29302.0,-39767.0,-21587.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+128,3930682,Safety belt tension relieving apparatus,5.54,0.76,apparatus,5.0,5.5,6.0,5.8,-29302.0,-39578.0,-19535.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+129,3933164,Portable duck blind camp cot and back pack,5.54,0.77,apparatus,5.0,5.5,6.0,5.8,-29302.0,-37542.0,-19648.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+130,3930389,Lock and support device for fuel tank,5.54,0.77,apparatus,5.0,5.5,6.0,5.8,-29302.0,-38423.0,-19798.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+131,3931641,Transducer suspension mount apparatus,5.54,0.77,apparatus,5.0,5.5,6.0,5.8,-29302.0,-38299.0,-20116.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+132,3930703,Central plug connection,5.53,0.78,materials,5.0,5.5,6.0,5.8,-40873.0,-52704.0,-29930.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+133,3934195,Portable electric capacitor tester using an LED indicator,5.53,0.78,apparatus,5.0,5.5,6.0,5.8,-43618.0,-57995.0,-33964.0,432582.0,250000.0,Green  & Renewable Energy,2,Negative NPV in base scenario
+134,3932262,Portable electrophoresis apparatus using minimum electrolyte,5.53,0.77,apparatus,5.0,5.5,6.0,5.8,-50589.0,-66166.0,-35764.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+135,3932908,Portable scrubbing device,5.53,0.78,apparatus,5.0,5.5,6.0,5.8,-50589.0,-67097.0,-38268.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+136,3930554,Power-assisted steering gear,5.53,0.77,control_systems,5.0,5.5,6.0,5.8,-50589.0,-65078.0,-35260.0,324143.0,250000.0,Power,2,Negative NPV in base scenario
+137,3930548,Motorized scaffold attachment,5.48,0.63,control_systems,5.5,5.0,6.0,5.5,21706.0,8811.0,39283.0,627149.0,250000.0,Software  (System & Application),2,
+138,3931470,Tape marking and indicating device for remote control operation,5.48,0.61,control_systems,5.5,5.0,6.0,5.5,19059.0,3920.0,32911.0,627149.0,250000.0,Software  (System & Application),2,
+139,3932714,Remote electrical transmission system,5.48,0.59,control_systems,5.5,5.0,6.0,5.5,19059.0,5300.0,35809.0,627149.0,250000.0,Software  (System & Application),2,
+140,3930303,Method for manufacturing compact thermoelectric modules,5.47,0.45,materials,5.5,5.0,6.0,5.5,-7454.0,-17730.0,5549.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+141,3930339,"Window regulator, especially for automobiles, with a threaded cable moving in a guide",5.47,0.57,enabling_technology,5.5,5.0,6.0,5.5,-10287.0,-20192.0,-2246.0,174943.0,250000.0,Machinery,2,Negative NPV in base scenario
+142,3930448,Rocket-deployed balloon for position marker,5.47,0.51,enabling_technology,5.5,5.0,6.0,5.5,-10287.0,-20953.0,329.0,174943.0,250000.0,Machinery,2,Negative NPV in base scenario
+143,3931951,Mobile pallet for an installation for production of pre-fabricated elements of concrete,5.47,0.51,enabling_technology,5.5,5.0,6.0,5.5,-10287.0,-20953.0,329.0,174943.0,250000.0,Machinery,2,Negative NPV in base scenario
+144,3930543,Tractor attachment,5.47,0.52,enabling_technology,5.5,5.0,6.0,5.5,-10287.0,-20676.0,-164.0,174943.0,250000.0,Machinery,2,Negative NPV in base scenario
+145,3930765,Rotary displacement pumps,5.47,0.67,enabling_technology,5.5,5.0,6.0,5.5,-15386.0,-24792.0,-6511.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+146,3930708,Flat cable wire-connector,5.47,0.66,enabling_technology,5.5,5.0,6.0,5.5,-15386.0,-25707.0,-6647.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+147,3930535,Apparatus for the preparation and dispensing of soft ice-cream,5.47,0.75,apparatus,5.5,5.0,6.0,5.5,-25151.0,-33716.0,-16190.0,221754.0,250000.0,Electrical Equipment,2,Negative NPV in base scenario
+148,3935442,Photoflash lamp array having electrically connected reflector,5.46,0.65,enabling_technology,5.5,5.0,6.0,5.5,-27251.0,-45697.0,-11418.0,318391.0,450000.0,Total  Market (without financials),2,Negative NPV in base scenario
+149,3934344,Portable chain saw,5.46,0.79,materials,5.5,5.0,6.0,5.5,-34629.0,-44636.0,-26553.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+150,3930560,Damping element,5.46,0.78,materials,5.5,5.0,6.0,5.5,-34629.0,-43960.0,-25379.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+151,3930690,Agitator shaft seal,5.46,0.77,materials,5.5,5.0,6.0,5.5,-35014.0,-46910.0,-25193.0,161966.0,300000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+152,3930768,Blow-head for tubular film,5.46,0.75,materials,5.5,5.0,6.0,5.5,-35727.0,-50376.0,-25342.0,161966.0,300000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+153,3930815,Electrostatic apparatus for removing entrained particulate material from a gas stream,5.46,0.78,materials,5.5,5.0,6.0,5.5,-36710.0,-46595.0,-26253.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+154,3930893,Conductivity connected charge-coupled device fabrication process,5.42,0.72,process,5.0,5.0,6.0,5.5,50803.0,28532.0,73845.0,279909.0,400000.0,Machinery,2,
+155,3930742,Velocity probe for compressor surge control,5.42,0.72,process,5.0,5.0,6.0,5.5,39200.0,22282.0,56205.0,244920.0,350000.0,Machinery,2,
+156,3934646,Constant temperature cold-end corrosion probe,5.42,0.7,process,5.0,5.0,6.0,5.5,39200.0,19610.0,59525.0,244920.0,350000.0,Machinery,2,
+157,3930358,Alarm clock timer,5.41,0.61,control_systems,5.0,5.0,6.0,5.5,21706.0,5811.0,37967.0,627149.0,250000.0,Software  (System & Application),2,
+158,3930624,Aircraft,5.41,0.64,control_systems,5.0,5.0,6.0,5.5,21706.0,6582.0,35681.0,627149.0,250000.0,Software  (System & Application),2,
+159,3930414,Method and apparatus for obtaining a representative sample of fluid flowing through a conduit,5.41,0.62,process,5.0,5.0,6.0,5.5,18622.0,6145.0,33497.0,174943.0,250000.0,Machinery,2,
+160,3930600,Injection molding device with back pressure control of screw movement,5.4,0.45,materials,5.0,5.0,6.0,5.5,2765.0,-12410.0,21713.0,200027.0,450000.0,Chemical  (Specialty),2,
+161,3930809,Assembly fixture for fixed point probe card,5.4,0.45,enabling_technology,5.0,5.0,6.0,5.5,-572.0,-18859.0,16220.0,318391.0,450000.0,Total  Market (without financials),2,Negative NPV in base scenario
+162,3934644,Remote engine water cooler,5.4,0.45,materials,5.0,5.0,6.0,5.5,-1976.0,-13730.0,9199.0,217437.0,250000.0,Environmental  & Waste Services,2,Negative NPV in base scenario
+163,3934373,Portable surface treating apparatus,5.4,0.45,materials,5.0,5.0,6.0,5.5,-5021.0,-20209.0,8048.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+164,3930356,Method and apparatus for influencing the ambient conditions during open-end spinning,5.4,0.45,materials,5.0,5.0,6.0,5.5,-7454.0,-18078.0,4636.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+165,3931719,Jewelry Component having mounted stones connected by deformable webs,5.4,0.45,enabling_technology,5.0,5.0,6.0,5.5,-8706.0,-21575.0,4080.0,247638.0,350000.0,Total  Market (without financials),2,Negative NPV in base scenario
+166,3930345,Mobile home resilient frost heave compensators,5.4,0.53,enabling_technology,5.0,5.0,6.0,5.5,-12474.0,-24215.0,107.0,212261.0,300000.0,Total  Market (without financials),2,Negative NPV in base scenario
+167,3930491,Combination fireplace and space heater,5.4,0.57,enabling_technology,5.0,5.0,6.0,5.5,-12474.0,-22384.0,-733.0,212261.0,300000.0,Total  Market (without financials),2,Negative NPV in base scenario
+168,3930378,Axially-displaceable and angularly-movable universal coupling,5.39,0.67,wireless,5.0,5.0,6.0,5.5,-14981.0,-24109.0,-6773.0,168950.0,250000.0,Telecom  (Wireless),2,Negative NPV in base scenario
+169,3930785,Portable lighter,5.39,0.65,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25086.0,-5345.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+170,3930701,Portable television cabinet surface extender,5.39,0.63,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-24842.0,-3335.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+171,3930277,Mobile floor sweeper,5.39,0.63,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-26366.0,-5112.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+172,3933275,Portable wine dispenser,5.39,0.65,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25482.0,-5691.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+173,3934277,Portable swimming pool construction,5.39,0.65,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25086.0,-5345.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+174,3930741,Vibratory compactor attachment,5.39,0.64,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25354.0,-4918.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+175,3930655,Seals for use between two relatively-rotating surfaces,5.39,0.63,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-26366.0,-5112.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+176,3930379,"Compensating and equalizing coupling for transmission of large torques, such as between the gear and the propellor of a ship",5.39,0.65,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-26240.0,-6376.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+177,3930538,Wellpoint with adjustable valve,5.39,0.63,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-26366.0,-5112.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+178,3930705,Electrical connector assembly,5.39,0.64,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25354.0,-4918.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+179,3930437,"Piston structure, particularly for hydraulic machines",5.39,0.67,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-23762.0,-5731.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+180,3930518,Valves,5.39,0.67,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-23762.0,-5731.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+181,3930618,Balanced sprinkler impact drive,5.39,0.66,enabling_technology,5.0,5.0,6.0,5.5,-15386.0,-25707.0,-6647.0,176884.0,250000.0,Total  Market (without financials),2,Negative NPV in base scenario
+182,3930472,Composite oil-cooled piston for an internal combustion engine,5.39,0.78,materials,5.0,5.0,6.0,5.5,-34629.0,-44936.0,-25390.0,134972.0,250000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+183,3930420,Steering wheel assembly,5.39,0.75,materials,5.0,5.0,6.0,5.5,-36471.0,-49366.0,-22922.0,179719.0,350000.0,Chemical  (Specialty),2,Negative NPV in base scenario
+184,3930551,Electric drive for wheel chairs,5.39,0.78,control_systems,5.0,5.0,6.0,5.5,-36594.0,-47143.0,-25907.0,432582.0,250000.0,Green  & Renewable Energy,2,Negative NPV in base scenario
+185,3930542,Rotary harrows,5.39,0.79,enabling_technology,5.0,5.0,6.0,5.5,-37592.0,-47077.0,-28528.0,67838.0,250000.0,Farming/Agriculture,2,Negative NPV in base scenario
+186,3930504,Portable light coagulator,5.38,0.76,process,5.0,5.0,6.0,5.5,-42652.0,-57060.0,-27762.0,324143.0,250000.0,Power,2,Negative NPV in base scenario

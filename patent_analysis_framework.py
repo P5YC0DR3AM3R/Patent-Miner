@@ -22,6 +22,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from financial_mcp_stack import FinancialMCPStack, MacroSignals
+
 
 @dataclass
 class TechnicalScore:
@@ -47,6 +49,9 @@ class ManufacturingProfile:
     production_type: str = "batch"  # batch, continuous, hybrid
     modernization_timeline_months: int = 12
     critical_bottlenecks: List[str] = field(default_factory=list)
+    benchmark_industry: str = ""
+    benchmark_market_revenues_musd: float = 0.0
+    benchmark_cost_of_capital: float = 0.0
 
 
 @dataclass
@@ -63,6 +68,10 @@ class FinancialMetrics:
     valuation_low: float
     valuation_mid: float
     valuation_high: float
+    market_size_serviceable: float = 0.0
+    product_value_estimate: float = 0.0
+    risk_adjusted_npv_p10: float = 0.0
+    risk_adjusted_npv_p90: float = 0.0
     key_assumptions: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -133,12 +142,67 @@ class PatentAnalysisFramework:
         },
     }
 
-    def __init__(self, output_dir: str = "./patent_intelligence_vault/"):
+    def __init__(
+        self,
+        output_dir: str = "./patent_intelligence_vault/",
+        mcp_stack: Optional[FinancialMCPStack] = None,
+    ):
         """Initialize framework."""
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.results: List[PatentAnalysisResult] = []
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.mcp_stack = mcp_stack or FinancialMCPStack(
+            cache_path=self.output_dir / "financial_mcp_snapshot.json"
+        )
+        self._macro_signals_cache: Optional[MacroSignals] = None
+
+    def _macro_signals(self) -> MacroSignals:
+        if self._macro_signals_cache is None:
+            self._macro_signals_cache = self.mcp_stack.get_macro_signals()
+        return self._macro_signals_cache
+
+    @staticmethod
+    def _safe_filing_year(patent: Dict[str, Any]) -> int:
+        filing = str(patent.get("filing_date", "2000-01-01"))
+        try:
+            return int(filing[:4])
+        except (TypeError, ValueError):
+            return 2000
+
+    @staticmethod
+    def _estimate_internal_rate_percent(cash_flows: List[float]) -> float:
+        """Compute IRR with bounded bisection for deterministic stability."""
+        if len(cash_flows) < 2:
+            return 0.0
+        if cash_flows[0] >= 0.0:
+            return 0.0
+        if all(cf <= 0 for cf in cash_flows[1:]):
+            return 0.0
+
+        low = -0.95
+        high = 2.00
+
+        def npv(rate: float) -> float:
+            return sum(cf / ((1.0 + rate) ** i) for i, cf in enumerate(cash_flows))
+
+        low_npv = npv(low)
+        high_npv = npv(high)
+        if low_npv * high_npv > 0:
+            return 0.0
+
+        for _ in range(80):
+            mid = (low + high) / 2.0
+            mid_npv = npv(mid)
+            if abs(mid_npv) < 1e-6:
+                return mid * 100.0
+            if low_npv * mid_npv < 0:
+                high = mid
+                high_npv = mid_npv
+            else:
+                low = mid
+                low_npv = mid_npv
+        return ((low + high) / 2.0) * 100.0
 
     def classify_patent(
         self, patent: Dict[str, Any]
@@ -221,7 +285,7 @@ class PatentAnalysisFramework:
 
         # Modernization potential: newer tech more integrable
         modernization = 6.0
-        filing_year = int(patent.get("filing_date", "2000-01-01")[:4])
+        filing_year = self._safe_filing_year(patent)
         if filing_year > 1990:
             modernization += 1.5
         if "automatic" in combined or "digital" in combined or "electronic" in combined:
@@ -249,9 +313,12 @@ class PatentAnalysisFramework:
         )
 
     def estimate_manufacturing_profile(
-        self, patent: Dict[str, Any], patent_type: str
+        self,
+        patent: Dict[str, Any],
+        patent_type: str,
+        theme: str = "enabling_technology",
     ) -> ManufacturingProfile:
-        """Estimate manufacturing requirements and constraints."""
+        """Estimate manufacturing requirements using industry benchmarks + macro signals."""
 
         abstract = patent.get("abstract", "").lower()
         title = patent.get("title", "").lower()
@@ -262,14 +329,9 @@ class PatentAnalysisFramework:
         # Material inference
         material_keywords = {
             "metal": ["aluminum", "steel", "copper", "titanium", "iron", "alloy"],
-            "polymer": [
-                "plastic",
-                "polymer",
-                "resin",
-                "polyester",
-                "polyethylene",
-            ],
+            "polymer": ["plastic", "polymer", "resin", "polyester", "polyethylene"],
             "ceramic": ["ceramic", "glass", "silicon", "oxide"],
+            "electronic": ["circuit", "pcb", "semiconductor", "electronic"],
         }
         for material_class, keywords in material_keywords.items():
             if any(kw in combined for kw in keywords):
@@ -281,40 +343,98 @@ class PatentAnalysisFramework:
             "sensor": ["sensor", "detector", "measurement"],
             "pcb_assembly": ["circuit", "board", "electronics", "electronic"],
             "coating": ["coat", "deposit", "layer", "spray"],
+            "automation": ["automation", "controller", "plc", "scada"],
         }
         for equip, keywords in equipment_keywords.items():
             if any(kw in combined for kw in keywords):
                 profile.required_equipment.append(equip)
 
-        # Process complexity
-        if any(word in combined for word in ["complex", "multistep", "sequential"]):
+        complexity_index = 1.0
+        if any(word in combined for word in ["complex", "multistep", "sequential", "sensitive"]):
             profile.process_complexity = "high"
-        elif any(word in combined for word in ["simple", "straightforward"]):
+            complexity_index = 1.35
+        elif any(word in combined for word in ["simple", "straightforward", "single-step"]):
             profile.process_complexity = "low"
+            complexity_index = 0.80
 
-        # TRL estimate (assuming disclosed but unlicensed)
-        filing_year = int(patent.get("filing_date", "2000-01-01")[:4])
-        if filing_year > 2000:
-            profile.trl_estimate = 7
-        else:
-            profile.trl_estimate = 6
+        macro = self._macro_signals()
+        industry_name = self.mcp_stack.resolve_industry(
+            theme=theme,
+            patent_type=patent_type,
+            text=combined,
+        )
+        benchmark = self.mcp_stack.get_industry_benchmark(industry_name)
 
-        # Capex estimation (rough)
-        if "apparatus" in patent_type:
-            profile.capex_low = 50000
-            profile.capex_high = 500000
-        else:
-            profile.capex_low = 25000
-            profile.capex_high = 250000
+        filing_year = self._safe_filing_year(patent)
+        profile.trl_estimate = 7 if filing_year > 2000 else 6
 
-        # Production type
+        # Capex scales with benchmark capex intensity and complexity.
+        capex_intensity = abs(float(benchmark.net_capex_to_revenue))
+        capex_intensity = np.clip(capex_intensity, 0.015, 0.18)
+
+        market_revenue_usd = max(benchmark.revenues_musd * 1_000_000.0, 80_000_000.0)
+        pilot_revenue_target = market_revenue_usd * 0.00002  # 0.002% pilot scale
+        capital_productivity = np.clip(float(benchmark.sales_to_invested_capital), 1.0, 4.5)
+
+        base_capex_mid = max(
+            35_000.0,
+            pilot_revenue_target / capital_productivity,
+        )
+        base_capex_mid *= (1.0 + capex_intensity * 2.0)
+
+        equipment_factor = 1.0 + (0.10 * len(profile.required_equipment))
+        material_factor = 1.0 + (0.06 * len(profile.required_materials))
+        inflation_factor = 1.0 + np.clip(macro.producer_price_inflation, -0.03, 0.15)
+        wage_factor = 1.0 + np.clip(macro.manufacturing_wage_growth * 0.5, -0.02, 0.08)
+
+        capex_mid = (
+            base_capex_mid
+            * complexity_index
+            * equipment_factor
+            * material_factor
+            * inflation_factor
+            * wage_factor
+        )
+
+        if patent_type == "apparatus":
+            capex_mid *= 1.15
+        elif patent_type == "process":
+            capex_mid *= 1.05
+
+        profile.capex_low = capex_mid * 0.70
+        profile.capex_high = capex_mid * 1.55
+
+        opex_base_rate = 0.08 + (0.03 if profile.process_complexity == "high" else 0.01)
+        profile.opex_annual_change = capex_mid * opex_base_rate * inflation_factor
+
         if "continuous" in combined or "flow" in combined:
             profile.production_type = "continuous"
         elif "batch" in combined:
             profile.production_type = "batch"
+        else:
+            profile.production_type = "hybrid" if profile.process_complexity == "high" else "batch"
 
-        profile.modernization_timeline_months = 12 - (2 * (profile.trl_estimate - 5))
-        profile.modernization_timeline_months = max(3, profile.modernization_timeline_months)
+        profile.modernization_timeline_months = int(
+            np.clip(
+                11
+                + (3 if profile.process_complexity == "high" else 0)
+                - (profile.trl_estimate - 6) * 2
+                + len(profile.required_equipment),
+                4,
+                20,
+            )
+        )
+
+        if profile.process_complexity == "high":
+            profile.critical_bottlenecks.append("Tight process window during scale-up")
+        if len(profile.required_materials) >= 3:
+            profile.critical_bottlenecks.append("Multi-material supply qualification")
+        if macro.manufacturing_capacity_utilization > 0.82:
+            profile.critical_bottlenecks.append("Capacity constraints in manufacturing market")
+
+        profile.benchmark_industry = benchmark.industry_name
+        profile.benchmark_market_revenues_musd = benchmark.revenues_musd
+        profile.benchmark_cost_of_capital = benchmark.cost_of_capital
 
         return profile
 
@@ -323,48 +443,198 @@ class PatentAnalysisFramework:
         patent: Dict[str, Any],
         manufacturing_profile: ManufacturingProfile,
     ) -> FinancialMetrics:
-        """
-        Estimate financial metrics using deterministic models.
-        Assumes 10-year evaluation period, 8% WACC.
-        """
-        capex_mid = (manufacturing_profile.capex_low
-                     + manufacturing_profile.capex_high) / 2
-        annual_opex = manufacturing_profile.opex_annual_change
-        annual_cost_savings = capex_mid * 0.15  # Assume 15% annual savings on capex
-        annual_revenue_uplift = capex_mid * 0.10  # Assume 10% revenue uplift on capex
+        """Estimate financial metrics with benchmark-driven DCF scenarios."""
+        title = str(patent.get("title", "")).lower()
+        abstract = str(patent.get("abstract", "")).lower()
+        combined = f"{title} {abstract}"
 
-        # DCF calculation (simplified)
-        wacc = 0.08
+        benchmark = self.mcp_stack.get_industry_benchmark(
+            manufacturing_profile.benchmark_industry or "Total  Market (without financials)"
+        )
+        macro = self._macro_signals()
+
         years = 10
-        discount_factors = [1 / ((1 + wacc) ** y) for y in range(1, years + 1)]
-        annual_cf = annual_cost_savings + annual_revenue_uplift
+        capex_mid = (manufacturing_profile.capex_low + manufacturing_profile.capex_high) / 2.0
+        maintenance_capex_rate = 0.02
 
-        npv_base = -capex_mid + sum(
-            annual_cf * discount_factors[i] for i in range(years)
+        discount_rate_base = np.clip(
+            (benchmark.cost_of_capital * 0.75) + (macro.risk_free_rate * 0.25),
+            0.06,
+            0.20,
         )
-        npv_optimistic = -capex_mid * 0.8 + sum(
-            (annual_cf * 1.5) * discount_factors[i] for i in range(years)
+        tax_rate = np.clip(benchmark.tax_rate, 0.10, 0.35)
+        operating_margin_base = np.clip(benchmark.operating_margin, 0.05, 0.40)
+
+        innovation_margin_uplift = 0.02
+        if any(word in combined for word in ["automation", "efficiency", "predictive"]):
+            innovation_margin_uplift += 0.01
+        if any(word in combined for word in ["premium", "accuracy", "quality"]):
+            innovation_margin_uplift += 0.01
+        operating_margin_base = np.clip(operating_margin_base + innovation_margin_uplift, 0.06, 0.50)
+
+        market_growth_base = np.clip(
+            0.35 * macro.real_gdp_growth
+            + 0.25 * macro.inflation_rate
+            + 0.40 * max(benchmark.net_capex_to_revenue, 0.01),
+            0.01,
+            0.16,
         )
-        npv_pessimistic = -capex_mid * 1.2 + sum(
-            (annual_cf * 0.5) * discount_factors[i] for i in range(years)
+
+        sales_to_capital = np.clip(benchmark.sales_to_invested_capital, 0.9, 4.5)
+        working_capital_ratio = np.clip(benchmark.non_cash_working_capital_to_revenue, 0.02, 0.30)
+        annual_opex_change = manufacturing_profile.opex_annual_change
+
+        market_size_total = max(benchmark.revenues_musd * 1_000_000.0, 250_000_000.0)
+        serviceable_share = np.clip(
+            0.0008
+            + 0.0006 * len(manufacturing_profile.required_equipment)
+            + 0.0004 * len(manufacturing_profile.required_materials)
+            + (0.0015 if "wireless" in combined or "sensor" in combined else 0.0)
+            + (0.0010 if "medical" in combined or "health" in combined else 0.0),
+            0.001,
+            0.04,
+        )
+        serviceable_market = market_size_total * serviceable_share
+
+        revenue_capacity_year1 = capex_mid * sales_to_capital
+        year1_revenue = np.clip(
+            min(serviceable_market * 0.18, revenue_capacity_year1 * 1.10),
+            capex_mid * 0.40,
+            serviceable_market,
         )
 
-        # Payback period
-        if annual_cf > 0:
-            payback_years = capex_mid / annual_cf
-        else:
-            payback_years = 999
+        process_or_method = "method" in combined or "process" in combined
+        annual_cost_savings = year1_revenue * (0.20 if process_or_method else 0.10)
+        annual_revenue_uplift = year1_revenue * (0.18 if not process_or_method else 0.10)
 
-        # IRR calculation (approximate)
-        if npv_base > 0:
-            irr_percent = (annual_cf / capex_mid) * 100
-        else:
-            irr_percent = 0
+        initial_working_capital = working_capital_ratio * year1_revenue * 0.5
 
-        # Valuation (income approach average)
-        valuation_mid = max(npv_base, 0)
-        valuation_low = valuation_mid * 0.5
-        valuation_high = valuation_mid * 2.0
+        def scenario_cash_flow(
+            growth_rate: float,
+            operating_margin: float,
+            discount_rate: float,
+            capex_multiplier: float,
+            savings_multiplier: float,
+            revenue_multiplier: float,
+        ) -> Tuple[float, List[float]]:
+            initial_investment = (capex_mid * capex_multiplier) + initial_working_capital
+            cash_flows = [-initial_investment]
+            prev_revenue = 0.0
+
+            for year in range(1, years + 1):
+                adoption = np.clip(0.35 + (0.085 * year), 0.25, 1.00)
+                revenue = (
+                    year1_revenue
+                    * revenue_multiplier
+                    * ((1.0 + growth_rate) ** (year - 1))
+                    * adoption
+                )
+                savings = (
+                    annual_cost_savings
+                    * savings_multiplier
+                    * ((1.0 + growth_rate * 0.35) ** (year - 1))
+                )
+                opex_drag = annual_opex_change * ((1.0 + macro.inflation_rate) ** (year - 1))
+
+                ebit = (revenue * operating_margin) + savings - opex_drag
+                taxes = max(0.0, ebit) * tax_rate
+                nopat = ebit - taxes
+
+                delta_revenue = max(0.0, revenue - prev_revenue)
+                growth_capex = delta_revenue / sales_to_capital
+                maintenance_capex = initial_investment * maintenance_capex_rate
+                delta_working_capital = working_capital_ratio * delta_revenue
+                depreciation = (initial_investment / 7.0) if year <= 7 else 0.0
+
+                free_cash_flow = (
+                    nopat
+                    + depreciation
+                    - growth_capex
+                    - maintenance_capex
+                    - delta_working_capital
+                )
+                cash_flows.append(free_cash_flow)
+                prev_revenue = revenue
+
+            npv_value = sum(
+                cf / ((1.0 + discount_rate) ** idx)
+                for idx, cf in enumerate(cash_flows)
+            )
+            return npv_value, cash_flows
+
+        npv_base, base_cash_flows = scenario_cash_flow(
+            growth_rate=market_growth_base,
+            operating_margin=operating_margin_base,
+            discount_rate=discount_rate_base,
+            capex_multiplier=1.00,
+            savings_multiplier=1.00,
+            revenue_multiplier=1.00,
+        )
+        npv_optimistic, _ = scenario_cash_flow(
+            growth_rate=min(0.22, market_growth_base * 1.30),
+            operating_margin=min(0.58, operating_margin_base + 0.03),
+            discount_rate=max(0.055, discount_rate_base - 0.015),
+            capex_multiplier=0.88,
+            savings_multiplier=1.20,
+            revenue_multiplier=1.18,
+        )
+        npv_pessimistic, _ = scenario_cash_flow(
+            growth_rate=max(0.003, market_growth_base * 0.60),
+            operating_margin=max(0.03, operating_margin_base - 0.04),
+            discount_rate=min(0.26, discount_rate_base + 0.020),
+            capex_multiplier=1.20,
+            savings_multiplier=0.80,
+            revenue_multiplier=0.82,
+        )
+
+        # Deterministic Monte Carlo envelope around base-case assumptions.
+        patent_seed = sum(ord(ch) for ch in str(patent.get("patent_number", ""))) + years
+        rng = np.random.default_rng(patent_seed)
+        simulations = 200
+        mc_npvs: List[float] = []
+        for _ in range(simulations):
+            sampled_growth = np.clip(rng.normal(market_growth_base, 0.015), 0.0, 0.25)
+            sampled_margin = np.clip(rng.normal(operating_margin_base, 0.025), 0.03, 0.60)
+            sampled_discount = np.clip(rng.normal(discount_rate_base, 0.012), 0.05, 0.30)
+            sampled_capex_mult = np.clip(rng.normal(1.0, 0.10), 0.75, 1.35)
+            sampled_savings_mult = np.clip(rng.normal(1.0, 0.12), 0.65, 1.40)
+            sampled_revenue_mult = np.clip(rng.normal(1.0, 0.12), 0.65, 1.45)
+            sampled_npv, _ = scenario_cash_flow(
+                growth_rate=sampled_growth,
+                operating_margin=sampled_margin,
+                discount_rate=sampled_discount,
+                capex_multiplier=sampled_capex_mult,
+                savings_multiplier=sampled_savings_mult,
+                revenue_multiplier=sampled_revenue_mult,
+            )
+            mc_npvs.append(sampled_npv)
+
+        p10_npv = float(np.percentile(mc_npvs, 10))
+        p90_npv = float(np.percentile(mc_npvs, 90))
+
+        cumulative = 0.0
+        payback_years = 999.0
+        for idx, cf in enumerate(base_cash_flows[1:], start=1):
+            cumulative += cf
+            if cumulative + base_cash_flows[0] >= 0:
+                payback_years = float(idx)
+                break
+
+        irr_percent = max(-95.0, min(300.0, self._estimate_internal_rate_percent(base_cash_flows)))
+
+        terminal_revenue_year5 = year1_revenue * ((1.0 + market_growth_base) ** 4)
+        product_value_estimate = terminal_revenue_year5 * np.clip(benchmark.ev_to_sales, 0.4, 10.0)
+        cost_approach_value = capex_mid * 1.25
+        income_approach_value = max(npv_base, 0.0)
+
+        valuation_mid = max(
+            0.0,
+            (0.55 * income_approach_value)
+            + (0.30 * product_value_estimate)
+            + (0.15 * cost_approach_value),
+        )
+        valuation_low = max(0.0, min(npv_pessimistic, p10_npv, valuation_mid * 0.65))
+        valuation_high = max(npv_optimistic, p90_npv, valuation_mid * 1.35)
 
         return FinancialMetrics(
             npv_base=npv_base,
@@ -377,10 +647,30 @@ class PatentAnalysisFramework:
             valuation_low=valuation_low,
             valuation_mid=valuation_mid,
             valuation_high=valuation_high,
+            market_size_serviceable=serviceable_market,
+            product_value_estimate=product_value_estimate,
+            risk_adjusted_npv_p10=p10_npv,
+            risk_adjusted_npv_p90=p90_npv,
             key_assumptions={
-                "wacc": wacc,
+                "benchmark_industry": benchmark.industry_name,
+                "wacc_base": discount_rate_base,
+                "tax_rate": tax_rate,
+                "operating_margin_base": operating_margin_base,
+                "growth_rate_base": market_growth_base,
+                "serviceable_market_share": serviceable_share,
+                "serviceable_market_usd": serviceable_market,
+                "market_size_total_usd": market_size_total,
+                "sales_to_invested_capital": sales_to_capital,
+                "non_cash_working_capital_ratio": working_capital_ratio,
+                "net_capex_ratio_benchmark": benchmark.net_capex_to_revenue,
                 "evaluation_period_years": years,
                 "capex_estimate_mid": capex_mid,
+                "macro_signals_as_of": macro.as_of,
+                "valuation_sources": {
+                    "income_approach_npv": income_approach_value,
+                    "market_approach_ev_sales": product_value_estimate,
+                    "cost_approach_replacement": cost_approach_value,
+                },
             },
         )
 
@@ -505,12 +795,17 @@ class PatentAnalysisFramework:
             ),
             "modernization_potential": result.technical_score.modernization_potential,
             "strategic_fit": result.strategic_assessment.strategic_fit_score,
-            "financial_attractiveness": min(
-                10.0,
-                max(
+            "financial_attractiveness": float(
+                np.clip(
+                    5.0
+                    + (
+                        np.sign(result.financial_metrics.npv_base)
+                        * np.log1p(abs(result.financial_metrics.npv_base) / 1_000_000.0)
+                        * 2.0
+                    ),
                     0.0,
-                    (result.financial_metrics.npv_base / 100000) + 5,
-                ),
+                    10.0,
+                )
             ),
             "legal_risk_inverted": 10.0
             if result.strategic_assessment.legal_ip_risk == "low"
@@ -530,8 +825,15 @@ class PatentAnalysisFramework:
             scores[dim] * weights[dim] for dim in weights.keys()
         )
 
-        # Confidence based on data completeness
-        confidence_level = 0.75
+        npv_spread = max(
+            1.0,
+            abs(
+                result.financial_metrics.risk_adjusted_npv_p90
+                - result.financial_metrics.risk_adjusted_npv_p10
+            ),
+        )
+        spread_ratio = npv_spread / max(1.0, abs(result.financial_metrics.npv_base))
+        confidence_level = float(np.clip(0.88 - min(0.45, spread_ratio * 0.18), 0.45, 0.92))
 
         return np.clip(integrated_score, 0.0, 10.0), confidence_level
 
@@ -566,7 +868,7 @@ class PatentAnalysisFramework:
 
             # Manufacturing profile
             result.manufacturing_profile = self.estimate_manufacturing_profile(
-                patent, ptype
+                patent, ptype, theme
             )
 
             # Financial metrics
@@ -686,6 +988,23 @@ class PatentAnalysisFramework:
                 "NPV_Base": round(r.financial_metrics.npv_base, 0)
                 if r.financial_metrics
                 else None,
+                "NPV_P10": round(r.financial_metrics.risk_adjusted_npv_p10, 0)
+                if r.financial_metrics
+                else None,
+                "NPV_P90": round(r.financial_metrics.risk_adjusted_npv_p90, 0)
+                if r.financial_metrics
+                else None,
+                "Product_Value_Estimate": round(r.financial_metrics.product_value_estimate, 0)
+                if r.financial_metrics
+                else None,
+                "Serviceable_Market_Size": round(r.financial_metrics.market_size_serviceable, 0)
+                if r.financial_metrics
+                else None,
+                "Benchmark_Industry": (
+                    r.manufacturing_profile.benchmark_industry
+                    if r.manufacturing_profile
+                    else None
+                ),
                 "Recommendation_Tier": r.strategic_assessment.recommendation_tier
                 if r.strategic_assessment
                 else None,

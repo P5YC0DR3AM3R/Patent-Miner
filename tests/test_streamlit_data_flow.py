@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from streamlit_app import PatentAnalyzer, VIEW_TABS
+from viability_scoring import compute_opportunity_score_v2, expiration_confidence_score
 
 
 class StreamlitDataFlowTests(unittest.TestCase):
@@ -33,6 +34,10 @@ class StreamlitDataFlowTests(unittest.TestCase):
                     "competition_headroom": 6.5,
                     "differentiation_potential": 7.2,
                     "commercial_readiness": 8.0,
+                    "marketability": 7.0,
+                    "viral_potential": 6.2,
+                    "ease_of_use": 7.4,
+                    "real_world_impact": 7.8,
                     "total": 7.1,
                 },
                 "opportunity_score_v2": 7.49,
@@ -57,7 +62,12 @@ class StreamlitDataFlowTests(unittest.TestCase):
             enriched = analyzer.get_enriched_patents()
 
         self.assertEqual(len(enriched), 1)
-        self.assertEqual(enriched[0]["opportunity_score_v2"], 7.49)
+        expected = compute_opportunity_score_v2(
+            retrieval_total=float(enriched[0]["retrieval_scorecard"]["total"]),
+            viability_total=float(enriched[0]["viability_scorecard"]["total"]),
+            expiration_confidence=expiration_confidence_score(enriched[0]),
+        )
+        self.assertEqual(enriched[0]["opportunity_score_v2"], expected)
         self.assertIn("retrieval_scorecard", enriched[0])
         self.assertIn("viability_scorecard", enriched[0])
 
@@ -99,6 +109,7 @@ class StreamlitDataFlowTests(unittest.TestCase):
                 "Opportunity Ranking",
                 "Patent Details",
                 "Score Explainability",
+                "💼 Business Intelligence",
                 "Export",
             ],
         )

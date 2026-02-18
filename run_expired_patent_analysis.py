@@ -271,11 +271,11 @@ All patents in this dataset are **expired** and no longer enforceable in their o
 
 ### Key Assumptions
 
-- **Discount Rate (WACC):** 8%
-- **Evaluation Period:** 10 years
-- **Capex Inflation:** Not applied (present-value estimates)
-- **Raw Material Cost:** Conservative (assume commodity prices)
-- **Production Volume:** Moderate ramp (conservative scaling assumption)
+- **Discount Rate (WACC):** Industry-specific benchmarked cost of capital (Damodaran) blended with current macro risk-free rate.
+- **Evaluation Period:** 10 years with scenario-based growth/margin/discount adjustments.
+- **Macro Inputs:** Current inflation, producer-price trend, manufacturing wages, and capacity-utilization indicators (FRED).
+- **Market Inputs:** Industry revenues and valuation multiples (EV/Sales) from public market comparables.
+- **Production Volume:** Serviceable market sizing and adoption ramp calibrated by patent complexity and equipment profile.
 
 ### Data Limitations
 

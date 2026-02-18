@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import plotly.express as px
@@ -76,6 +76,58 @@ def get_justia_url(patent_number: str) -> str:
     """Generate Justia Patents URL for a given patent number."""
     clean_number = str(patent_number).strip().replace(',', '').replace(' ', '')
     return f"https://patents.justia.com/patent/{clean_number}"
+
+
+def normalize_patent_number(patent_number: Any) -> str:
+    """Normalize patent identifiers for cache lookups."""
+    raw = str(patent_number or "").strip().replace(",", "").replace(" ", "")
+    if raw.upper().startswith("US"):
+        raw = raw[2:]
+    return "".join(ch for ch in raw if ch.isalnum())
+
+
+def lookup_cached_summary(cached_summaries: Dict[str, str], patent_number: Any) -> Optional[str]:
+    """Return locally cached summary text for a patent number across common key variants."""
+    if not isinstance(cached_summaries, dict) or not cached_summaries:
+        return None
+
+    raw = str(patent_number or "").strip()
+    normalized = normalize_patent_number(raw)
+    normalized_no_zeros = normalized.lstrip("0") if normalized else ""
+
+    candidate_keys = [
+        raw,
+        raw.upper(),
+        raw.replace(" ", ""),
+        raw.replace(" ", "").upper(),
+        normalized,
+        normalized_no_zeros,
+        f"US{normalized}" if normalized else "",
+        f"US{normalized_no_zeros}" if normalized_no_zeros else "",
+    ]
+
+    seen: set[str] = set()
+    for key in candidate_keys:
+        key = str(key).strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        summary = cached_summaries.get(key)
+        if summary:
+            return str(summary).strip()
+
+    return None
+
+
+def cached_summary_snippet(cached_summaries: Dict[str, str], patent_number: Any, max_len: int = 180) -> str:
+    """Return a compact single-line snippet from local summary cache."""
+    summary = lookup_cached_summary(cached_summaries, patent_number)
+    if not summary:
+        return "No local summary available."
+    single_line = summary.replace("\n", " ")
+    if len(single_line) <= max_len:
+        return single_line
+    return f"{single_line[:max_len].rstrip()}…"
 
 
 def _inject_ui_css(text_size_label: str, density_label: str) -> None:
@@ -640,7 +692,6 @@ class PatentAnalyzer:
             self._enriched_cache = []  # CLEAR CACHE
             
             # Show info about loaded dataset
-            timestamp = largest_file.stem.split('_')[-2:]
             st.info(f"📊 Loaded {len(self.patents)} patents from {largest_file.name}")
             
             return True
@@ -869,14 +920,8 @@ def get_analyzer() -> PatentAnalyzer:
 def render_header(analyzer: PatentAnalyzer) -> None:
     """Render page title and data status."""
 
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        st.title("Patent Miner V3")
-        st.caption("Hybrid retrieval + deterministic market viability scoring")
-    with col2:
-        if st.button("Refresh Data", use_container_width=True):
-            st.cache_resource.clear()
-            st.rerun()
+    st.title("Patent Miner V3")
+    st.caption("Hybrid retrieval + deterministic market viability scoring")
 
     
 
@@ -1264,6 +1309,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
     analysis_results = analyzer.load_analysis_results()
     rankings_df = analyzer.load_rankings_csv()
     report_path = analyzer.load_markdown_report_path()
+    cached_summaries = load_cached_summaries()
 
     if analysis_results is None and rankings_df is None:
         st.info("📊 No Business Intelligence analysis available yet. Run `python run_expired_patent_analysis.py` to generate.")
@@ -1384,7 +1430,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
         
         if rankings_df is not None and "NPV_Base" in rankings_df.columns:
             # Financial metrics
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
             
             with col1:
                 total_npv = rankings_df["NPV_Base"].sum()
@@ -1397,6 +1443,13 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             with col3:
                 positive_npv = (rankings_df["NPV_Base"] > 0).sum()
                 st.metric("Positive NPV Patents", f"{positive_npv}/{len(rankings_df)}")
+
+            with col4:
+                if "Product_Value_Estimate" in rankings_df.columns:
+                    median_product_value = rankings_df["Product_Value_Estimate"].median()
+                    st.metric("Median Product Value", f"${median_product_value:,.0f}")
+                else:
+                    st.metric("Median Product Value", "N/A")
 
             # NPV Distribution Chart
             st.subheader("NPV Distribution")
@@ -1416,18 +1469,36 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             npv_chart.update_layout(height=350, hovermode="x unified")
             st.plotly_chart(npv_chart, use_container_width=True)
 
+            if {"NPV_P10", "NPV_P90"}.issubset(set(rankings_df.columns)):
+                st.subheader("NPV Uncertainty Band")
+                uncertainty_df = rankings_df[["Rank", "NPV_P10", "NPV_Base", "NPV_P90"]].copy()
+                uncertainty_df = uncertainty_df.sort_values("NPV_Base").reset_index(drop=True)
+                uncertainty_df["index"] = range(len(uncertainty_df))
+                uncertainty_chart = px.line(
+                    uncertainty_df,
+                    x="index",
+                    y=["NPV_P10", "NPV_Base", "NPV_P90"],
+                    title="Risk-Adjusted NPV Band (P10 / Base / P90)",
+                )
+                uncertainty_chart.update_layout(height=320, hovermode="x unified")
+                st.plotly_chart(uncertainty_chart, use_container_width=True)
+
             # Top Financial Performers
             st.subheader("🏅 Top Financial Performers (NPV Base)")
-            top_financial = rankings_df.nlargest(10, "NPV_Base")[
-                ["Rank", "Patent_Number", "Title", "NPV_Base", "Recommendation_Tier"]
-            ].copy()
+            top_cols = ["Rank", "Patent_Number", "Title", "NPV_Base", "Recommendation_Tier"]
+            optional_cols = ["NPV_P10", "NPV_P90", "Product_Value_Estimate", "Benchmark_Industry"]
+            top_cols.extend(col for col in optional_cols if col in rankings_df.columns)
+            top_financial = rankings_df.nlargest(10, "NPV_Base")[top_cols].copy()
             # Clean Patent_Number column
             if 'Patent_Number' in top_financial.columns:
                 top_financial['Patent_Number'] = top_financial['Patent_Number'].astype(str).str.strip()
                 # Add Justia link
                 top_financial['Justia_Link'] = top_financial['Patent_Number'].apply(get_justia_url)
             # Reorder columns
-            top_financial = top_financial[["Rank", "Patent_Number", "Title", "Justia_Link", "NPV_Base", "Recommendation_Tier"]]
+            ordered_cols = ["Rank", "Patent_Number", "Title", "Justia_Link", "NPV_Base"]
+            ordered_cols.extend(col for col in ["NPV_P10", "NPV_P90", "Product_Value_Estimate", "Benchmark_Industry"] if col in top_financial.columns)
+            ordered_cols.append("Recommendation_Tier")
+            top_financial = top_financial[ordered_cols]
             st.dataframe(
                 top_financial,
                 use_container_width=True,
@@ -1541,6 +1612,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     # Ensure patent number is clean string
                     patent_num = str(patent['Patent_Number']).strip()
                     justia_url = get_justia_url(patent_num)
+                    local_summary = lookup_cached_summary(cached_summaries, patent_num)
                     
                     # Create a bordered container for each patent
                     st.markdown(f"""<div style='background: white; border: 2px solid #e0e8f5; border-radius: 12px; 
@@ -1557,7 +1629,18 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     with col2:
                         st.metric("Manufacturing Feasibility", f"{patent['Manufacturing_Feasibility']:.1f}/10" if "Manufacturing_Feasibility" in patent else "N/A")
                     with col3:
-                        st.metric("NPV (Base)", f"${patent['NPV_Base']:,.0f}" if "NPV_Base" in patent else "N/A")
+                        if "Net_Present_Value_Base" in patent:
+                            st.metric("Net Present Value (Base)", f"${patent['Net_Present_Value_Base']:,.0f}")
+                        elif "NPV_Base" in patent:
+                            st.metric("Net Present Value (Base)", f"${patent['NPV_Base']:,.0f}")
+                        else:
+                            st.metric("Net Present Value (Base)", "N/A")
+
+                    if local_summary:
+                        st.markdown("**Local Summary:**")
+                        st.info(local_summary)
+                    else:
+                        st.caption("No local summary found for this patent in `patent_summaries.json`.")
                     
                     st.markdown("**Recommended Next Steps:**")
                     st.markdown("1. Conduct detailed FTO analysis")
@@ -1581,10 +1664,14 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 tier_2_summary = tier_2_df[["Patent_Number", "Title", "Integrated_Score", "Technology_Theme"]].head(10).copy()
                 # Ensure Patent_Number is clean string
                 tier_2_summary['Patent_Number'] = tier_2_summary['Patent_Number'].astype(str).str.strip()
+                # Add local summary snippets from cache
+                tier_2_summary["Local_Summary"] = tier_2_summary["Patent_Number"].apply(
+                    lambda value: cached_summary_snippet(cached_summaries, value, max_len=180)
+                )
                 # Add Justia link
                 tier_2_summary['Justia_Link'] = tier_2_summary['Patent_Number'].apply(get_justia_url)
                 # Reorder columns
-                tier_2_summary = tier_2_summary[["Patent_Number", "Title", "Justia_Link", "Integrated_Score", "Technology_Theme"]]
+                tier_2_summary = tier_2_summary[["Patent_Number", "Title", "Justia_Link", "Integrated_Score", "Technology_Theme", "Local_Summary"]]
                 st.dataframe(
                     tier_2_summary,
                     use_container_width=True,
@@ -1663,13 +1750,12 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
 
             # ── AI Plain-English Summary ──────────────────────────────────────
             # Check pre-generated cache first; fall back to on-demand generation.
-            _bi_cached = load_cached_summaries()
             _bi_pnum = str(patent.get("patent_number", "unknown"))
             bi_summary_key = f"bi_summary_{_bi_pnum}"
 
             # Seed session_state from cache on first access
             if bi_summary_key not in st.session_state:
-                st.session_state[bi_summary_key] = _bi_cached.get(_bi_pnum)
+                st.session_state[bi_summary_key] = lookup_cached_summary(cached_summaries, _bi_pnum)
 
             if st.session_state[bi_summary_key] is not None:
                 st.markdown(
@@ -1725,6 +1811,18 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 with col3:
                     st.metric("Annual Cost Savings", f"${fin_metrics.get('annual_cost_savings', 0):,.0f}")
 
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Product Value Estimate", f"${fin_metrics.get('product_value_estimate', 0):,.0f}")
+                with col2:
+                    st.metric("Serviceable Market", f"${fin_metrics.get('market_size_serviceable', 0):,.0f}")
+                with col3:
+                    npv_band = (
+                        f"${fin_metrics.get('risk_adjusted_npv_p10', 0):,.0f}"
+                        f" to ${fin_metrics.get('risk_adjusted_npv_p90', 0):,.0f}"
+                    )
+                    st.metric("Risk-Adjusted NPV Band", npv_band)
+
             # Manufacturing Profile
             st.subheader("🏭 Manufacturing Profile")
             mfg_profile = patent.get("manufacturing_profile", {})
@@ -1739,6 +1837,8 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
 
                 st.write(f"**Capex Range:** ${mfg_profile.get('capex_low', 0):,.0f} - ${mfg_profile.get('capex_high', 0):,.0f}")
                 st.write(f"**Annual Opex Change:** ${mfg_profile.get('opex_annual_change', 0):,.0f}")
+                if mfg_profile.get("benchmark_industry"):
+                    st.write(f"**Benchmark Industry:** {mfg_profile.get('benchmark_industry')}")
 
             # Strategic Assessment
             st.subheader("🎯 Strategic Assessment")
