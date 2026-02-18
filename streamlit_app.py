@@ -20,7 +20,7 @@ from viability_scoring import (
     compute_viability_scorecard,
     expiration_confidence_score,
 )
-from patent_summarizer import summarize_patent
+from patent_summarizer import load_cached_summaries, summarize_patent
 
 # Load environment variables
 load_dotenv()
@@ -1104,16 +1104,16 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         st.markdown("**Detailed Analysis**")
 
         # ── AI Plain-English Summary ──────────────────────────────────────────
-        summary_key = f"summary_{patent.get('patent_number', 'unknown')}"
-        if summary_key not in st.session_state:
-            st.session_state[summary_key] = None
+        # Check pre-generated cache first; fall back to on-demand generation.
+        _cached = load_cached_summaries()
+        _pnum = str(patent.get("patent_number", "unknown"))
+        summary_key = f"summary_{_pnum}"
 
-        if st.session_state[summary_key] is None:
-            if st.button("🤖 Generate Plain-English Summary", key=f"btn_{summary_key}"):
-                with st.spinner("Generating summary with local Mistral model…"):
-                    st.session_state[summary_key] = summarize_patent(patent)
-                st.rerun()
-        else:
+        # Seed session_state from cache on first access
+        if summary_key not in st.session_state:
+            st.session_state[summary_key] = _cached.get(_pnum)
+
+        if st.session_state[summary_key] is not None:
             st.markdown(
                 f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
                 <div style='font-size:0.85em;font-weight:700;color:#0066ff;
@@ -1127,8 +1127,10 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
                 </div>""",
                 unsafe_allow_html=True,
             )
-            if st.button("↺ Regenerate", key=f"regen_{summary_key}"):
-                st.session_state[summary_key] = None
+        else:
+            if st.button("🤖 Generate Plain-English Summary", key=f"btn_{summary_key}"):
+                with st.spinner("Generating summary with local Mistral model…"):
+                    st.session_state[summary_key] = summarize_patent(patent)
                 st.rerun()
 
         col1, col2, col3 = st.columns(3)
@@ -1660,16 +1662,16 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 st.metric("Confidence", f"{patent.get('confidence_level', 0)*100:.0f}%")
 
             # ── AI Plain-English Summary ──────────────────────────────────────
-            bi_summary_key = f"bi_summary_{patent.get('patent_number', 'unknown')}"
-            if bi_summary_key not in st.session_state:
-                st.session_state[bi_summary_key] = None
+            # Check pre-generated cache first; fall back to on-demand generation.
+            _bi_cached = load_cached_summaries()
+            _bi_pnum = str(patent.get("patent_number", "unknown"))
+            bi_summary_key = f"bi_summary_{_bi_pnum}"
 
-            if st.session_state[bi_summary_key] is None:
-                if st.button("🤖 Generate Plain-English Summary", key=f"btn_{bi_summary_key}"):
-                    with st.spinner("Generating summary with local Mistral model…"):
-                        st.session_state[bi_summary_key] = summarize_patent(patent)
-                    st.rerun()
-            else:
+            # Seed session_state from cache on first access
+            if bi_summary_key not in st.session_state:
+                st.session_state[bi_summary_key] = _bi_cached.get(_bi_pnum)
+
+            if st.session_state[bi_summary_key] is not None:
                 st.markdown(
                     f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
                     <div style='font-size:0.85em;font-weight:700;color:#0066ff;
@@ -1683,8 +1685,10 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     </div>""",
                     unsafe_allow_html=True,
                 )
-                if st.button("↺ Regenerate", key=f"regen_{bi_summary_key}"):
-                    st.session_state[bi_summary_key] = None
+            else:
+                if st.button("🤖 Generate Plain-English Summary", key=f"btn_{bi_summary_key}"):
+                    with st.spinner("Generating summary with local Mistral model…"):
+                        st.session_state[bi_summary_key] = summarize_patent(patent)
                     st.rerun()
 
             # Technical Scores

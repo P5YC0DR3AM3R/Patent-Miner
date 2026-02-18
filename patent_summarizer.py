@@ -3,12 +3,32 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any, Dict
 
 import streamlit as st
 
 MODEL_DIR = "/Volumes/Elements/A003/Downloads/Capstone/CAPSTONE_UPDATED"
 MODEL_FILENAME = "mistral-7b-openorca.Q4_0.gguf"
+
+SUMMARIES_FILE = Path("./patent_intelligence_vault/patent_summaries.json")
+
+
+@st.cache_data(show_spinner=False)
+def load_cached_summaries() -> Dict[str, str]:
+    """Load pre-generated summaries from the JSON cache file.
+
+    Returns a dict of {patent_number: summary_text}.
+    Returns empty dict if cache file does not exist yet.
+    Run generate_summaries.py to populate it.
+    """
+    if not SUMMARIES_FILE.exists():
+        return {}
+    try:
+        return json.loads(SUMMARIES_FILE.read_text())
+    except Exception:
+        return {}
 
 SUMMARY_PROMPT_TEMPLATE = """<|im_start|>system
 You are a patent analyst who explains patents in plain English for business people.
