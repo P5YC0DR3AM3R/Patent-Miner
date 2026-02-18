@@ -1625,11 +1625,28 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             selected_idx = patent_options[selected_patent_label]
             patent = patents_data[selected_idx]
             
-            # Display Justia link for selected patent
+            # ── Title + Link Header ───────────────────────────────────────────
             patent_num = patent.get('patent_number', 'N/A')
-            if patent_num != 'N/A':
-                justia_url = get_justia_url(patent_num)
-                st.markdown(f"[View {patent_num} on Justia Patents 🔗]({justia_url})", unsafe_allow_html=True)
+            patent_title = patent.get('title') or 'Untitled'
+            justia_url = get_justia_url(patent_num) if patent_num != 'N/A' else None
+            link_html = (
+                f"<a href='{justia_url}' target='_blank' "
+                f"style='color:#0066ff;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+                f"🔗 {patent_num}</a>"
+                if justia_url else f"<span style='color:#0066ff;font-weight:700;'>{patent_num}</span>"
+            )
+            st.markdown(
+                f"""<div class='pm-card' style='margin-bottom:1rem;'>
+                <div style='font-size:0.9em;color:#808080;margin-bottom:0.3rem;'>Patent Number</div>
+                <div style='font-size:1.3em;font-weight:800;color:#1a1a1a;margin-bottom:0.5rem;'>
+                    {link_html}
+                </div>
+                <div style='font-size:1.05em;font-weight:600;color:#1a1a2e;line-height:1.4;'>
+                    {patent_title}
+                </div>
+                </div>""",
+                unsafe_allow_html=True,
+            )
 
             col1, col2, col3, col4 = st.columns(4)
             with col1:
@@ -1641,6 +1658,34 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 st.metric("Tier", f"Tier {tier}" if tier != "N/A" else "N/A")
             with col4:
                 st.metric("Confidence", f"{patent.get('confidence_level', 0)*100:.0f}%")
+
+            # ── AI Plain-English Summary ──────────────────────────────────────
+            bi_summary_key = f"bi_summary_{patent.get('patent_number', 'unknown')}"
+            if bi_summary_key not in st.session_state:
+                st.session_state[bi_summary_key] = None
+
+            if st.session_state[bi_summary_key] is None:
+                if st.button("🤖 Generate Plain-English Summary", key=f"btn_{bi_summary_key}"):
+                    with st.spinner("Generating summary with local Mistral model…"):
+                        st.session_state[bi_summary_key] = summarize_patent(patent)
+                    st.rerun()
+            else:
+                st.markdown(
+                    f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
+                    <div style='font-size:0.85em;font-weight:700;color:#0066ff;
+                                text-transform:uppercase;letter-spacing:0.05em;
+                                margin-bottom:0.6rem;'>
+                        🤖 AI Use-Case Summary
+                    </div>
+                    <div style='color:#1a1a2e;font-size:1em;line-height:1.7;'>
+                        {st.session_state[bi_summary_key]}
+                    </div>
+                    </div>""",
+                    unsafe_allow_html=True,
+                )
+                if st.button("↺ Regenerate", key=f"regen_{bi_summary_key}"):
+                    st.session_state[bi_summary_key] = None
+                    st.rerun()
 
             # Technical Scores
             st.subheader("📊 Technical Scores (1-10 scale)")
