@@ -28,3 +28,4 @@ langchain-community>=0.0.1
 
 # LLM Support
 openai>=1.0.0
+gpt4all>=2.0.0
