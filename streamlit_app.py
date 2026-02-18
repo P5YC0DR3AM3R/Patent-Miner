@@ -71,6 +71,12 @@ st.set_page_config(
 )
 
 
+def get_justia_url(patent_number: str) -> str:
+    """Generate Justia Patents URL for a given patent number."""
+    clean_number = str(patent_number).strip().replace(',', '').replace(' ', '')
+    return f"https://patents.justia.com/patent/{clean_number}"
+
+
 def _inject_ui_css(text_size_label: str, density_label: str) -> None:
     """Apply dynamic CSS for enterprise-level kid-friendly design."""
 
@@ -98,7 +104,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             --pm-shadow-hover: 0 12px 32px rgba(0, 102, 255, 0.18);
         }}
 
-        * {{
+        *:not([data-testid="stIconMaterial"]) {{
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
         }}
 
@@ -107,11 +113,6 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             line-height: var(--pm-line-height);
             color: var(--pm-text);
             background: linear-gradient(135deg, #f0f5ff 0%, #e6f2ff 50%, #f5e6ff 100%);
-        }}
-
-        /* Force dark text everywhere */
-        * {{
-            color: var(--pm-text) !important;
         }}
 
         /* Except for specific elements that should stay light/white */
@@ -124,8 +125,47 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             background: transparent;
         }}
 
-        .main * {{
-            color: var(--pm-text) !important;
+        /* ── Dataframe column-header popup menus ──────────────────────────────
+           Confirmed via live DOM inspection: the popup is [data-testid="stDataFrameColumnMenu"]
+           with data-baseweb="popover". It has transparent background and 24px font
+           inherited from html/body, causing text overlap on whatever is behind it.
+           Stable classes: e1gsdy3y0 (container), e1gsdy3y1 (menu items), e1gsdy3y3 (header). */
+        [data-testid="stDataFrameColumnMenu"],
+        [data-testid="stDataFrameColumnMenu"] * {{
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            color: #1a1a1a !important;
+            background-color: #ffffff !important;
+            font-weight: 400 !important;
+        }}
+
+        /* Inner container — needs solid white background */
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y0 {{
+            background: #ffffff !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+            padding: 4px 0 !important;
+        }}
+
+        /* Menu item rows */
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1 {{
+            background: #ffffff !important;
+            color: #1a1a1a !important;
+            font-size: 14px !important;
+            padding: 8px 16px !important;
+            line-height: 1.5 !important;
+            white-space: nowrap !important;
+            cursor: pointer !important;
+        }}
+
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1:hover {{
+            background: #f0f5ff !important;
+        }}
+
+        /* Column header row inside popup */
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y3 {{
+            background: #ffffff !important;
+            padding: 8px 12px !important;
         }}
 
         .main .block-container {{
@@ -907,18 +947,33 @@ def render_opportunity_ranking(analyzer: PatentAnalyzer, show_advanced: bool) ->
 
     rows: List[Dict[str, Any]] = []
     for patent in enriched[:top_n]:
+        patent_num = patent.get("patent_number", "N/A")
+        justia_url = get_justia_url(patent_num)
         rows.append(
             {
-                "Score": f"{patent.get('opportunity_score_v2', 0.0):.2f}",
-                "Patent #": patent.get("patent_number", "N/A"),
+                "Patent #": patent_num,
                 "Title": patent.get("title", ""),
+                "Justia Link": justia_url,
+                "Score": f"{patent.get('opportunity_score_v2', 0.0):.2f}",
                 "Domain": patent.get("market_domain", "unknown"),
                 "Filed": str(patent.get("filing_date") or "")[:10],
                 "Why Ranked": patent.get("explanations", {}).get("opportunity", ""),
             }
         )
 
-    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+    df_display = pd.DataFrame(rows)
+    st.dataframe(
+        df_display,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Justia Link": st.column_config.LinkColumn(
+                "🔗 Justia",
+                display_text="View",
+                width="small"
+            )
+        }
+    )
 
     if show_advanced:
         st.subheader("Advanced Retrieval Signals")
@@ -967,9 +1022,11 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         abstract = patent.get("abstract") or "No abstract available."
         st.markdown(f"<div class='pm-card'><strong>Abstract</strong><br>{abstract}</div>", unsafe_allow_html=True)
 
-        link = patent.get("link")
-        if link:
-            st.markdown(f"[View on Google Patents]({link})")
+        # Add patent links
+        patent_num = patent.get("patent_number", "N/A")
+        if patent_num != "N/A":
+            justia_url = get_justia_url(patent_num)
+            st.markdown(f"🔗 [View on Justia Patents]({justia_url})")
 
     viability = patent.get("viability_scorecard", {})
     st.subheader("🚀 Marketability Snapshot")
@@ -1078,9 +1135,11 @@ def render_score_explainability(analyzer: PatentAnalyzer) -> None:
     for patent in selected:
         retrieval = patent.get("retrieval_scorecard", {})
         viability = patent.get("viability_scorecard", {})
+        patent_num = patent.get("patent_number", "N/A")
         score_rows.append(
             {
-                "Patent #": patent.get("patent_number", "N/A"),
+                "Patent #": patent_num,
+                "Justia Link": get_justia_url(patent_num) if patent_num != "N/A" else "",
                 "Retrieval": retrieval.get("total", 0.0),
                 "Viability": viability.get("total", 0.0),
                 "Opportunity": patent.get("opportunity_score_v2", 0.0),
@@ -1088,7 +1147,18 @@ def render_score_explainability(analyzer: PatentAnalyzer) -> None:
         )
 
     score_df = pd.DataFrame(score_rows)
-    st.dataframe(score_df, use_container_width=True, hide_index=True)
+    st.dataframe(
+        score_df,
+        use_container_width=True,
+        hide_index=True,
+        column_config={
+            "Justia Link": st.column_config.LinkColumn(
+                "🔗 Justia",
+                display_text="View",
+                width="small"
+            )
+        }
+    )
 
     chart_df = score_df.melt(id_vars=["Patent #"], value_vars=["Retrieval", "Viability", "Opportunity"])
     fig = px.line(
@@ -1219,17 +1289,32 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 display_df = display_df.copy()
                 if 'Patent_Number' in display_df.columns:
                     display_df['Patent_Number'] = display_df['Patent_Number'].astype(str).str.strip()
+                    # Add Justia link column
+                    display_df['Justia_Link'] = display_df['Patent_Number'].apply(get_justia_url)
                 
-                # Format display columns
-                display_cols = ["Rank", "Patent_Number", "Title", "Integrated_Score", "Confidence", 
+                # Format display columns - showing all top 50 patents
+                display_cols = ["Rank", "Patent_Number", "Title", "Justia_Link", "Integrated_Score", "Confidence", 
                                "Technology_Theme", "Recommendation_Tier"]
                 available_cols = [c for c in display_cols if c in display_df.columns]
                 
+                # Display top 50 with clickable Justia links
                 st.dataframe(
                     display_df[available_cols].head(50),
                     use_container_width=True,
                     hide_index=True,
+                    column_config={
+                        "Rank": st.column_config.NumberColumn("Rank", width="small"),
+                        "Patent_Number": st.column_config.TextColumn("Patent #", width="small"),
+                        "Integrated_Score": st.column_config.NumberColumn("Score", format="%.2f"),
+                        "Justia_Link": st.column_config.LinkColumn(
+                            "🔗 Justia",
+                            display_text="View",
+                            width="small"
+                        )
+                    }
                 )
+                
+                st.caption(f"Showing top 50 of {len(display_df)} patents in this tier")
 
                 # Download ranking CSV
                 csv_data = display_df.to_csv(index=False).encode("utf-8")
@@ -1287,7 +1372,22 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             # Clean Patent_Number column
             if 'Patent_Number' in top_financial.columns:
                 top_financial['Patent_Number'] = top_financial['Patent_Number'].astype(str).str.strip()
-            st.dataframe(top_financial, use_container_width=True, hide_index=True)
+                # Add Justia link
+                top_financial['Justia_Link'] = top_financial['Patent_Number'].apply(get_justia_url)
+            # Reorder columns
+            top_financial = top_financial[["Rank", "Patent_Number", "Title", "Justia_Link", "NPV_Base", "Recommendation_Tier"]]
+            st.dataframe(
+                top_financial,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Justia_Link": st.column_config.LinkColumn(
+                        "🔗 Justia",
+                        display_text="View",
+                        width="small"
+                    )
+                }
+            )
 
     with bi_subtabs[2]:  # Themes & Risk
         st.subheader("🔬 Technology Themes & Risk Assessment")
@@ -1350,10 +1450,11 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     for idx, row in flagged.iterrows():
                         # Ensure patent number is clean string
                         patent_num = str(row['Patent_Number']).strip()
+                        justia_url = get_justia_url(patent_num)
                         
                         st.markdown(f"""<div style='background: #fff5e6; border: 2px solid #ff9500; border-radius: 12px; 
                                     padding: 1rem; margin-bottom: 0.8rem;'>
-                                    <strong style='color: #ff9500;'>⚠️ {patent_num}</strong><br>
+                                    <strong style='color: #ff9500;'>⚠️ <a href='{justia_url}' target='_blank' style='color: #ff9500; text-decoration: none;'>{patent_num}</a></strong><br>
                                     <span style='color: #606060;'>{row['Title'][:80]}...</span>
                                     </div>""", unsafe_allow_html=True)
                         
@@ -1387,13 +1488,15 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 for idx, patent in tier_1_df.head(5).iterrows():
                     # Ensure patent number is clean string
                     patent_num = str(patent['Patent_Number']).strip()
+                    justia_url = get_justia_url(patent_num)
                     
                     # Create a bordered container for each patent
                     st.markdown(f"""<div style='background: white; border: 2px solid #e0e8f5; border-radius: 12px; 
                                 padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
-                                <strong style='color: #0066ff; font-size: 1.1em;'>✅ {patent_num}</strong><br>
+                                <strong style='color: #0066ff; font-size: 1.1em;'>✅ <a href='{justia_url}' target='_blank' style='color: #0066ff; text-decoration: none;'>{patent_num}</a></strong><br>
                                 <span style='color: #606060;'>{patent['Title'][:100]}...</span><br>
-                                <span style='color: #00d4aa; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span>
+                                <span style='color: #00d4aa; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span> | 
+                                <a href='{justia_url}' target='_blank' style='color: #0066ff; text-decoration: none;'>🔗 View on Justia</a>
                                 </div>""", unsafe_allow_html=True)
                     
                     col1, col2, col3 = st.columns(3)
@@ -1426,7 +1529,22 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 tier_2_summary = tier_2_df[["Patent_Number", "Title", "Integrated_Score", "Technology_Theme"]].head(10).copy()
                 # Ensure Patent_Number is clean string
                 tier_2_summary['Patent_Number'] = tier_2_summary['Patent_Number'].astype(str).str.strip()
-                st.dataframe(tier_2_summary, use_container_width=True, hide_index=True)
+                # Add Justia link
+                tier_2_summary['Justia_Link'] = tier_2_summary['Patent_Number'].apply(get_justia_url)
+                # Reorder columns
+                tier_2_summary = tier_2_summary[["Patent_Number", "Title", "Justia_Link", "Integrated_Score", "Technology_Theme"]]
+                st.dataframe(
+                    tier_2_summary,
+                    use_container_width=True,
+                    hide_index=True,
+                    column_config={
+                        "Justia_Link": st.column_config.LinkColumn(
+                            "🔗 Justia",
+                            display_text="View",
+                            width="small"
+                        )
+                    }
+                )
                 
                 st.markdown("**Common Investigation Areas:**")
                 st.markdown("- Detailed engineering feasibility assessment")
@@ -1456,6 +1574,12 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             selected_patent_label = st.selectbox("Select patent for detailed view:", list(patent_options.keys()))
             selected_idx = patent_options[selected_patent_label]
             patent = patents_data[selected_idx]
+            
+            # Display Justia link for selected patent
+            patent_num = patent.get('patent_number', 'N/A')
+            if patent_num != 'N/A':
+                justia_url = get_justia_url(patent_num)
+                st.markdown(f"[View {patent_num} on Justia Patents 🔗]({justia_url})", unsafe_allow_html=True)
 
             col1, col2, col3, col4 = st.columns(4)
             with col1:
