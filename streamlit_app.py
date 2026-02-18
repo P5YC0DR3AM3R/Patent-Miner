@@ -1009,6 +1009,29 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
     selected_label = st.selectbox("Select patent", list(options.keys()))
     patent = enriched[options[selected_label]]
 
+    # ── Title + Link Header ───────────────────────────────────────────────────
+    patent_num = patent.get("patent_number", "N/A")
+    patent_title = patent.get("title") or "Untitled"
+    justia_url = get_justia_url(patent_num) if patent_num != "N/A" else None
+    link_html = (
+        f"<a href='{justia_url}' target='_blank' "
+        f"style='color:#0066ff;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+        f"🔗 {patent_num}</a>"
+        if justia_url else f"<span style='color:#0066ff;font-weight:700;'>{patent_num}</span>"
+    )
+    st.markdown(
+        f"""<div class='pm-card' style='margin-bottom:1rem;'>
+        <div style='font-size:0.9em;color:#808080;margin-bottom:0.3rem;'>Patent Number</div>
+        <div style='font-size:1.3em;font-weight:800;color:#1a1a1a;margin-bottom:0.5rem;'>
+            {link_html}
+        </div>
+        <div style='font-size:1.05em;font-weight:600;color:#1a1a2e;line-height:1.4;'>
+            {patent_title}
+        </div>
+        </div>""",
+        unsafe_allow_html=True,
+    )
+
     left, right = st.columns([1, 2])
     with left:
         st.metric("Opportunity Score", f"{patent.get('opportunity_score_v2', 0.0):.2f}/10")
@@ -1018,15 +1041,12 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         st.metric("Domain", patent.get("market_domain", "unknown"))
 
     with right:
-        st.markdown(f"<div class='pm-card'><strong>Title</strong><br>{patent.get('title', 'N/A')}</div>", unsafe_allow_html=True)
         abstract = patent.get("abstract") or "No abstract available."
-        st.markdown(f"<div class='pm-card'><strong>Abstract</strong><br>{abstract}</div>", unsafe_allow_html=True)
-
-        # Add patent links
-        patent_num = patent.get("patent_number", "N/A")
-        if patent_num != "N/A":
-            justia_url = get_justia_url(patent_num)
-            st.markdown(f"🔗 [View on Justia Patents]({justia_url})")
+        st.markdown(
+            f"<div class='pm-card'><strong>Abstract</strong><br>"
+            f"<span style='line-height:1.6;'>{abstract}</span></div>",
+            unsafe_allow_html=True,
+        )
 
     viability = patent.get("viability_scorecard", {})
     st.subheader("🚀 Marketability Snapshot")
