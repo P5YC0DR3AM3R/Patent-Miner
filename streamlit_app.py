@@ -1097,17 +1097,17 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
     justia_url = get_justia_url(patent_num) if patent_num != "N/A" else None
     link_html = (
         f"<a href='{justia_url}' target='_blank' "
-        f"style='color:#0066ff;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+        f"style='color:#6366f1;font-weight:700;text-decoration:none;font-size:0.95em;'>"
         f"🔗 {patent_num}</a>"
-        if justia_url else f"<span style='color:#0066ff;font-weight:700;'>{patent_num}</span>"
+        if justia_url else f"<span style='color:#6366f1;font-weight:700;'>{patent_num}</span>"
     )
     st.markdown(
         f"""<div class='pm-card' style='margin-bottom:1rem;'>
-        <div style='font-size:0.9em;color:#808080;margin-bottom:0.3rem;'>Patent Number</div>
-        <div style='font-size:1.3em;font-weight:800;color:#1a1a1a;margin-bottom:0.5rem;'>
+        <div style='font-size:0.9em;color:#94a3b8;margin-bottom:0.3rem;'>Patent Number</div>
+        <div style='font-size:1.3em;font-weight:800;color:#e2e8f0;margin-bottom:0.5rem;'>
             {link_html}
         </div>
-        <div style='font-size:1.05em;font-weight:600;color:#1a1a2e;line-height:1.4;'>
+        <div style='font-size:1.05em;font-weight:600;color:#e2e8f0;line-height:1.4;'>
             {patent_title}
         </div>
         </div>""",
@@ -1203,12 +1203,12 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         if st.session_state[summary_key] is not None:
             st.markdown(
                 f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
-                <div style='font-size:0.85em;font-weight:700;color:#0066ff;
+                <div style='font-size:0.85em;font-weight:700;color:#6366f1;
                             text-transform:uppercase;letter-spacing:0.05em;
                             margin-bottom:0.6rem;'>
                     🤖 AI Use-Case Summary
                 </div>
-                <div style='color:#1a1a2e;font-size:1em;line-height:1.7;'>
+                <div style='color:#e2e8f0;font-size:1em;line-height:1.7;'>
                     {st.session_state[summary_key]}
                 </div>
                 </div>""",
@@ -1225,7 +1225,7 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         with col1:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
-                <strong style='font-size: 1.2em; color: #0066ff;'>🔍 Retrieval</strong>
+                <strong style='font-size: 1.2em; color: #6366f1;'>🔍 Retrieval</strong>
                 <br><br>
                 <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
                 {explanations.get('retrieval', 'No data')}
@@ -1237,7 +1237,7 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         with col2:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
-                <strong style='font-size: 1.2em; color: #00d4aa;'>✅ Viability</strong>
+                <strong style='font-size: 1.2em; color: #10b981;'>✅ Viability</strong>
                 <br><br>
                 <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
                 {explanations.get('viability', 'No data')}
@@ -1249,7 +1249,7 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         with col3:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
-                <strong style='font-size: 1.2em; color: #ff6b9d;'>⭐ Opportunity</strong>
+                <strong style='font-size: 1.2em; color: #f43f5e;'>⭐ Opportunity</strong>
                 <br><br>
                 <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
                 {explanations.get('opportunity', 'No data')}
@@ -1649,10 +1649,10 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                         patent_num = str(row['Patent_Number']).strip()
                         justia_url = get_justia_url(patent_num)
                         
-                        st.markdown(f"""<div style='background: #fff5e6; border: 2px solid #ff9500; border-radius: 12px; 
+                        st.markdown(f"""<div style='background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; 
                                     padding: 1rem; margin-bottom: 0.8rem;'>
-                                    <strong style='color: #ff9500;'>⚠️ <a href='{justia_url}' target='_blank' style='color: #ff9500; text-decoration: none;'>{patent_num}</a></strong><br>
-                                    <span style='color: #606060;'>{row['Title'][:80]}...</span>
+                                    <strong style='color: #f59e0b;'>⚠️ <a href='{justia_url}' target='_blank' style='color: #f59e0b; text-decoration: none;'>{patent_num}</a></strong><br>
+                                    <span style='color: #94a3b8;'>{row['Title'][:80]}...</span>
                                     </div>""", unsafe_allow_html=True)
                         
                         col1, col2 = st.columns(2)
@@ -1689,12 +1689,12 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     local_summary = lookup_cached_summary(cached_summaries, patent_num)
                     
                     # Create a bordered container for each patent
-                    st.markdown(f"""<div style='background: white; border: 2px solid #e0e8f5; border-radius: 12px; 
+                    st.markdown(f"""<div style='background: rgba(255,255,255,0.03); border: 1px solid rgba(99,102,241,0.15); border-radius: 12px; 
                                 padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
-                                <strong style='color: #0066ff; font-size: 1.1em;'>✅ <a href='{justia_url}' target='_blank' style='color: #0066ff; text-decoration: none;'>{patent_num}</a></strong><br>
-                                <span style='color: #606060;'>{patent['Title'][:100]}...</span><br>
-                                <span style='color: #00d4aa; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span> | 
-                                <a href='{justia_url}' target='_blank' style='color: #0066ff; text-decoration: none;'>🔗 View on Justia</a>
+                                <strong style='color: #6366f1; font-size: 1.1em;'>✅ <a href='{justia_url}' target='_blank' style='color: #6366f1; text-decoration: none;'>{patent_num}</a></strong><br>
+                                <span style='color: #94a3b8;'>{patent['Title'][:100]}...</span><br>
+                                <span style='color: #10b981; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span> | 
+                                <a href='{justia_url}' target='_blank' style='color: #6366f1; text-decoration: none;'>🔗 View on Justia</a>
                                 </div>""", unsafe_allow_html=True)
                     
                     col1, col2, col3 = st.columns(3)
@@ -1794,17 +1794,17 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             justia_url = get_justia_url(patent_num) if patent_num != 'N/A' else None
             link_html = (
                 f"<a href='{justia_url}' target='_blank' "
-                f"style='color:#0066ff;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+                f"style='color:#6366f1;font-weight:700;text-decoration:none;font-size:0.95em;'>"
                 f"🔗 {patent_num}</a>"
-                if justia_url else f"<span style='color:#0066ff;font-weight:700;'>{patent_num}</span>"
+                if justia_url else f"<span style='color:#6366f1;font-weight:700;'>{patent_num}</span>"
             )
             st.markdown(
                 f"""<div class='pm-card' style='margin-bottom:1rem;'>
-                <div style='font-size:0.9em;color:#808080;margin-bottom:0.3rem;'>Patent Number</div>
-                <div style='font-size:1.3em;font-weight:800;color:#1a1a1a;margin-bottom:0.5rem;'>
+                <div style='font-size:0.9em;color:#94a3b8;margin-bottom:0.3rem;'>Patent Number</div>
+                <div style='font-size:1.3em;font-weight:800;color:#e2e8f0;margin-bottom:0.5rem;'>
                     {link_html}
                 </div>
-                <div style='font-size:1.05em;font-weight:600;color:#1a1a2e;line-height:1.4;'>
+                <div style='font-size:1.05em;font-weight:600;color:#e2e8f0;line-height:1.4;'>
                     {patent_title}
                 </div>
                 </div>""",
@@ -1834,12 +1834,12 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             if st.session_state[bi_summary_key] is not None:
                 st.markdown(
                     f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
-                    <div style='font-size:0.85em;font-weight:700;color:#0066ff;
+                    <div style='font-size:0.85em;font-weight:700;color:#6366f1;
                                 text-transform:uppercase;letter-spacing:0.05em;
                                 margin-bottom:0.6rem;'>
                         🤖 AI Use-Case Summary
                     </div>
-                    <div style='color:#1a1a2e;font-size:1em;line-height:1.7;'>
+                    <div style='color:#e2e8f0;font-size:1em;line-height:1.7;'>
                         {st.session_state[bi_summary_key]}
                     </div>
                     </div>""",
@@ -1970,11 +1970,11 @@ def render_banner() -> None:
     """Render top advertising banner with contact links."""
     
     st.markdown("""
-        <div style='background: linear-gradient(135deg, #0066ff 0%, #00d4aa 100%); 
-                    padding: 1rem 2rem; 
-                    border-radius: 12px; 
+        <div style='background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+                    padding: 1rem 2rem;
+                    border-radius: 12px;
                     margin-bottom: 1.5rem;
-                    box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+                    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
                     text-align: center;'>
             <h3 style='color: white !important; margin: 0; padding: 0; font-size: 1.8em; font-weight: 800;'>
                 🆓 FREE Patent Miner from Micah Read MGMT
