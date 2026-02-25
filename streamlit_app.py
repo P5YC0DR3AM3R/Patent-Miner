@@ -1300,16 +1300,17 @@ def render_score_explainability(analyzer: PatentAnalyzer) -> None:
     )
 
     chart_df = score_df.melt(id_vars=["Patent #"], value_vars=["Retrieval", "Viability", "Opportunity"])
-    fig = px.line(
+    fig = px.bar(
         chart_df,
         x="Patent #",
         y="value",
         color="variable",
+        barmode="group",
         title="Score Component Comparison (Top Candidates)",
-        markers=True,
-        line_shape="spline"
+        color_discrete_sequence=PM_COLORS[:3],
     )
-    fig.update_layout(height=420, hovermode="x unified")
+    fig.update_traces(marker=dict(cornerradius=4, line=dict(width=0)))
+    fig.update_layout(**PM_DARK_LAYOUT, height=420, hovermode="x unified")
     st.plotly_chart(fig, use_container_width=True)
 
 
