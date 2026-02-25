@@ -1498,18 +1498,19 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             st.subheader("NPV Distribution")
             npv_sorted = rankings_df.sort_values('NPV_Base').reset_index(drop=True)
             npv_sorted['index'] = range(len(npv_sorted))
-            npv_chart = px.line(
+            npv_chart = px.area(
                 npv_sorted,
                 x="index",
                 y="NPV_Base",
                 title="Patent NPV Distribution",
-                markers=True,
-                line_shape="spline"
             )
-            npv_chart.update_traces(line=dict(color="#0066ff", width=3), marker=dict(size=6))
+            npv_chart.update_traces(
+                line=dict(color="#6366f1", width=2),
+                fillcolor="rgba(99, 102, 241, 0.2)",
+            )
             npv_chart.update_xaxes(title="Patent Index (sorted by NPV)")
             npv_chart.update_yaxes(title="NPV (Base Case)")
-            npv_chart.update_layout(height=350, hovermode="x unified")
+            npv_chart.update_layout(**PM_DARK_LAYOUT, height=350, hovermode="x unified")
             st.plotly_chart(npv_chart, use_container_width=True)
 
             if {"NPV_P10", "NPV_P90"}.issubset(set(rankings_df.columns)):
@@ -1517,14 +1518,27 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 uncertainty_df = rankings_df[["Rank", "NPV_P10", "NPV_Base", "NPV_P90"]].copy()
                 uncertainty_df = uncertainty_df.sort_values("NPV_Base").reset_index(drop=True)
                 uncertainty_df["index"] = range(len(uncertainty_df))
-                uncertainty_chart = px.line(
-                    uncertainty_df,
-                    x="index",
-                    y=["NPV_P10", "NPV_Base", "NPV_P90"],
+                fig_band = go.Figure()
+                fig_band.add_trace(go.Scatter(
+                    x=uncertainty_df["index"], y=uncertainty_df["NPV_P90"],
+                    mode="lines", line=dict(width=0), showlegend=False, name="P90",
+                ))
+                fig_band.add_trace(go.Scatter(
+                    x=uncertainty_df["index"], y=uncertainty_df["NPV_P10"],
+                    mode="lines", line=dict(width=0), fill="tonexty",
+                    fillcolor="rgba(99, 102, 241, 0.15)", showlegend=False, name="P10",
+                ))
+                fig_band.add_trace(go.Scatter(
+                    x=uncertainty_df["index"], y=uncertainty_df["NPV_Base"],
+                    mode="lines", line=dict(color="#22d3ee", width=2), name="Base NPV",
+                ))
+                fig_band.update_layout(
+                    **PM_DARK_LAYOUT,
                     title="Risk-Adjusted NPV Band (P10 / Base / P90)",
+                    height=320,
+                    hovermode="x unified",
                 )
-                uncertainty_chart.update_layout(height=320, hovermode="x unified")
-                st.plotly_chart(uncertainty_chart, use_container_width=True)
+                st.plotly_chart(fig_band, use_container_width=True)
 
             # Top Financial Performers
             st.subheader("🏅 Top Financial Performers (NPV Base)")
