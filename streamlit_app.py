@@ -1159,26 +1159,32 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         }
 
         st.markdown("**Score Breakdown**")
-        chart_data = pd.DataFrame({
-            "Component": list(scores.keys()),
-            "Score": list(scores.values())
-        })
-        fig = px.line(
-            chart_data,
-            x="Component",
-            y="Score",
-            title="",
-            markers=True,
-            line_shape="spline"
-        )
-        fig.update_traces(line=dict(color="#0066ff", width=4), marker=dict(size=12))
-        fig.update_yaxes(range=[0, 10])
+        categories_radar = list(scores.keys())
+        values_radar = list(scores.values())
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatterpolar(
+            r=values_radar + [values_radar[0]],
+            theta=categories_radar + [categories_radar[0]],
+            fill="toself",
+            fillcolor="rgba(99, 102, 241, 0.15)",
+            line=dict(color="#6366f1", width=2),
+            marker=dict(size=8, color="#6366f1"),
+            name="Scores",
+        ))
         fig.update_layout(
+            polar=dict(
+                bgcolor="#12121a",
+                radialaxis=dict(visible=True, range=[0, 10], gridcolor="#1e293b",
+                                tickfont=dict(color="#94a3b8")),
+                angularaxis=dict(gridcolor="#1e293b",
+                                 tickfont=dict(color="#e2e8f0", size=13)),
+            ),
+            paper_bgcolor="#12121a",
+            font=dict(color="#e2e8f0"),
             showlegend=False,
-            hovermode="x unified",
-            margin=dict(l=40, r=40, t=20, b=40),
-            font=dict(size=14),
-            height=300
+            height=350,
+            margin=dict(l=60, r=60, t=30, b=30),
         )
         st.plotly_chart(fig, use_container_width=True)
 
