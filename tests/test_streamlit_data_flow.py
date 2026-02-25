@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from streamlit_app import PatentAnalyzer, VIEW_TABS
+from streamlit_app import PatentAnalyzer, NAV_OPTIONS
 from viability_scoring import compute_opportunity_score_v2, expiration_confidence_score
 
 
@@ -101,21 +101,14 @@ class StreamlitDataFlowTests(unittest.TestCase):
         self.assertIn("viability_scorecard", enriched[0])
         self.assertIn("opportunity_score_v2", enriched[0])
 
-    def test_segmented_navigation_labels_are_stable(self):
+    def test_sidebar_navigation_labels_are_stable(self):
         self.assertEqual(
-            VIEW_TABS,
-            [
-                "Executive View",
-                "Opportunity Ranking",
-                "Patent Details",
-                "Score Explainability",
-                "💼 Business Intelligence",
-                "Export",
-            ],
+            list(NAV_OPTIONS.keys()),
+            ["Dashboard", "Rankings", "Patent Explorer", "Score Analysis", "Business Intel", "Export"],
         )
 
         source = Path("streamlit_app.py").read_text(encoding="utf-8")
-        self.assertIn("st.tabs(VIEW_TABS)", source)
+        self.assertIn("st.radio(", source)
 
 
 if __name__ == "__main__":

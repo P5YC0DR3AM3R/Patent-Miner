@@ -921,11 +921,30 @@ def render_header(analyzer: PatentAnalyzer) -> None:
 
 
 def render_sidebar_controls() -> Dict[str, Any]:
-    """Return default settings without rendering controls."""
+    """Sidebar: navigation + display settings."""
+    with st.sidebar:
+        st.markdown(
+            "<div style='padding:1rem 0 1.5rem;'>"
+            "<h2 style='color:#e2e8f0;margin:0;font-size:1.4em;'>Patent Miner</h2>"
+            "<p style='color:#94a3b8;margin:0.2rem 0 0;font-size:0.85em;'>Intelligence Platform</p>"
+            "</div>",
+            unsafe_allow_html=True,
+        )
+        page = st.radio(
+            "Navigation",
+            list(NAV_OPTIONS.keys()),
+            label_visibility="collapsed",
+        )
+        st.divider()
+        text_size = st.selectbox("Text Size", list(TEXT_SIZE_OPTIONS.keys()), index=1)
+        density = st.selectbox("Density", list(DENSITY_OPTIONS.keys()), index=0)
+        show_advanced = st.toggle("Show Advanced Details", value=True)
+
     return {
-        "text_size": "Large",
-        "density": "Comfortable",
-        "show_advanced": True,
+        "page": NAV_OPTIONS[page],
+        "text_size": text_size,
+        "density": density,
+        "show_advanced": show_advanced,
     }
 
 
@@ -1929,30 +1948,25 @@ def main() -> None:
     render_banner()
 
     analyzer = get_analyzer()
-    render_header(analyzer)
 
     if not analyzer.patents:
         st.error("No patent data available. Run the discovery pipeline first.")
         st.stop()
 
-    tab_exec, tab_rank, tab_details, tab_explain, tab_bi, tab_export = st.tabs(VIEW_TABS)
+    render_header(analyzer)
 
-    with tab_exec:
+    page = controls["page"]
+    if page == "dashboard":
         render_executive_view(analyzer, show_advanced=controls["show_advanced"])
-
-    with tab_rank:
+    elif page == "rankings":
         render_opportunity_ranking(analyzer, show_advanced=controls["show_advanced"])
-
-    with tab_details:
+    elif page == "explorer":
         render_patent_details(analyzer, show_advanced=controls["show_advanced"])
-
-    with tab_explain:
+    elif page == "scores":
         render_score_explainability(analyzer)
-
-    with tab_bi:
+    elif page == "bi":
         render_business_intelligence(analyzer)
-
-    with tab_export:
+    elif page == "export":
         render_export(analyzer)
 
     render_footer()
