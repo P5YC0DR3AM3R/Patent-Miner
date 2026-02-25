@@ -1575,46 +1575,63 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
         if rankings_df is not None:
             # Technology Theme Distribution
             if "Technology_Theme" in rankings_df.columns:
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    theme_counts = rankings_df["Technology_Theme"].value_counts().reset_index()
-                    theme_counts.columns = ["Technology_Theme", "count"]
-                    theme_counts = theme_counts.sort_values('count', ascending=False)
-                    fig_theme = px.line(
-                        theme_counts,
-                        x="Technology_Theme",
-                        y="count",
-                        title="Distribution by Technology Theme",
-                        markers=True,
-                        line_shape="linear"
-                    )
-                    fig_theme.update_traces(line=dict(color="#ff6b9d", width=3), marker=dict(size=8))
-                    fig_theme.update_layout(height=350, hovermode="x unified")
-                    st.plotly_chart(fig_theme, use_container_width=True)
-                
-                with col2:
-                    st.markdown("**Theme Breakdown:**")
-                    for theme, count in theme_counts.items():
-                        st.write(f"- {theme}: {count} patents")
+                theme_counts = rankings_df["Technology_Theme"].value_counts().reset_index()
+                theme_counts.columns = ["Technology_Theme", "count"]
+                fig_theme = px.treemap(
+                    theme_counts,
+                    path=["Technology_Theme"],
+                    values="count",
+                    title="Distribution by Technology Theme",
+                    color="count",
+                    color_continuous_scale=[[0, "#6366f1"], [0.5, "#22d3ee"], [1, "#10b981"]],
+                )
+                fig_theme.update_layout(
+                    paper_bgcolor="#12121a",
+                    font=dict(color="#e2e8f0"),
+                    height=400,
+                    coloraxis_showscale=False,
+                )
+                fig_theme.update_traces(
+                    textinfo="label+value",
+                    textfont=dict(size=14, color="#e2e8f0"),
+                    marker=dict(cornerradius=8),
+                )
+                st.plotly_chart(fig_theme, use_container_width=True)
 
             # Manufacturing Feasibility
             if "Manufacturing_Feasibility" in rankings_df.columns:
                 st.subheader("Manufacturing Feasibility Scores")
-                feas_sorted = rankings_df.sort_values('Manufacturing_Feasibility').reset_index(drop=True)
-                feas_sorted['index'] = range(len(feas_sorted))
-                feasibility_chart = px.line(
+                feas_data = rankings_df[["Patent_Number", "Manufacturing_Feasibility"]].dropna()
+                feas_sorted = feas_data.sort_values("Manufacturing_Feasibility", ascending=True).tail(20)
+
+                def _score_color(val: float) -> str:
+                    if val >= 7:
+                        return "#10b981"
+                    if val >= 4:
+                        return "#f59e0b"
+                    return "#f43f5e"
+
+                feasibility_chart = px.bar(
                     feas_sorted,
-                    x="index",
-                    y="Manufacturing_Feasibility",
-                    title="Manufacturing Feasibility Distribution (1-10)",
-                    markers=True,
-                    line_shape="spline"
+                    y="Patent_Number",
+                    x="Manufacturing_Feasibility",
+                    orientation="h",
+                    title="Manufacturing Feasibility (Top 20)",
                 )
-                feasibility_chart.update_traces(line=dict(color="#00d4aa", width=3), marker=dict(size=6))
-                feasibility_chart.update_xaxes(title="Patent Index (sorted by Feasibility)")
-                feasibility_chart.update_yaxes(title="Manufacturing Feasibility Score")
-                feasibility_chart.update_layout(height=300, hovermode="x unified")
+                feasibility_chart.update_traces(
+                    marker=dict(
+                        color=[_score_color(v) for v in feas_sorted["Manufacturing_Feasibility"]],
+                        cornerradius=4,
+                        line=dict(width=0),
+                    )
+                )
+                feasibility_chart.update_layout(
+                    **PM_DARK_LAYOUT,
+                    height=max(300, len(feas_sorted) * 28),
+                    showlegend=False,
+                )
+                feasibility_chart.update_xaxes(title="Score (1-10)", range=[0, 10])
+                feasibility_chart.update_yaxes(title="")
                 st.plotly_chart(feasibility_chart, use_container_width=True)
 
             # Risk Indicators
