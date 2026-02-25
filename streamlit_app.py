@@ -968,29 +968,52 @@ def render_executive_view(analyzer: PatentAnalyzer, show_advanced: bool) -> None
 
     domain_dist = analyzer.get_domain_distribution()
     if not domain_dist.empty:
-        fig = px.line(
-            domain_dist.sort_values('count', ascending=False),
-            x="market_domain",
-            y="count",
+        sorted_dist = domain_dist.sort_values("count", ascending=True)
+        fig = px.bar(
+            sorted_dist,
+            y="market_domain",
+            x="count",
+            orientation="h",
             title="Domain Distribution",
-            markers=True,
-            line_shape="linear"
         )
-        fig.update_traces(line=dict(color="#00d4aa", width=3), marker=dict(size=8))
-        fig.update_layout(height=360, hovermode="x unified")
+        fig.update_traces(
+            marker=dict(
+                color=sorted_dist["count"].values,
+                colorscale=[[0, "#6366f1"], [0.5, "#22d3ee"], [1, "#10b981"]],
+                line=dict(width=0),
+                cornerradius=6,
+            )
+        )
+        fig.update_layout(**PM_DARK_LAYOUT, height=max(300, len(sorted_dist) * 40), showlegend=False)
+        fig.update_yaxes(title="")
+        fig.update_xaxes(title="Count")
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("No market domain distribution available.")
 
     if show_advanced:
-        st.subheader("Domain Counts")
-        st.dataframe(
-            pd.DataFrame(
-                [{"domain": domain, "count": count} for domain, count in stats["domains"].items()]
-            ),
-            use_container_width=True,
-            hide_index=True,
-        )
+        col_table, col_donut = st.columns([1, 1])
+        with col_table:
+            st.subheader("Domain Counts")
+            st.dataframe(
+                pd.DataFrame(
+                    [{"domain": d, "count": c} for d, c in stats["domains"].items()]
+                ),
+                use_container_width=True,
+                hide_index=True,
+            )
+        with col_donut:
+            if stats["assignee_types"]:
+                assignee_df = pd.DataFrame(
+                    [{"type": k, "count": v} for k, v in stats["assignee_types"].items()]
+                )
+                fig_donut = px.pie(
+                    assignee_df, names="type", values="count",
+                    title="Assignee Types", hole=0.5,
+                    color_discrete_sequence=PM_COLORS,
+                )
+                fig_donut.update_layout(**PM_DARK_LAYOUT, height=350, showlegend=True)
+                st.plotly_chart(fig_donut, use_container_width=True)
 
 
 def render_opportunity_ranking(analyzer: PatentAnalyzer, show_advanced: bool) -> None:
