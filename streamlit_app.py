@@ -146,11 +146,11 @@ def cached_summary_snippet(cached_summaries: Dict[str, str], patent_number: Any,
 
 
 def _inject_ui_css(text_size_label: str, density_label: str) -> None:
-    """Apply dynamic CSS for enterprise-level kid-friendly design."""
+    """Apply enterprise dark mode CSS theme."""
 
-    base_font = max(22, TEXT_SIZE_OPTIONS.get(text_size_label, 18) + 6)  # Boost font size
+    base_font = max(16, TEXT_SIZE_OPTIONS.get(text_size_label, 18))
     density = DENSITY_OPTIONS.get(density_label, 1.15)
-    heading_scale = 1.4 if base_font <= 22 else 1.5
+    heading_scale = 1.4 if base_font <= 18 else 1.5
 
     st.markdown(
         f"""
@@ -159,81 +159,54 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             --pm-font-size: {base_font}px;
             --pm-line-height: {density + 0.2};
             --pm-heading-scale: {heading_scale};
-            --pm-card-pad: {1.5 if density < 1.2 else 1.8}rem;
-            --pm-gap: {1.2 if density < 1.2 else 1.4}rem;
-            --pm-surface: #f0f5ff;
-            --pm-border: #e0e8f5;
-            --pm-accent: #0066ff;
-            --pm-accent-secondary: #ff6b9d;
-            --pm-accent-tertiary: #00d4aa;
-            --pm-text: #a0a0a0;
-            --pm-muted: #808080;
-            --pm-shadow: 0 8px 24px rgba(0, 102, 255, 0.12);
-            --pm-shadow-hover: 0 12px 32px rgba(0, 102, 255, 0.18);
+            --pm-card-pad: {1.2 if density < 1.2 else 1.5}rem;
+            --pm-gap: {1.0 if density < 1.2 else 1.2}rem;
+            --pm-bg-deep: #0a0a0f;
+            --pm-surface: #12121a;
+            --pm-elevated: #1a1a2e;
+            --pm-border: rgba(99, 102, 241, 0.15);
+            --pm-border-hover: rgba(99, 102, 241, 0.4);
+            --pm-accent: #6366f1;
+            --pm-accent-secondary: #22d3ee;
+            --pm-accent-tertiary: #10b981;
+            --pm-amber: #f59e0b;
+            --pm-rose: #f43f5e;
+            --pm-text: #e2e8f0;
+            --pm-muted: #94a3b8;
+            --pm-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --pm-shadow-hover: 0 8px 32px rgba(99, 102, 241, 0.2);
+            --pm-glow-accent: 0 0 20px rgba(99, 102, 241, 0.25);
         }}
 
+        /* ── Keyframe Animations ───────────────────────────────────────── */
+        @keyframes fadeIn {{
+            from {{ opacity: 0; }}
+            to {{ opacity: 1; }}
+        }}
+        @keyframes fadeInUp {{
+            from {{ opacity: 0; transform: translateY(12px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+
+        /* ── Base ──────────────────────────────────────────────────────── */
         *:not([data-testid="stIconMaterial"]) {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif !important;
         }}
 
-        html, body, [class*="css"]  {{
+        html, body, [class*="css"] {{
             font-size: var(--pm-font-size);
             line-height: var(--pm-line-height);
             color: var(--pm-text);
-            background: linear-gradient(135deg, #f0f5ff 0%, #e6f2ff 50%, #f5e6ff 100%);
+            background: var(--pm-bg-deep) !important;
         }}
 
-        /* Except for specific elements that should stay light/white */
-        .stButton > button,
-        .stDownloadButton > button {{
-            color: white !important;
+        .stApp {{
+            background: var(--pm-bg-deep) !important;
         }}
 
         .main {{
             background: transparent;
-        }}
-
-        /* ── Dataframe column-header popup menus ──────────────────────────────
-           Confirmed via live DOM inspection: the popup is [data-testid="stDataFrameColumnMenu"]
-           with data-baseweb="popover". It has transparent background and 24px font
-           inherited from html/body, causing text overlap on whatever is behind it.
-           Stable classes: e1gsdy3y0 (container), e1gsdy3y1 (menu items), e1gsdy3y3 (header). */
-        [data-testid="stDataFrameColumnMenu"],
-        [data-testid="stDataFrameColumnMenu"] * {{
-            font-size: 14px !important;
-            line-height: 1.5 !important;
-            color: #1a1a1a !important;
-            background-color: #ffffff !important;
-            font-weight: 400 !important;
-        }}
-
-        /* Inner container — needs solid white background */
-        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y0 {{
-            background: #ffffff !important;
-            border-radius: 8px !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
-            padding: 4px 0 !important;
-        }}
-
-        /* Menu item rows */
-        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1 {{
-            background: #ffffff !important;
-            color: #1a1a1a !important;
-            font-size: 14px !important;
-            padding: 8px 16px !important;
-            line-height: 1.5 !important;
-            white-space: nowrap !important;
-            cursor: pointer !important;
-        }}
-
-        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1:hover {{
-            background: #f0f5ff !important;
-        }}
-
-        /* Column header row inside popup */
-        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y3 {{
-            background: #ffffff !important;
-            padding: 8px 12px !important;
+            animation: fadeIn 0.3s ease;
         }}
 
         .main .block-container {{
@@ -242,417 +215,423 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             max-width: 1400px;
         }}
 
+        /* ── Hide Streamlit chrome ─────────────────────────────────────── */
+        [data-testid="stToolbar"],
+        header,
+        [data-testid="stHeader"],
+        .stApp > header {{
+            display: none !important;
+        }}
+
+        /* ── Typography ────────────────────────────────────────────────── */
         h1, h2, h3 {{
             letter-spacing: -0.03em;
             line-height: 1.15;
             font-weight: 800;
-            color: var(--pm-text);
         }}
 
-        h1 {{ 
-            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.8);
-            margin-bottom: 1.2rem;
+        h1 {{
+            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.6);
+            margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--pm-accent) 0%, var(--pm-accent-secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }}
-        h2 {{ 
-            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.4);
-            margin-top: 1.5rem;
-            margin-bottom: 1rem;
+        h2 {{
+            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.3);
+            margin-top: 1.2rem;
+            margin-bottom: 0.8rem;
             color: var(--pm-accent);
         }}
-        h3 {{ 
-            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.1);
+        h3 {{
+            font-size: calc(var(--pm-font-size) * var(--pm-heading-scale) * 1.05);
             color: var(--pm-accent-secondary);
         }}
 
+        p {{
+            font-size: var(--pm-font-size);
+            line-height: var(--pm-line-height);
+            color: var(--pm-text);
+            margin-bottom: 0.8rem;
+        }}
+
+        .stCaption, .pm-muted {{
+            color: var(--pm-muted) !important;
+            font-size: 0.88em;
+            font-weight: 500;
+        }}
+
+        /* ── Glassmorphism Cards ───────────────────────────────────────── */
         .pm-card {{
-            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-            border: 2px solid var(--pm-border);
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--pm-border);
+            border-radius: 16px;
             padding: var(--pm-card-pad);
             margin-bottom: var(--pm-gap);
             box-shadow: var(--pm-shadow);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            backdrop-filter: blur(10px);
-            color: #1a1a1a !important;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(12px);
+            animation: fadeInUp 0.4s ease;
         }}
 
-        .pm-card * {{
-            color: #1a1a1a !important;
+        .pm-card, .pm-card * {{
+            color: var(--pm-text) !important;
         }}
 
         .pm-card:hover {{
             box-shadow: var(--pm-shadow-hover);
             transform: translateY(-4px);
-            border-color: var(--pm-accent);
+            border-color: var(--pm-border-hover);
         }}
 
-        .pm-muted {{ 
-            color: var(--pm-muted);
-            font-size: 0.92em;
-            font-weight: 500;
-        }}
+        /* Score-colored card variants */
+        .pm-card-emerald {{ border-left: 3px solid var(--pm-accent-tertiary) !important; }}
+        .pm-card-amber {{ border-left: 3px solid var(--pm-amber) !important; }}
+        .pm-card-rose {{ border-left: 3px solid var(--pm-rose) !important; }}
 
-        /* Streamlit Metrics */
-        .metric-card, [data-testid="metric-container"] {{
-            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
-            border: 2px solid var(--pm-border) !important;
-            border-radius: 20px !important;
-            padding: 1.8rem !important;
+        /* ── Streamlit Metrics ─────────────────────────────────────────── */
+        [data-testid="metric-container"] {{
+            background: var(--pm-surface) !important;
+            border: 1px solid var(--pm-border) !important;
+            border-radius: 14px !important;
+            padding: 1.2rem !important;
             box-shadow: var(--pm-shadow) !important;
-            transition: all 0.3s ease !important;
-            color: #1a1a1a !important;
+            transition: all 0.25s ease !important;
         }}
 
+        [data-testid="metric-container"],
         [data-testid="metric-container"] * {{
-            color: #1a1a1a !important;
+            color: var(--pm-text) !important;
         }}
 
         [data-testid="metric-container"]:hover {{
             box-shadow: var(--pm-shadow-hover) !important;
-            transform: translateY(-4px) !important;
+            transform: translateY(-3px) !important;
+            border-color: var(--pm-border-hover) !important;
         }}
 
-        /* Buttons */
+        [data-testid="stMetricValue"] {{
+            font-weight: 800 !important;
+        }}
+
+        .stMetricDelta {{
+            font-size: calc(var(--pm-font-size) * 0.85) !important;
+        }}
+
+        /* ── Buttons — Primary (Indigo) ────────────────────────────────── */
         .stButton > button {{
-            border-radius: 16px !important;
-            padding: 0.8rem 2rem !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
+            border-radius: 12px !important;
+            padding: 0.7rem 1.8rem !important;
+            font-size: calc(var(--pm-font-size) * 0.9) !important;
             font-weight: 700 !important;
             border: none !important;
-            background: linear-gradient(135deg, var(--pm-accent) 0%, #0052cc 100%) !important;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
             color: white !important;
-            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.3) !important;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
             cursor: pointer !important;
             height: auto !important;
-            letter-spacing: 0.5px !important;
+            letter-spacing: 0.3px !important;
         }}
 
         .stButton > button:hover {{
-            box-shadow: 0 10px 28px rgba(0, 102, 255, 0.4) !important;
-            transform: translateY(-3px) !important;
-            background: linear-gradient(135deg, #0052cc 0%, var(--pm-accent) 100%) !important;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45) !important;
+            transform: translateY(-2px) !important;
         }}
 
         .stButton > button:active {{
-            transform: translateY(-1px) !important;
+            transform: scale(0.98) !important;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
         }}
 
-        /* Download Buttons */
+        /* ── Buttons — Download (Emerald) ──────────────────────────────── */
         .stDownloadButton > button {{
-            border-radius: 16px !important;
-            padding: 0.8rem 2rem !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
+            border-radius: 12px !important;
+            padding: 0.7rem 1.8rem !important;
+            font-size: calc(var(--pm-font-size) * 0.9) !important;
             font-weight: 700 !important;
             border: none !important;
-            background: linear-gradient(135deg, var(--pm-accent-tertiary) 0%, #00a887 100%) !important;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
             color: white !important;
-            box-shadow: 0 6px 20px rgba(0, 212, 170, 0.3) !important;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
             cursor: pointer !important;
             height: auto !important;
         }}
 
         .stDownloadButton > button:hover {{
-            box-shadow: 0 10px 28px rgba(0, 212, 170, 0.4) !important;
-            transform: translateY(-3px) !important;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45) !important;
+            transform: translateY(-2px) !important;
         }}
 
-        /* Tabs */
-        /* Hide Streamlit deploy button and menu */
-        [data-testid="stToolbar"] {{
-            display: none !important;
+        .stDownloadButton > button:active {{
+            transform: scale(0.98) !important;
         }}
 
-        /* Hide top menu bar */
-        header {{
-            display: none !important;
-        }}
-
-        [data-testid="stHeader"] {{
-            display: none !important;
-        }}
-
-        .stApp > header {{
-            display: none !important;
-        }}
-
+        /* ── Tabs (BI sub-tabs) ────────────────────────────────────────── */
         .stTabs [role="tablist"] {{
-            gap: 0.8rem;
-            border-bottom: 3px solid var(--pm-border);
-            padding-bottom: 1rem;
+            gap: 0.5rem;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+            padding-bottom: 0;
         }}
 
         .stTabs [role="tab"] {{
-            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-            border: 2px solid var(--pm-border);
-            border-bottom: 3px solid transparent;
-            border-radius: 16px 16px 0 0;
-            padding: 0.9rem 1.8rem;
-            font-weight: 700;
-            font-size: calc(var(--pm-font-size) * 0.95);
-            color: #1a1a1a !important;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            padding: 0.7rem 1.4rem;
+            font-weight: 600;
+            font-size: calc(var(--pm-font-size) * 0.9);
+            color: var(--pm-muted) !important;
+            transition: all 0.25s ease;
             cursor: pointer;
         }}
 
+        .stTabs [role="tab"] * {{
+            color: var(--pm-muted) !important;
+        }}
+
         .stTabs [role="tab"]:hover {{
-            background: linear-gradient(135deg, #f0f5ff 0%, #e6f2ff 100%);
-            color: #1a1a1a !important;
-            box-shadow: 0 6px 16px rgba(0, 102, 255, 0.1);
-            transform: translateY(-2px);
+            color: var(--pm-text) !important;
+            background: rgba(99, 102, 241, 0.05);
+        }}
+
+        .stTabs [role="tab"]:hover * {{
+            color: var(--pm-text) !important;
         }}
 
         .stTabs [aria-selected="true"] {{
-            background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%);
-            color: #1a1a1a !important;
-            border-color: var(--pm-accent);
+            color: var(--pm-accent) !important;
             border-bottom-color: var(--pm-accent);
-            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.3);
-        }}
-
-        .stTabs [role="tab"] * {{
-            color: #1a1a1a !important;
+            background: rgba(99, 102, 241, 0.08);
         }}
 
         .stTabs [aria-selected="true"] * {{
-            color: #1a1a1a !important;
+            color: var(--pm-accent) !important;
         }}
 
-        /* Data Frames & Tables */
+        /* ── Data Frames & Tables ──────────────────────────────────────── */
         .stDataFrame, .stTable {{
-            border: 2px solid var(--pm-border);
-            border-radius: 18px;
-            padding: 0.5rem;
-            box-shadow: var(--pm-shadow);
+            border: 1px solid var(--pm-border);
+            border-radius: 12px;
             overflow: hidden;
-            color: #1a1a1a !important;
+            box-shadow: var(--pm-shadow);
         }}
 
-        .stDataFrame * , .stTable * {{
-            color: #1a1a1a !important;
+        /* Dataframe column-header popup menus */
+        [data-testid="stDataFrameColumnMenu"],
+        [data-testid="stDataFrameColumnMenu"] * {{
+            font-size: 13px !important;
+            line-height: 1.5 !important;
+            color: var(--pm-text) !important;
+            background-color: var(--pm-elevated) !important;
+            font-weight: 400 !important;
         }}
 
-        /* Inputs */
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y0 {{
+            background: var(--pm-elevated) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+        }}
+
+        [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1:hover {{
+            background: rgba(99, 102, 241, 0.15) !important;
+        }}
+
+        /* ── Inputs ────────────────────────────────────────────────────── */
         .stSelectbox, .stSlider, .stTextInput {{
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
+            font-size: calc(var(--pm-font-size) * 0.9) !important;
         }}
 
         .stSelectbox > div > div, .stTextInput > div > div {{
-            border-radius: 14px !important;
-            border: 2px solid var(--pm-border) !important;
-            padding: 0.9rem 1.2rem !important;
-            background: white !important;
-            color: #1a1a1a !important;
-            transition: all 0.3s ease !important;
+            border-radius: 10px !important;
+            border: 1px solid var(--pm-border) !important;
+            padding: 0.6rem 1rem !important;
+            background: var(--pm-surface) !important;
+            color: var(--pm-text) !important;
+            transition: all 0.25s ease !important;
         }}
 
         .stSelectbox > div > div *, .stTextInput > div > div * {{
-            color: #1a1a1a !important;
+            color: var(--pm-text) !important;
         }}
 
         .stSelectbox > div > div:hover, .stTextInput > div > div:hover {{
             border-color: var(--pm-accent) !important;
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1) !important;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.1) !important;
         }}
 
         .stSelectbox > div > div:focus-within, .stTextInput > div > div:focus-within {{
             border-color: var(--pm-accent) !important;
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1) !important;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
         }}
 
-        /* Info/Warning/Error boxes */
-        .stInfo {{
-            background: linear-gradient(135deg, #e6f2ff 0%, #f0f5ff 100%) !important;
-            border-left: 4px solid var(--pm-accent) !important;
-            border-radius: 14px !important;
-            padding: 1.2rem 1.6rem !important;
-            box-shadow: var(--pm-shadow) !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
-            color: #1a1a1a !important;
+        /* Dropdown menu popover */
+        [data-baseweb="popover"] {{
+            background: var(--pm-elevated) !important;
+            border: 1px solid var(--pm-border) !important;
+            border-radius: 10px !important;
         }}
 
-        .stInfo * {{
-            color: #1a1a1a !important;
+        [data-baseweb="popover"] * {{
+            color: var(--pm-text) !important;
+        }}
+
+        [data-baseweb="popover"] li:hover {{
+            background: rgba(99, 102, 241, 0.15) !important;
+        }}
+
+        /* ── Radio buttons (sidebar nav) ───────────────────────────────── */
+        .stRadio > div {{
+            gap: 0.2rem !important;
+        }}
+
+        .stRadio > div > label {{
+            background: transparent !important;
+            border-radius: 10px !important;
+            padding: 0.6rem 1rem !important;
+            margin: 0 !important;
+            transition: all 0.2s ease !important;
+            border-left: 3px solid transparent !important;
+            cursor: pointer !important;
+        }}
+
+        .stRadio > div > label:hover {{
+            background: rgba(99, 102, 241, 0.08) !important;
+            border-left-color: rgba(99, 102, 241, 0.3) !important;
+        }}
+
+        .stRadio > div > label[data-checked="true"],
+        .stRadio > div > label:has(input:checked) {{
+            background: rgba(99, 102, 241, 0.12) !important;
+            border-left-color: var(--pm-accent) !important;
+        }}
+
+        .stRadio > div > label * {{
+            color: var(--pm-text) !important;
+            font-weight: 500 !important;
+        }}
+
+        /* ── Toggle ────────────────────────────────────────────────────── */
+        .stCheckbox > label > div {{
+            border-radius: 8px !important;
+        }}
+
+        /* ── Info/Warning/Error boxes ──────────────────────────────────── */
+        [data-testid="stAlert"] {{
+            border-radius: 10px !important;
+            padding: 1rem 1.2rem !important;
+            font-size: calc(var(--pm-font-size) * 0.9) !important;
+            border: none !important;
+        }}
+
+        .stInfo, [data-baseweb="notification"][kind="info"] {{
+            background: rgba(99, 102, 241, 0.1) !important;
+            border-left: 3px solid var(--pm-accent) !important;
+        }}
+        .stInfo *, [data-baseweb="notification"][kind="info"] * {{
+            color: var(--pm-text) !important;
         }}
 
         .stSuccess {{
-            background: linear-gradient(135deg, #e6ffe6 0%, #f0fff0 100%) !important;
-            border-left: 4px solid var(--pm-accent-tertiary) !important;
-            border-radius: 14px !important;
-            padding: 1.2rem 1.6rem !important;
-            box-shadow: var(--pm-shadow) !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
-            color: #1a1a1a !important;
+            background: rgba(16, 185, 129, 0.1) !important;
+            border-left: 3px solid var(--pm-accent-tertiary) !important;
         }}
-
-        .stSuccess * {{
-            color: #1a1a1a !important;
-        }}
+        .stSuccess * {{ color: var(--pm-text) !important; }}
 
         .stWarning {{
-            background: linear-gradient(135deg, #fff5e6 0%, #fffbf0 100%) !important;
-            border-left: 4px solid #ff9500 !important;
-            border-radius: 14px !important;
-            padding: 1.2rem 1.6rem !important;
-            box-shadow: var(--pm-shadow) !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
-            color: #1a1a1a !important;
+            background: rgba(245, 158, 11, 0.1) !important;
+            border-left: 3px solid var(--pm-amber) !important;
         }}
-
-        .stWarning * {{
-            color: #1a1a1a !important;
-        }}
+        .stWarning * {{ color: var(--pm-text) !important; }}
 
         .stError {{
-            background: linear-gradient(135deg, #ffe6e6 0%, #fff0f0 100%) !important;
-            border-left: 4px solid #ff4757 !important;
-            border-radius: 14px !important;
-            padding: 1.2rem 1.6rem !important;
-            box-shadow: var(--pm-shadow) !important;
-            font-size: calc(var(--pm-font-size) * 0.95) !important;
-            color: #1a1a1a !important;
+            background: rgba(244, 63, 94, 0.1) !important;
+            border-left: 3px solid var(--pm-rose) !important;
         }}
+        .stError * {{ color: var(--pm-text) !important; }}
 
-        .stError * {{
-            color: #1a1a1a !important;
-        }}
-
-        /* Divider */
+        /* ── Divider ───────────────────────────────────────────────────── */
         hr {{
             border: none;
-            height: 2px;
-            background: linear-gradient(90deg, transparent 0%, var(--pm-border) 50%, transparent 100%);
-            margin: 2rem 0 !important;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.2) 50%, transparent 100%);
+            margin: 1.5rem 0 !important;
         }}
 
-        /* Sidebar */
-        .css-1d391kg {{
-            background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-            border-right: 2px solid var(--pm-border);
+        /* ── Sidebar ───────────────────────────────────────────────────── */
+        [data-testid="stSidebar"] {{
+            background: var(--pm-surface) !important;
+            border-right: 1px solid var(--pm-border) !important;
         }}
 
-        .css-1d391kg * {{
-            color: #1a1a1a !important;
+        [data-testid="stSidebar"] * {{
+            color: var(--pm-text) !important;
         }}
 
-        /* Headers in sidebar */
-        .sidebar-header {{
-            font-size: calc(var(--pm-font-size) * 1.1);
-            font-weight: 800;
-            color: #808080 !important;
-            margin-bottom: 1.2rem;
+        [data-testid="stSidebar"] label {{
+            color: var(--pm-muted) !important;
+            font-size: 0.85em !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
         }}
 
-        /* Sidebar labels and text */
-        .css-1d391kg label,
-        .css-1d391kg h3,
-        .css-1d391kg .stMarkdown {{
-            color: #1a1a1a !important;
-        }}
-
-        /* Expander - hide headers completely in BI sections */
+        /* ── Expander ──────────────────────────────────────────────────── */
         [data-testid="stExpander"] {{
             border: none !important;
             margin-bottom: 0.5rem !important;
         }}
-        
+
         [data-testid="stExpander"] details {{
             border: 1px solid var(--pm-border) !important;
-            border-radius: 12px !important;
+            border-radius: 10px !important;
             padding: 0.5rem !important;
-            background: white !important;
-            color: #1a1a1a !important;
+            background: var(--pm-surface) !important;
         }}
 
         [data-testid="stExpander"] details * {{
-            color: #1a1a1a !important;
+            color: var(--pm-text) !important;
         }}
-        
+
         [data-testid="stExpander"] summary {{
-            display: none !important;
-            height: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            overflow: hidden !important;
-            visibility: hidden !important;
-        }}
-        
-        .streamlit-expanderHeader {{
-            display: none !important;
-            height: 0 !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            overflow: hidden !important;
-            visibility: hidden !important;
+            color: var(--pm-text) !important;
+            font-weight: 600 !important;
         }}
 
-        .streamlit-expanderHeader:hover {{
-            display: none !important;
-        }}
-        
-        [data-testid="stExpander"] [data-testid="stExpanderDetails"] {{
-            padding: 0.5rem !important;
-        }}
-
-        /* Plotly Charts */
+        /* ── Plotly Charts ─────────────────────────────────────────────── */
         .plotly-container {{
-            border-radius: 18px !important;
+            border-radius: 12px !important;
             overflow: hidden;
-            box-shadow: var(--pm-shadow);
+            animation: fadeInUp 0.4s ease;
         }}
 
-        /* General Text */
-        p {{
-            font-size: var(--pm-font-size);
-            line-height: var(--pm-line-height);
-            color: var(--pm-text);
-            margin-bottom: 1rem;
-        }}
-
-        /* Caption */
-        .stCaption {{
-            font-size: calc(var(--pm-font-size) * 0.85);
-            color: var(--pm-muted);
-            font-weight: 500;
-        }}
-
-        /* Links */
+        /* ── Links ─────────────────────────────────────────────────────── */
         a {{
-            color: var(--pm-accent) !important;
+            color: var(--pm-accent-secondary) !important;
             text-decoration: none !important;
             font-weight: 600 !important;
             transition: all 0.2s ease !important;
         }}
 
         a:hover {{
-            color: var(--pm-accent-secondary) !important;
+            color: var(--pm-accent) !important;
             text-decoration: underline !important;
         }}
 
-        /* Toggle Switch */
-        .stCheckbox > label > div {{
-            border-radius: 12px !important;
+        /* ── Slider ────────────────────────────────────────────────────── */
+        .stSlider > div > div {{
+            color: var(--pm-text) !important;
         }}
 
-        /* Minor Improvements */
-        .stMetricDelta {{
-            font-size: calc(var(--pm-font-size) * 0.9) !important;
-        }}
-
-        /* Responsive */
+        /* ── Responsive ────────────────────────────────────────────────── */
         @media (max-width: 768px) {{
             .main .block-container {{
                 padding: 1rem;
             }}
-            
             .stTabs [role="tab"] {{
-                padding: 0.7rem 1.2rem;
+                padding: 0.5rem 1rem;
                 font-size: calc(var(--pm-font-size) * 0.85);
             }}
         }}
