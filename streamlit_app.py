@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -25,14 +26,14 @@ from patent_summarizer import load_cached_summaries, summarize_patent
 # Load environment variables
 load_dotenv()
 
-VIEW_TABS = [
-    "Executive View",
-    "Opportunity Ranking",
-    "Patent Details",
-    "Score Explainability",
-    "💼 Business Intelligence",
-    "Export",
-]
+NAV_OPTIONS = {
+    "Dashboard": "dashboard",
+    "Rankings": "rankings",
+    "Patent Explorer": "explorer",
+    "Score Analysis": "scores",
+    "Business Intel": "bi",
+    "Export": "export",
+}
 
 REQUIRED_VIABILITY_KEYS = {
     "market_demand",
@@ -63,6 +64,20 @@ FALLBACK_SEARCH_CONFIG = {
     "retrieval_v2": {"max_expanded_keywords": 24},
     "scoring_weights": {"retrieval": 0.35, "viability": 0.45, "expiration": 0.20},
 }
+
+PM_COLORS = ["#6366f1", "#22d3ee", "#10b981", "#f59e0b", "#f43f5e", "#a78bfa", "#67e8f9"]
+
+PM_DARK_LAYOUT = dict(
+    paper_bgcolor="#12121a",
+    plot_bgcolor="#12121a",
+    font=dict(color="#e2e8f0", size=13, family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
+    colorway=PM_COLORS,
+    hoverlabel=dict(bgcolor="#1a1a2e", font_size=13, bordercolor="#6366f1"),
+    xaxis=dict(gridcolor="#1e293b", zerolinecolor="#1e293b"),
+    yaxis=dict(gridcolor="#1e293b", zerolinecolor="#1e293b"),
+    margin=dict(l=40, r=40, t=40, b=40),
+    legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(color="#94a3b8")),
+)
 
 st.set_page_config(
     page_title="Patent Miner Analytics",
