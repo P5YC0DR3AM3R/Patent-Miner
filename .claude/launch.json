@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "streamlit-dashboard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "streamlit", "run", "streamlit_app.py", "--server.port", "8501", "--server.address", "127.0.0.1"],
+      "port": 8501
+    },
+    {
+      "name": "jupyter-notebook",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "jupyterlab", "--port", "8888", "--no-browser"],
+      "port": 8888
+    }
+  ]
+}
