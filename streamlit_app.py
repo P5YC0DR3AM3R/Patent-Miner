@@ -625,6 +625,21 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             color: var(--pm-text) !important;
         }}
 
+        /* ── Sidebar Toggle ──────────────────────────────────────────────── */
+        .stSidebarToggle {{
+            background: var(--pm-accent) !important;
+            border: none !important;
+            border-radius: 8px !important;
+            color: white !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }}
+
+        .stSidebarToggle:hover {{
+            background: var(--pm-accent-secondary) !important;
+            transform: scale(1.05) !important;
+        }}
+
         /* ── Responsive ────────────────────────────────────────────────── */
         @media (max-width: 768px) {{
             .main .block-container {{
@@ -633,6 +648,50 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             .stTabs [role="tab"] {{
                 padding: 0.5rem 1rem;
                 font-size: calc(var(--pm-font-size) * 0.85);
+            }}
+            
+            /* Mobile sidebar accessibility */
+            [data-testid="stSidebar"] {{
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                height: 100vh !important;
+                z-index: 999 !important;
+                transform: translateX(-100%) !important;
+                transition: transform 0.3s ease !important;
+            }}
+            
+            [data-testid="stSidebar"][aria-expanded="true"] {{
+                transform: translateX(0) !important;
+            }}
+            
+            /* Mobile menu toggle button */
+            .stSidebarToggle {{
+                position: fixed !important;
+                top: 1rem !important;
+                left: 1rem !important;
+                z-index: 1000 !important;
+                background: var(--pm-accent) !important;
+                border-radius: 8px !important;
+                padding: 0.5rem !important;
+                min-width: 44px !important;
+                min-height: 44px !important;
+            }}
+            
+            /* Mobile radio button navigation - reduce size by 50% */
+            .stRadio > div > label {{
+                padding: 0.3rem 0.5rem !important;
+                font-size: calc(var(--pm-font-size) * 0.7) !important;
+                margin: 0.1rem 0 !important;
+            }}
+            
+            .stRadio > div {{
+                gap: 0.1rem !important;
+            }}
+            
+            /* Mobile sidebar content */
+            [data-testid="stSidebar"] .block-container {{
+                padding: 1rem !important;
             }}
         }}
         </style>
