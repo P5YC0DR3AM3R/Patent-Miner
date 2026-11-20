@@ -65,14 +65,14 @@ FALLBACK_SEARCH_CONFIG = {
     "scoring_weights": {"retrieval": 0.35, "viability": 0.45, "expiration": 0.20},
 }
 
-PM_COLORS = ["#6366f1", "#22d3ee", "#10b981", "#f59e0b", "#f43f5e", "#a78bfa", "#67e8f9"]
+PM_COLORS = ["#c4a574", "#8b9690", "#6f8f72", "#a68462", "#9a6a5a", "#d7c7ae", "#5e6a64"]
 
 PM_DARK_LAYOUT = dict(
-    paper_bgcolor="#12121a",
-    plot_bgcolor="#12121a",
-    font=dict(color="#e2e8f0", size=13, family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
+    paper_bgcolor="#161b20",
+    plot_bgcolor="#161b20",
+    font=dict(color="#e7ece8", size=13, family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"),
     colorway=PM_COLORS,
-    hoverlabel=dict(bgcolor="#1a1a2e", font_size=13, bordercolor="#6366f1"),
+    hoverlabel=dict(bgcolor="#1c2329", font_size=13, bordercolor="#c4a574"),
     xaxis=dict(gridcolor="#1e293b", zerolinecolor="#1e293b"),
     yaxis=dict(gridcolor="#1e293b", zerolinecolor="#1e293b"),
     margin=dict(l=40, r=40, t=40, b=40),
@@ -81,7 +81,7 @@ PM_DARK_LAYOUT = dict(
 
 st.set_page_config(
     page_title="Patent Miner Analytics",
-    page_icon="🔬",
+    page_icon="PM",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -161,21 +161,21 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             --pm-heading-scale: {heading_scale};
             --pm-card-pad: {1.2 if density < 1.2 else 1.5}rem;
             --pm-gap: {1.0 if density < 1.2 else 1.2}rem;
-            --pm-bg-deep: #0a0a0f;
-            --pm-surface: #12121a;
-            --pm-elevated: #1a1a2e;
-            --pm-border: rgba(99, 102, 241, 0.15);
-            --pm-border-hover: rgba(99, 102, 241, 0.4);
-            --pm-accent: #6366f1;
-            --pm-accent-secondary: #22d3ee;
-            --pm-accent-tertiary: #10b981;
-            --pm-amber: #f59e0b;
-            --pm-rose: #f43f5e;
-            --pm-text: #e2e8f0;
-            --pm-muted: #94a3b8;
-            --pm-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-            --pm-shadow-hover: 0 8px 32px rgba(99, 102, 241, 0.2);
-            --pm-glow-accent: 0 0 20px rgba(99, 102, 241, 0.25);
+            --pm-bg-deep: #0e1114;
+            --pm-surface: #161b20;
+            --pm-elevated: #1c2329;
+            --pm-border: #2a3138;
+            --pm-border-hover: #3d474f;
+            --pm-accent: #c4a574;
+            --pm-accent-secondary: #8b9690;
+            --pm-accent-tertiary: #6f8f72;
+            --pm-amber: #a68462;
+            --pm-rose: #9a6a5a;
+            --pm-text: #e7ece8;
+            --pm-muted: #8b9690;
+            --pm-shadow: none;
+            --pm-shadow-hover: none;
+            --pm-glow-accent: none;
         }}
 
         /* ── Keyframe Animations ───────────────────────────────────────── */
@@ -326,7 +326,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
             font-size: calc(var(--pm-font-size) * 0.9) !important;
             font-weight: 700 !important;
             border: none !important;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+            background: linear-gradient(135deg, #c4a574 0%, #4f46e5 100%) !important;
             color: white !important;
             box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3) !important;
             transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
@@ -437,7 +437,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
         }}
 
         [data-testid="stDataFrameColumnMenu"] .e1gsdy3y1:hover {{
-            background: rgba(99, 102, 241, 0.15) !important;
+            background: #2a3138 !important;
         }}
 
         /* ── Inputs ────────────────────────────────────────────────────── */
@@ -465,7 +465,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
 
         .stSelectbox > div > div:focus-within, .stTextInput > div > div:focus-within {{
             border-color: var(--pm-accent) !important;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+            box-shadow: 0 0 0 2px #2a3138 !important;
         }}
 
         /* Dropdown menu popover */
@@ -480,7 +480,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
         }}
 
         [data-baseweb="popover"] li:hover {{
-            background: rgba(99, 102, 241, 0.15) !important;
+            background: #2a3138 !important;
         }}
 
         /* ── Radio buttons (sidebar nav) ───────────────────────────────── */
@@ -557,7 +557,7 @@ def _inject_ui_css(text_size_label: str, density_label: str) -> None:
         hr {{
             border: none;
             height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.2) 50%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, transparent 50%, transparent 100%);
             margin: 1.5rem 0 !important;
         }}
 
@@ -985,7 +985,7 @@ def render_sidebar_controls() -> Dict[str, Any]:
         st.markdown(
             "<div style='padding:1rem 0 1.5rem;'>"
             "<h2 style='color:#e2e8f0;margin:0;font-size:1.4em;'>Patent Miner</h2>"
-            "<p style='color:#94a3b8;margin:0.2rem 0 0;font-size:0.85em;'>Intelligence Platform</p>"
+            "<p style='color:#8b9690;margin:0.2rem 0 0;font-size:0.85em;'>Scored locally. No model in the page.</p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -1038,7 +1038,7 @@ def render_executive_view(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         fig.update_traces(
             marker=dict(
                 color=sorted_dist["count"].values,
-                colorscale=[[0, "#6366f1"], [0.5, "#22d3ee"], [1, "#10b981"]],
+                colorscale=[[0, "#c4a574"], [0.5, "#8b9690"], [1, "#10b981"]],
                 line=dict(width=0),
                 cornerradius=6,
             )
@@ -1109,7 +1109,7 @@ def render_opportunity_ranking(analyzer: PatentAnalyzer, show_advanced: bool) ->
         hide_index=True,
         column_config={
             "Justia Link": st.column_config.LinkColumn(
-                "🔗 Justia",
+                "Justia",
                 display_text="View",
                 width="small"
             )
@@ -1156,9 +1156,9 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
     justia_url = get_justia_url(patent_num) if patent_num != "N/A" else None
     link_html = (
         f"<a href='{justia_url}' target='_blank' "
-        f"style='color:#6366f1;font-weight:700;text-decoration:none;font-size:0.95em;'>"
-        f"🔗 {patent_num}</a>"
-        if justia_url else f"<span style='color:#6366f1;font-weight:700;'>{patent_num}</span>"
+        f"style='color:#c4a574;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+        f"{patent_num}</a>"
+        if justia_url else f"<span style='color:#c4a574;font-weight:700;'>{patent_num}</span>"
     )
     st.markdown(
         f"""<div class='pm-card' style='margin-bottom:1rem;'>
@@ -1226,9 +1226,9 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
             r=values_radar + [values_radar[0]],
             theta=categories_radar + [categories_radar[0]],
             fill="toself",
-            fillcolor="rgba(99, 102, 241, 0.15)",
-            line=dict(color="#6366f1", width=2),
-            marker=dict(size=8, color="#6366f1"),
+            fillcolor="#2a3138",
+            line=dict(color="#c4a574", width=2),
+            marker=dict(size=8, color="#c4a574"),
             name="Scores",
         ))
         fig.update_layout(
@@ -1237,10 +1237,10 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
                 radialaxis=dict(visible=True, range=[0, 10], gridcolor="#1e293b",
                                 tickfont=dict(color="#94a3b8")),
                 angularaxis=dict(gridcolor="#1e293b",
-                                 tickfont=dict(color="#e2e8f0", size=13)),
+                                 tickfont=dict(color="#e7ece8", size=13)),
             ),
-            paper_bgcolor="#12121a",
-            font=dict(color="#e2e8f0"),
+            paper_bgcolor="#161b20",
+            font=dict(color="#e7ece8"),
             showlegend=False,
             height=350,
             margin=dict(l=60, r=60, t=30, b=30),
@@ -1262,7 +1262,7 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         if st.session_state[summary_key] is not None:
             st.markdown(
                 f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
-                <div style='font-size:0.85em;font-weight:700;color:#6366f1;
+                <div style='font-size:0.85em;font-weight:700;color:#c4a574;
                             text-transform:uppercase;letter-spacing:0.05em;
                             margin-bottom:0.6rem;'>
                     🤖 AI Use-Case Summary
@@ -1284,7 +1284,7 @@ def render_patent_details(analyzer: PatentAnalyzer, show_advanced: bool) -> None
         with col1:
             st.markdown(
                 f"""<div class='pm-card' style='color: #1a1a2e;'>
-                <strong style='font-size: 1.2em; color: #6366f1;'>🔍 Retrieval</strong>
+                <strong style='font-size: 1.2em; color: #c4a574;'>🔍 Retrieval</strong>
                 <br><br>
                 <span style='color: #1a1a2e; font-size: 0.95em; line-height: 1.6;'>
                 {explanations.get('retrieval', 'No data')}
@@ -1351,7 +1351,7 @@ def render_score_explainability(analyzer: PatentAnalyzer) -> None:
         hide_index=True,
         column_config={
             "Justia Link": st.column_config.LinkColumn(
-                "🔗 Justia",
+                "Justia",
                 display_text="View",
                 width="small"
             )
@@ -1427,7 +1427,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
         
         col1, col2 = st.columns([4, 1])
         with col1:
-            st.markdown(f"**📄 Full Report:** `{report_path.name}`")
+            st.markdown(f"**Full Report:** `{report_path.name}`")
         with col2:
             st.download_button(
                 "📥 Download Report",
@@ -1507,7 +1507,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                         "Patent_Number": st.column_config.TextColumn("Patent #", width="small"),
                         "Integrated_Score": st.column_config.NumberColumn("Score", format="%.2f"),
                         "Justia_Link": st.column_config.LinkColumn(
-                            "🔗 Justia",
+                            "Justia",
                             display_text="View",
                             width="small"
                         )
@@ -1564,7 +1564,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 title="Patent NPV Distribution",
             )
             npv_chart.update_traces(
-                line=dict(color="#6366f1", width=2),
+                line=dict(color="#c4a574", width=2),
                 fillcolor="rgba(99, 102, 241, 0.2)",
             )
             npv_chart.update_xaxes(title="Patent Index (sorted by NPV)")
@@ -1585,11 +1585,11 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 fig_band.add_trace(go.Scatter(
                     x=uncertainty_df["index"], y=uncertainty_df["NPV_P10"],
                     mode="lines", line=dict(width=0), fill="tonexty",
-                    fillcolor="rgba(99, 102, 241, 0.15)", showlegend=False, name="P10",
+                    fillcolor="#2a3138", showlegend=False, name="P10",
                 ))
                 fig_band.add_trace(go.Scatter(
                     x=uncertainty_df["index"], y=uncertainty_df["NPV_Base"],
-                    mode="lines", line=dict(color="#22d3ee", width=2), name="Base NPV",
+                    mode="lines", line=dict(color="#8b9690", width=2), name="Base NPV",
                 ))
                 fig_band.update_layout(
                     **PM_DARK_LAYOUT,
@@ -1621,7 +1621,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 hide_index=True,
                 column_config={
                     "Justia_Link": st.column_config.LinkColumn(
-                        "🔗 Justia",
+                        "Justia",
                         display_text="View",
                         width="small"
                     )
@@ -1629,7 +1629,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             )
 
     with bi_subtabs[2]:  # Themes & Risk
-        st.subheader("🔬 Technology Themes & Risk Assessment")
+        st.subheader("Technology themes and risk")
         
         if rankings_df is not None:
             # Technology Theme Distribution
@@ -1642,11 +1642,11 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     values="count",
                     title="Distribution by Technology Theme",
                     color="count",
-                    color_continuous_scale=[[0, "#6366f1"], [0.5, "#22d3ee"], [1, "#10b981"]],
+                    color_continuous_scale=[[0, "#c4a574"], [0.5, "#8b9690"], [1, "#10b981"]],
                 )
                 fig_theme.update_layout(
-                    paper_bgcolor="#12121a",
-                    font=dict(color="#e2e8f0"),
+                    paper_bgcolor="#161b20",
+                    font=dict(color="#e7ece8"),
                     height=400,
                     coloraxis_showscale=False,
                 )
@@ -1734,7 +1734,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             # Tier 1 Recommendations
             if not tier_1_df.empty:
                 st.markdown("")
-                st.markdown("### 🎯 **Tier 1: Immediate Implementation**")
+                st.markdown("### First pass")
                 st.markdown(
                     "These patents are ready for pilot projects or phased implementation. "
                     "High technical merit, strong financial case, and manageable risk."
@@ -1748,12 +1748,12 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     local_summary = lookup_cached_summary(cached_summaries, patent_num)
                     
                     # Create a bordered container for each patent
-                    st.markdown(f"""<div style='background: rgba(255,255,255,0.03); border: 1px solid rgba(99,102,241,0.15); border-radius: 12px; 
+                    st.markdown(f"""<div style='background: rgba(255,255,255,0.03); border: 1px solid #2a3138; border-radius: 12px; 
                                 padding: 1.2rem; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
-                                <strong style='color: #6366f1; font-size: 1.1em;'>✅ <a href='{justia_url}' target='_blank' style='color: #6366f1; text-decoration: none;'>{patent_num}</a></strong><br>
+                                <strong style='color: #c4a574; font-size: 1.1em;'>✅ <a href='{justia_url}' target='_blank' style='color: #c4a574; text-decoration: none;'>{patent_num}</a></strong><br>
                                 <span style='color: #94a3b8;'>{patent['Title'][:100]}...</span><br>
                                 <span style='color: #10b981; font-weight: 600;'>Score: {patent['Integrated_Score']:.2f}</span> | 
-                                <a href='{justia_url}' target='_blank' style='color: #6366f1; text-decoration: none;'>🔗 View on Justia</a>
+                                <a href='{justia_url}' target='_blank' style='color: #c4a574; text-decoration: none;'>View on Justia</a>
                                 </div>""", unsafe_allow_html=True)
                     
                     col1, col2, col3 = st.columns(3)
@@ -1811,7 +1811,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     hide_index=True,
                     column_config={
                         "Justia_Link": st.column_config.LinkColumn(
-                            "🔗 Justia",
+                            "Justia",
                             display_text="View",
                             width="small"
                         )
@@ -1834,7 +1834,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                 st.markdown("These patents have technical or financial concerns. Review if circumstances change or market evolves.")
 
     with bi_subtabs[4]:  # Detailed View
-        st.subheader("🔬 Detailed Patent Analysis")
+        st.subheader("Patent detail")
         
         if analysis_results is not None and patents_data:
             # Select a patent
@@ -1853,9 +1853,9 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             justia_url = get_justia_url(patent_num) if patent_num != 'N/A' else None
             link_html = (
                 f"<a href='{justia_url}' target='_blank' "
-                f"style='color:#6366f1;font-weight:700;text-decoration:none;font-size:0.95em;'>"
-                f"🔗 {patent_num}</a>"
-                if justia_url else f"<span style='color:#6366f1;font-weight:700;'>{patent_num}</span>"
+                f"style='color:#c4a574;font-weight:700;text-decoration:none;font-size:0.95em;'>"
+                f"{patent_num}</a>"
+                if justia_url else f"<span style='color:#c4a574;font-weight:700;'>{patent_num}</span>"
             )
             st.markdown(
                 f"""<div class='pm-card' style='margin-bottom:1rem;'>
@@ -1893,7 +1893,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
             if st.session_state[bi_summary_key] is not None:
                 st.markdown(
                     f"""<div class='pm-card' style='border-left:4px solid #0066ff;margin-bottom:1rem;'>
-                    <div style='font-size:0.85em;font-weight:700;color:#6366f1;
+                    <div style='font-size:0.85em;font-weight:700;color:#c4a574;
                                 text-transform:uppercase;letter-spacing:0.05em;
                                 margin-bottom:0.6rem;'>
                         🤖 AI Use-Case Summary
@@ -1998,7 +1998,7 @@ def render_business_intelligence(analyzer: PatentAnalyzer) -> None:
                     st.info(f"• {insight}")
 
             # Patent Metadata
-            st.subheader("📄 Patent Metadata")
+            st.subheader("Patent Metadata")
             st.write(f"**Patent Number:** {patent.get('patent_number', 'N/A')}")
             st.write(f"**Title:** {patent.get('title', 'N/A')}")
             st.write(f"**Technology Theme:** {patent.get('technology_theme', 'N/A')}")
@@ -2029,11 +2029,11 @@ def render_banner() -> None:
     """Render top advertising banner with contact links."""
     
     st.markdown("""
-        <div style='background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+        <div style='background: linear-gradient(135deg, #c4a574 0%, #8b9690 100%);
                     padding: 1rem 2rem;
                     border-radius: 12px;
                     margin-bottom: 1.5rem;
-                    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+                    box-shadow: 0 8px 32px #3d474f;
                     text-align: center;'>
             <h3 style='color: white !important; margin: 0; padding: 0; font-size: 1.8em; font-weight: 800;'>
                 🆓 FREE Patent Miner from Micah Read MGMT
